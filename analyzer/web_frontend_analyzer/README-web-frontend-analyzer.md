@@ -51,6 +51,12 @@ analyzer/web_frontend_analyzer/
 python3 analyzer/web_frontend_analyzer/web_frontend_analyzer.py <input_path> -o frontend_artifacts.json
 ```
 
+如果不传 `-o`，输出默认写入：
+
+```text
+analyzer/web_frontend_analyzer/output/<input_stem>.artifacts.json
+```
+
 指定 JSON 输入：
 
 ```bash

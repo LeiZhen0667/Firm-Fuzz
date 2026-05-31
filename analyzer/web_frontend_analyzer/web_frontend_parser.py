@@ -158,18 +158,18 @@ class FrontendHTMLExtractor(HTMLParser):
 
         if tag == "form":
             action = (attr.get("action") or "").strip()
-            method = (attr.get("method") or "GET").strip().upper()
+            method = _normalize_method(attr.get("method"))
             enctype = (attr.get("enctype") or "").strip().lower()
 
             if action:
                 self.routes.append(
                     Route(
                         url=action,
-                        method=method or "GET",
+                        method=method,
                         source="html_form_parser",
                         ui_context=self.title,
                         confidence="high",
-                        evidence=[f"<form action={action!r} method={method or 'GET'!r}>"],
+                        evidence=[f"<form action={action!r} method={method!r}>"],
                     )
                 )
                 self.references.add(action)
@@ -184,7 +184,7 @@ class FrontendHTMLExtractor(HTMLParser):
 
             self._current_form = {
                 "action": action or None,
-                "method": method or "GET",
+                "method": method,
                 "enctype": enctype,
             }
 
@@ -562,7 +562,7 @@ def _add_query_params(
 
 
 def _valid_param_name(name: str) -> bool:
-    return bool(re.match(r"^[A-Za-z_][A-Za-z0-9_.:-]{0,63}$", name))
+    return bool(re.match(r"^[A-Za-z_][A-Za-z0-9_.:\-\[\]]{0,95}$", name))
 
 
 def _split_object_fields(object_text: str) -> List[str]:
@@ -605,6 +605,7 @@ def _extract_inline_script_refs(content: str) -> Set[str]:
     refs = set()
     patterns = [
         r"location\.(?:href|assign|replace)\s*(?:=|\()\s*['\"]([^'\"]+)['\"]",
+        r"(?:window|document)\.location\s*=\s*['\"]([^'\"]+)['\"]",
         r"window\.open\(\s*['\"]([^'\"]+)['\"]",
     ]
     for pattern in patterns:
@@ -719,6 +720,31 @@ def _extract_js_api(content: str, ui_context: Optional[str]) -> Tuple[List[Route
         _append_orphan_param(params, match.group(1), "body", "param_name_miner", "medium", _clean_text(match.group(0)))
     for match in re.finditer(r"\.append\(\s*['\"]([^'\"]+)['\"]\s*,", content, re.IGNORECASE):
         _append_orphan_param(params, match.group(1), "body", "param_name_miner", "medium", _clean_text(match.group(0)))
+    for match in re.finditer(r"URLSearchParams\s*\([^)]*\)\.append\(\s*['\"]([^'\"]+)['\"]\s*,", content, re.IGNORECASE):
+        _append_orphan_param(params, match.group(1), "query", "param_name_miner", "medium", _clean_text(match.group(0)))
+
+    for match in re.finditer(
+        r"axios\.(get|post|put|delete|patch|head|options)\(\s*['\"]([^'\"]+)['\"]\s*(?:,\s*(\{.*?\}|['\"].*?['\"]))?",
+        content,
+        re.IGNORECASE | re.DOTALL,
+    ):
+        method, url, data = match.group(1).upper(), match.group(2), (match.group(3) or "")
+        evidence = _clean_text(match.group(0))
+        add_route(url, method, "js_api_parser", evidence)
+        _extract_js_object_params(data, params, route=url, evidence=evidence)
+        _add_urlencoded_params(data, params, route=url, source="param_name_miner", confidence="medium", evidence=evidence)
+
+    for match in re.finditer(r"axios\(\s*(\{.*?\})\s*\)", content, re.IGNORECASE | re.DOTALL):
+        obj = match.group(1)
+        evidence = _clean_text(match.group(0))
+        url_match = re.search(r"['\"]?url['\"]?\s*:\s*['\"]([^'\"]+)['\"]", obj, re.IGNORECASE)
+        if not url_match:
+            continue
+        method_match = re.search(r"['\"]?method['\"]?\s*:\s*['\"]([A-Za-z]+)['\"]", obj, re.IGNORECASE)
+        url = url_match.group(1)
+        add_route(url, method_match.group(1) if method_match else "GET", "js_api_parser", evidence)
+        _extract_js_object_params(obj, params, route=url, evidence=evidence)
+        _add_urlencoded_params(obj, params, route=url, source="param_name_miner", confidence="medium", evidence=evidence)
 
     return routes, params, refs, hints
 

@@ -84,6 +84,12 @@ def analyze_frontend_file(path: Path) -> Dict[str, object]:
     return analyze_frontend_content(raw, str(path))
 
 
+def _default_output_path(input_path: Path) -> Path:
+    base_dir = Path(__file__).resolve().parent / "output"
+    base_name = input_path.stem or "frontend_input"
+    return base_dir / f"{base_name}.artifacts.json"
+
+
 def main() -> None:
     ap = argparse.ArgumentParser(description="Modular web frontend analyzer")
     ap.add_argument("input", type=Path, help="Input file, directory, or JSON input file")
@@ -108,10 +114,10 @@ def main() -> None:
     sources = load_sources(args.input, input_format=args.input_format)
     artifacts = [analyze_frontend_content(src.content, src.source_file) for src in sources]
     out_text = json.dumps(artifacts, ensure_ascii=False, indent=2)
-    if args.output:
-        args.output.write_text(out_text, encoding="utf-8")
-    else:
-        print(out_text)
+    out_path = args.output if args.output else _default_output_path(args.input)
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(out_text, encoding="utf-8")
+    print(f"[web_frontend_analyzer] Wrote artifacts to: {out_path}")
 
 
 if __name__ == "__main__":
