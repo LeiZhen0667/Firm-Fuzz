@@ -30,7 +30,8 @@ def extract(content: str, source_file: str) -> List[Dict[str, object]]:
             address, port = parse_address_port(match.group(1))
             if port is None:
                 continue
-            results.append(_listener(source_file, pattern.pattern, line_no, raw, address, port))
+            protocol = "https" if re.search(r"\bssl\b|\bhttps\b", line, re.I) else "http"
+            results.append(_listener(source_file, pattern.pattern, line_no, raw, address, port, protocol))
 
         tokens = shell_tokens(line)
         for index, token in enumerate(tokens):
@@ -41,15 +42,24 @@ def extract(content: str, source_file: str) -> List[Dict[str, object]]:
             else:
                 continue
             if port is not None:
-                results.append(_listener(source_file, "-p", line_no, raw, address, port))
+                protocol = "https" if re.search(r"\bssl\b|\bhttps\b", line, re.I) else "http"
+                results.append(_listener(source_file, "-p", line_no, raw, address, port, protocol))
     return results
 
 
-def _listener(source_file: str, pattern: str, line: int, snippet: str, address: object, port: int) -> Dict[str, object]:
+def _listener(
+    source_file: str,
+    pattern: str,
+    line: int,
+    snippet: str,
+    address: object,
+    port: int,
+    protocol: str,
+) -> Dict[str, object]:
     return {
         "address": clean_value(str(address)) if address else None,
         "port": port,
-        "protocol": "http",
+        "protocol": protocol,
         "evidence": [evidence(source_file, pattern, line, snippet)],
     }
 

@@ -164,7 +164,9 @@ def _summary(artifact: Dict[str, object]) -> Dict[str, object]:
 
 
 def discover_default_inputs(repo_root: Path) -> List[Path]:
-    return sorted(repo_root.glob("output/web_json/*/web_server_config_sources.readable.json"))
+    candidates = set(repo_root.glob("output/web_json/*/web_server_config_sources.readable.json"))
+    candidates.update(repo_root.glob("collector/output/web_json/*/web_server_config_sources.readable.json"))
+    return sorted(candidates)
 
 
 def default_output_path(input_path: Path, output_arg: Optional[Path], multiple: bool) -> Path:

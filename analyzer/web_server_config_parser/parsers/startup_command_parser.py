@@ -27,6 +27,8 @@ def extract(content: str, source_file: str) -> List[Dict[str, object]]:
                 "config_path": find_option(tokens, {"-c", "-f"}),
                 "document_root": find_option(tokens, {"-h"}),
                 "port": find_option(tokens, {"-p"}),
+                "error_log": find_option(tokens, {"-E"}),
+                "auth_realm": find_option(tokens, {"-r"}),
                 "evidence": [evidence(source_file, "startup_command_token", line_no, raw)],
             }
         )

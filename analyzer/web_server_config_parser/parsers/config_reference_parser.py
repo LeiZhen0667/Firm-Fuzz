@@ -10,6 +10,7 @@ from common import clean_value, evidence, iter_lines, shell_tokens, strip_inline
 
 PATTERNS = [
     ("include", re.compile(r"^\s*include(?:_shell)?\s+(.+)$", re.I)),
+    ("include", re.compile(r"^\s*IncludeOptional\s+(.+)$", re.I)),
     ("source", re.compile(r"^\s*(?:source|\.)\s+(.+)$", re.I)),
 ]
 

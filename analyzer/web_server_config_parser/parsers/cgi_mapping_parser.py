@@ -10,8 +10,10 @@ from common import clean_value, evidence, iter_lines, strip_inline_comment
 
 PATTERNS = [
     ("script_alias", re.compile(r"^\s*ScriptAlias\s+(\S+)\s+(.+)$", re.I)),
+    ("script_alias_match", re.compile(r"^\s*ScriptAliasMatch\s+(\S+)\s+(.+)$", re.I)),
     ("cgi_path", re.compile(r"^\s*CGIPath\s+(.+)$", re.I)),
     ("add_handler", re.compile(r"^\s*AddHandler\s+(\S+)\s+(.+)$", re.I)),
+    ("add_type", re.compile(r"^\s*AddType\s+(\S+)\s+(.+)$", re.I)),
     ("cgi_assign", re.compile(r'^\s*cgi\.assign\s*=\s*\(\s*"([^"]+)"\s*=>\s*"([^"]*)"', re.I)),
     ("fastcgi", re.compile(r'^\s*fastcgi\.server\s*=\s*\(\s*"([^"]+)"', re.I)),
     ("location_cgi", re.compile(r"^\s*location\s+(/[^ \t{;]*cgi[^ \t{;]*)", re.I)),
@@ -39,13 +41,13 @@ def extract(content: str, source_file: str) -> List[Dict[str, object]]:
                 "evidence": [evidence(source_file, pattern.pattern, line_no, raw)],
             }
             groups = [clean_value(group) for group in match.groups() if group is not None]
-            if kind == "script_alias" and len(groups) >= 2:
+            if kind in {"script_alias", "script_alias_match"} and len(groups) >= 2:
                 item["url_prefix"], item["filesystem_path"] = groups[0], groups[1]
             elif kind in {"cgi_path", "location_cgi", "cgi_bin", "fastcgi"} and groups:
                 item["url_prefix"] = groups[0]
                 if len(groups) > 1:
                     item["filesystem_path"] = groups[1]
-            elif kind in {"add_handler", "cgi_assign"} and groups:
+            elif kind in {"add_handler", "add_type", "cgi_assign"} and groups:
                 item["handler"] = groups[-1] if len(groups) > 1 else groups[0]
                 item["extension"] = groups[0] if groups[0].startswith(".") or "*" in groups[0] else None
                 if groups[0].startswith("/"):

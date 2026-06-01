@@ -19,16 +19,23 @@ ROOT_PATTERNS = [
 ALIAS_PATTERNS = [
     re.compile(r"^\s*Alias\s+(\S+)\s+(.+)$", re.I),
     re.compile(r'^\s*alias\.url\s*\+=\s*\(\s*"([^"]+)"\s*=>\s*"([^"]+)"', re.I),
+    re.compile(r"^\s*alias\s+(.+?);?\s*$", re.I),
 ]
 
 
 def extract(content: str, source_file: str) -> Dict[str, List[Dict[str, object]]]:
     roots: List[Dict[str, object]] = []
     aliases: List[Dict[str, object]] = []
+    current_location_prefix = None
     for line_no, raw in iter_lines(content):
         line = strip_inline_comment(raw)
         if not line:
             continue
+        location_match = re.search(r"^\s*location\s+(\S+)\s*\{?\s*$", line, re.I)
+        if location_match:
+            current_location_prefix = clean_value(location_match.group(1))
+        if "}" in line:
+            current_location_prefix = None
         for root_type, pattern in ROOT_PATTERNS:
             match = pattern.search(line)
             if match:
@@ -42,10 +49,16 @@ def extract(content: str, source_file: str) -> Dict[str, List[Dict[str, object]]
         for pattern in ALIAS_PATTERNS:
             match = pattern.search(line)
             if match:
+                if pattern.pattern.startswith("^\\s*alias\\s+"):
+                    filesystem_path = clean_value(match.group(1))
+                    url_prefix = current_location_prefix
+                else:
+                    filesystem_path = clean_value(match.group(2))
+                    url_prefix = clean_value(match.group(1))
                 aliases.append(
                     {
-                        "url_prefix": clean_value(match.group(1)),
-                        "filesystem_path": clean_value(match.group(2)),
+                        "url_prefix": url_prefix,
+                        "filesystem_path": filesystem_path,
                         "mapping_type": "alias",
                         "evidence": [evidence(source_file, pattern.pattern, line_no, raw)],
                     }

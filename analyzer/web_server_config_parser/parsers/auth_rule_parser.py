@@ -12,6 +12,8 @@ PATTERNS = [
     ("auth_type", re.compile(r"^\s*AuthType\s+(.+)$", re.I)),
     ("realm", re.compile(r"^\s*(?:AuthName|realm)\s+(.+)$", re.I)),
     ("password_file", re.compile(r"^\s*(?:AuthUserFile|userfile)\s+(.+)$", re.I)),
+    ("password_file", re.compile(r"^\s*auth\.backend\.htpasswd\.userfile\s*=\s*(.+)$", re.I)),
+    ("auth_require", re.compile(r"^\s*auth\.require\s*=\s*(.+)$", re.I)),
     ("require", re.compile(r"^\s*Require\s+(.+)$", re.I)),
     ("allow", re.compile(r"^\s*allow\s+(.+)$", re.I)),
     ("deny", re.compile(r"^\s*deny\s+(.+)$", re.I)),
