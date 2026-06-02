@@ -1,0 +1,49 @@
+{
+  "version": "1.0",
+  "workflow": "web_backend_binary_path_a",
+  "input_root": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us",
+  "output_dir": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output",
+  "extractor_script": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\extract_web_facts.py",
+  "binaries": [
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\httpd",
+      "relative_path": "httpd",
+      "size": 1565377,
+      "flavor": "elf",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\httpd.web_backend_binary_artifacts.json",
+      "extractor_script": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\extract_web_facts.py"
+    },
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\login.o",
+      "relative_path": "login.o",
+      "size": 1168,
+      "flavor": "elf",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\login.o.web_backend_binary_artifacts.json",
+      "extractor_script": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\extract_web_facts.py"
+    },
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\popen.o",
+      "relative_path": "popen.o",
+      "size": 2460,
+      "flavor": "elf",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\popen.o.web_backend_binary_artifacts.json",
+      "extractor_script": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\extract_web_facts.py"
+    },
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\system.o",
+      "relative_path": "system.o",
+      "size": 2248,
+      "flavor": "elf",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\system.o.web_backend_binary_artifacts.json",
+      "extractor_script": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\extract_web_facts.py"
+    },
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\upnp",
+      "relative_path": "upnp",
+      "size": 198604,
+      "flavor": "elf",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\upnp.web_backend_binary_artifacts.json",
+      "extractor_script": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\extract_web_facts.py"
+    }
+  ]
+}
