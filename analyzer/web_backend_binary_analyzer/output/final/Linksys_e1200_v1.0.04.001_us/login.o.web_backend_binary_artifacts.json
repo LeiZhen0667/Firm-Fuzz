@@ -1,0 +1,120 @@
+{
+  "version": "1.0",
+  "artifact_type": "web_backend_binary",
+  "input_type": "unreadable_web_backend_binary",
+  "binary": {
+    "source_file": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\login.o",
+    "idb_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\login.o",
+    "sha256": "49404a0014f45fdce5187b64fabb4ae37af998719bef75e11ae0a4e89289217c",
+    "size": 1168,
+    "format": "ELF for MIPS (Relocatable)",
+    "arch": "mipsl",
+    "bits": 32,
+    "endian": "little",
+    "entry": "0xffffffffffffffff",
+    "segments": [
+      {
+        "name": ".text",
+        "start": "0x0",
+        "end": "0x20",
+        "size": 32,
+        "perm": 5
+      },
+      {
+        "name": ".data",
+        "start": "0x20",
+        "end": "0x21",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": ".bss",
+        "start": "0x30",
+        "end": "0x31",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": "extern",
+        "start": "0x34",
+        "end": "0x38",
+        "size": 4,
+        "perm": 0
+      },
+      {
+        "name": ".got",
+        "start": "0x38",
+        "end": "0x3c",
+        "size": 4,
+        "perm": 4
+      }
+    ],
+    "preprocess_source": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\login.o.preprocessed.json"
+  },
+  "routes": [],
+  "handlers": [
+    {
+      "name": "login",
+      "addr": "0x0",
+      "size": 20,
+      "source": "function_name",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\login.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "handler_name",
+          "confidence": "medium",
+          "function": "login",
+          "function_addr": "0x0",
+          "address": "0x0",
+          "snippet": "login"
+        }
+      ]
+    }
+  ],
+  "route_mappings": [],
+  "params": [],
+  "constraints": [],
+  "config_accesses": [],
+  "sinks": [],
+  "response_strings": [],
+  "auth_hints": [],
+  "state_hints": [],
+  "strings": [],
+  "functions": [
+    {
+      "name": "login",
+      "addr": "0x0",
+      "size": 20,
+      "caller_count": 0,
+      "callee_count": 0
+    }
+  ],
+  "xrefs": [],
+  "callgraph_edges": [],
+  "analysis_warnings": [],
+  "summary": {
+    "route_count": 0,
+    "handler_count": 1,
+    "route_mapping_count": 0,
+    "param_count": 0,
+    "constraint_count": 0,
+    "config_access_count": 0,
+    "sink_count": 0,
+    "response_string_count": 0,
+    "interesting_string_count": 0,
+    "candidate_function_count": 1,
+    "hint_categories": {
+      "auth": 0,
+      "state": 0,
+      "response": 0
+    }
+  },
+  "pseudo_snippets": [
+    {
+      "function": "login",
+      "function_addr": "0x0",
+      "snippet": "void login()"
+    }
+  ]
+}

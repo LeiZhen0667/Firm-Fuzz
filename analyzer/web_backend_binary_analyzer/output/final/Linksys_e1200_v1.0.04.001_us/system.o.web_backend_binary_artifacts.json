@@ -1,0 +1,412 @@
+{
+  "version": "1.0",
+  "artifact_type": "web_backend_binary",
+  "input_type": "unreadable_web_backend_binary",
+  "binary": {
+    "source_file": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\system.o",
+    "idb_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\system.o",
+    "sha256": "17435651376f9b5004127f032f8132ea220eff60c78ac26cd3acce08f25cd380",
+    "size": 2248,
+    "format": "ELF for MIPS (Relocatable)",
+    "arch": "mipsl",
+    "bits": 32,
+    "endian": "little",
+    "entry": "0xffffffffffffffff",
+    "segments": [
+      {
+        "name": ".text",
+        "start": "0x0",
+        "end": "0x340",
+        "size": 832,
+        "perm": 5
+      },
+      {
+        "name": ".data",
+        "start": "0x340",
+        "end": "0x341",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": ".bss",
+        "start": "0x350",
+        "end": "0x351",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": ".rodata",
+        "start": "0x360",
+        "end": "0x370",
+        "size": 16,
+        "perm": 4
+      },
+      {
+        "name": "extern",
+        "start": "0x370",
+        "end": "0x388",
+        "size": 24,
+        "perm": 0
+      },
+      {
+        "name": ".got",
+        "start": "0x388",
+        "end": "0x3a4",
+        "size": 28,
+        "perm": 4
+      }
+    ],
+    "preprocess_source": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\system.o.preprocessed.json"
+  },
+  "routes": [
+    {
+      "route": "/bin/sh",
+      "route_type": "string_literal",
+      "source": "preprocessed_string",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\system.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "string_classifier",
+          "confidence": "high",
+          "address": "0x360",
+          "snippet": "/bin/sh"
+        }
+      ]
+    }
+  ],
+  "handlers": [
+    {
+      "name": "handler",
+      "addr": "0x0",
+      "size": 808,
+      "source": "function_name",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\system.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "handler_name",
+          "confidence": "medium",
+          "function": "handler",
+          "function_addr": "0x0",
+          "address": "0x0",
+          "snippet": "handler"
+        }
+      ]
+    }
+  ],
+  "route_mappings": [
+    {
+      "route": "/bin/sh",
+      "handler": "handler",
+      "handler_addr": "0x0",
+      "source": "string_xref",
+      "confidence": "high",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\system.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "string_xref",
+          "confidence": "high",
+          "function": "handler",
+          "function_addr": "0x0",
+          "address": "0x2d8",
+          "snippet": "addiu   $a0, %lo(aBinSh) # \"/bin/sh\""
+        }
+      ]
+    }
+  ],
+  "params": [],
+  "constraints": [
+    {
+      "kind": "numeric_boundary",
+      "target": "pid_1",
+      "value": "0",
+      "function": "handler",
+      "function_addr": "0x0",
+      "source": "function_text",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\system.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "constraint",
+          "confidence": "medium",
+          "function": "handler",
+          "function_addr": "0x0",
+          "address": "0x0",
+          "snippet": "if ( pid_1 < 0 )"
+        }
+      ],
+      "operator": "<"
+    }
+  ],
+  "config_accesses": [],
+  "sinks": [],
+  "response_strings": [],
+  "auth_hints": [],
+  "state_hints": [],
+  "strings": [
+    {
+      "value": "/bin/sh",
+      "addr": "0x360",
+      "categories": [
+        "route"
+      ],
+      "xref_count": 1,
+      "xrefs": [
+        {
+          "xref_addr": "0x2d8",
+          "function_addr": "0x0",
+          "function_name": "handler",
+          "snippet": "addiu   $a0, %lo(aBinSh) # \"/bin/sh\"",
+          "xref_type": 1
+        }
+      ],
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\system.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "string_classifier",
+          "confidence": "high",
+          "address": "0x360",
+          "snippet": "/bin/sh"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "handler",
+      "addr": "0x0",
+      "size": 808,
+      "caller_count": 0,
+      "callee_count": 24
+    }
+  ],
+  "xrefs": [],
+  "callgraph_edges": [
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "handler",
+      "callee_addr": "0x0",
+      "callsite": "0x38"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x54"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x78"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x9c"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "fork",
+      "callee_addr": "0x378",
+      "callsite": "0xb8"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "handler",
+      "callee_addr": "0x0",
+      "callsite": "0xd4"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "handler",
+      "callee_addr": "0x0",
+      "callsite": "0xe0"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0xf4"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x114"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "wait4",
+      "callee_addr": "0x37c",
+      "callsite": "0x144"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "handler",
+      "callee_addr": "0x0",
+      "callsite": "0x164"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x178"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x198"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x1b8"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "handler",
+      "callee_addr": "0x0",
+      "callsite": "0x1f8"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x210"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x230"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x250"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "handler",
+      "callee_addr": "0x0",
+      "callsite": "0x264"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x27c"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x29c"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "signal",
+      "callee_addr": "0x374",
+      "callsite": "0x2bc"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "execl",
+      "callee_addr": "0x380",
+      "callsite": "0x304"
+    },
+    {
+      "caller": "handler",
+      "caller_addr": "0x0",
+      "callee": "_exit",
+      "callee_addr": "0x384",
+      "callsite": "0x320"
+    }
+  ],
+  "analysis_warnings": [
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x374",
+      "function_name": "signal",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x378",
+      "function_name": "fork",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x37c",
+      "function_name": "wait4",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x380",
+      "function_name": "execl",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x384",
+      "function_name": "_exit",
+      "message": "decompile_returned_none"
+    }
+  ],
+  "summary": {
+    "route_count": 1,
+    "handler_count": 1,
+    "route_mapping_count": 1,
+    "param_count": 0,
+    "constraint_count": 1,
+    "config_access_count": 0,
+    "sink_count": 0,
+    "response_string_count": 0,
+    "interesting_string_count": 1,
+    "candidate_function_count": 1,
+    "hint_categories": {
+      "auth": 0,
+      "state": 0,
+      "response": 0
+    }
+  },
+  "pseudo_snippets": []
+}

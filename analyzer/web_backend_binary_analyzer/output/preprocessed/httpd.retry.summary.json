@@ -1,0 +1,25 @@
+{
+  "total": 1,
+  "ok": 0,
+  "non_ok": 1,
+  "results": [
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\httpd",
+      "relative_path": "httpd",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\httpd.preprocessed.json",
+      "log_path": "analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\httpd.ida.log",
+      "status": "failed",
+      "elapsed_seconds": 3.59,
+      "returncode": 2,
+      "message": "Retried with a fresh IDA database after access-denied on existing IDB, but IDA still exited with return code 2.",
+      "command": [
+        "C:\\Users\\admin\\Desktop\\IDA Professional_9.1\\idat.exe",
+        "-A",
+        "-LG:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\httpd.ida.log",
+        "-S\"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\export_full_context.py\" --output \"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\httpd.preprocessed.json\" --min-string-len 4 --include-pseudocode --include-disassembly",
+        "-c",
+        "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\httpd"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,92 @@
+{
+  "total": 5,
+  "ok": 3,
+  "non_ok": 2,
+  "results": [
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\httpd",
+      "relative_path": "httpd",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\httpd.preprocessed.json",
+      "log_path": "analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\httpd.ida.log",
+      "status": "failed",
+      "elapsed_seconds": 2.156,
+      "returncode": 4,
+      "message": "IDA exited with return code 4",
+      "command": [
+        "C:\\Users\\admin\\Desktop\\IDA Professional_9.1\\idat.exe",
+        "-A",
+        "-LG:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\httpd.ida.log",
+        "-S\"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\export_full_context.py\" --output \"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\httpd.preprocessed.json\" --min-string-len 4 --include-pseudocode --include-disassembly",
+        "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\httpd"
+      ]
+    },
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\login.o",
+      "relative_path": "login.o",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\login.o.preprocessed.json",
+      "log_path": "analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\login.o.ida.log",
+      "status": "ok",
+      "elapsed_seconds": 2.585,
+      "returncode": 0,
+      "message": "",
+      "command": [
+        "C:\\Users\\admin\\Desktop\\IDA Professional_9.1\\idat.exe",
+        "-A",
+        "-LG:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\login.o.ida.log",
+        "-S\"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\export_full_context.py\" --output \"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\login.o.preprocessed.json\" --min-string-len 4 --include-pseudocode --include-disassembly",
+        "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\login.o"
+      ]
+    },
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\popen.o",
+      "relative_path": "popen.o",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\popen.o.preprocessed.json",
+      "log_path": "analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\popen.o.ida.log",
+      "status": "ok",
+      "elapsed_seconds": 2.563,
+      "returncode": 0,
+      "message": "",
+      "command": [
+        "C:\\Users\\admin\\Desktop\\IDA Professional_9.1\\idat.exe",
+        "-A",
+        "-LG:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\popen.o.ida.log",
+        "-S\"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\export_full_context.py\" --output \"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\popen.o.preprocessed.json\" --min-string-len 4 --include-pseudocode --include-disassembly",
+        "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\popen.o"
+      ]
+    },
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\system.o",
+      "relative_path": "system.o",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\system.o.preprocessed.json",
+      "log_path": "analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\system.o.ida.log",
+      "status": "ok",
+      "elapsed_seconds": 2.731,
+      "returncode": 0,
+      "message": "",
+      "command": [
+        "C:\\Users\\admin\\Desktop\\IDA Professional_9.1\\idat.exe",
+        "-A",
+        "-LG:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\system.o.ida.log",
+        "-S\"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\export_full_context.py\" --output \"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\system.o.preprocessed.json\" --min-string-len 4 --include-pseudocode --include-disassembly",
+        "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\system.o"
+      ]
+    },
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\upnp",
+      "relative_path": "upnp",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\upnp.preprocessed.json",
+      "log_path": "analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\upnp.ida.log",
+      "status": "failed",
+      "elapsed_seconds": 1.665,
+      "returncode": 4,
+      "message": "IDA exited with return code 4",
+      "command": [
+        "C:\\Users\\admin\\Desktop\\IDA Professional_9.1\\idat.exe",
+        "-A",
+        "-LG:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\upnp.ida.log",
+        "-S\"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\export_full_context.py\" --output \"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\upnp.preprocessed.json\" --min-string-len 4 --include-pseudocode --include-disassembly",
+        "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\upnp"
+      ]
+    }
+  ]
+}

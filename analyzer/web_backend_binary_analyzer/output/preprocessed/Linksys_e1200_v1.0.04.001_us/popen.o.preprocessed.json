@@ -1,0 +1,2603 @@
+{
+  "version": "1.0",
+  "artifact_type": "web_backend_binary_preprocessed",
+  "input_type": "unreadable_web_backend_binary",
+  "binary": {
+    "source_file": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\popen.o",
+    "idb_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\popen.o",
+    "sha256": "1464b4c4485a468954bda70c139503b2afd5785deb310668c739c20cdf8e6933",
+    "size": 2460,
+    "format": "ELF for MIPS (Relocatable)",
+    "arch": "mipsl",
+    "bits": 32,
+    "endian": "little",
+    "entry": "0xffffffffffffffff",
+    "segments": [
+      {
+        "name": ".text",
+        "start": "0x0",
+        "end": "0x380",
+        "size": 896,
+        "perm": 5
+      },
+      {
+        "name": ".data",
+        "start": "0x380",
+        "end": "0x381",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": ".bss",
+        "start": "0x390",
+        "end": "0x391",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": ".rodata",
+        "start": "0x3a0",
+        "end": "0x3b0",
+        "size": 16,
+        "perm": 4
+      },
+      {
+        "name": "extern",
+        "start": "0x3b0",
+        "end": "0x3dc",
+        "size": 44,
+        "perm": 0
+      },
+      {
+        "name": ".got",
+        "start": "0x3dc",
+        "end": "0x40c",
+        "size": 48,
+        "perm": 4
+      }
+    ]
+  },
+  "imports": [],
+  "exports": [
+    {
+      "index": 0,
+      "ordinal": 0,
+      "addr": "0x0",
+      "name": "popen"
+    },
+    {
+      "index": 1,
+      "ordinal": 724,
+      "addr": "0x2d4",
+      "name": "pclose"
+    }
+  ],
+  "names": [
+    {
+      "addr": "0x0",
+      "name": "popen"
+    },
+    {
+      "addr": "0x2d4",
+      "name": "pclose"
+    },
+    {
+      "addr": "0x3a0",
+      "name": "aBinSh"
+    },
+    {
+      "addr": "0x3a8",
+      "name": "aSh"
+    },
+    {
+      "addr": "0x3ac",
+      "name": "aC"
+    },
+    {
+      "addr": "0x3b0",
+      "name": "_gp_disp"
+    },
+    {
+      "addr": "0x3b4",
+      "name": "__errno_location"
+    },
+    {
+      "addr": "0x3b8",
+      "name": "pipe"
+    },
+    {
+      "addr": "0x3bc",
+      "name": "fdopen"
+    },
+    {
+      "addr": "0x3c0",
+      "name": "fork"
+    },
+    {
+      "addr": "0x3c4",
+      "name": "close"
+    },
+    {
+      "addr": "0x3c8",
+      "name": "fclose"
+    },
+    {
+      "addr": "0x3cc",
+      "name": "dup2"
+    },
+    {
+      "addr": "0x3d0",
+      "name": "execl"
+    },
+    {
+      "addr": "0x3d4",
+      "name": "_exit"
+    },
+    {
+      "addr": "0x3d8",
+      "name": "wait"
+    },
+    {
+      "addr": "0x3dc",
+      "name": "_GLOBAL_OFFSET_TABLE_"
+    },
+    {
+      "addr": "0x3e0",
+      "name": "__errno_location_ptr"
+    },
+    {
+      "addr": "0x3e4",
+      "name": "pipe_ptr"
+    },
+    {
+      "addr": "0x3e8",
+      "name": "fdopen_ptr"
+    },
+    {
+      "addr": "0x3ec",
+      "name": "fork_ptr"
+    },
+    {
+      "addr": "0x3f0",
+      "name": "close_ptr"
+    },
+    {
+      "addr": "0x3f4",
+      "name": "fclose_ptr"
+    },
+    {
+      "addr": "0x3f8",
+      "name": "dup2_ptr"
+    },
+    {
+      "addr": "0x400",
+      "name": "execl_ptr"
+    },
+    {
+      "addr": "0x404",
+      "name": "_exit_ptr"
+    },
+    {
+      "addr": "0x408",
+      "name": "wait_ptr"
+    }
+  ],
+  "strings": [
+    {
+      "addr": "0x3a0",
+      "length": 7,
+      "type": 0,
+      "value": "/bin/sh",
+      "xrefs": [
+        {
+          "xref_addr": "0x238",
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "snippet": "addiu   $a0, %lo(aBinSh) # \"/bin/sh\"",
+          "xref_type": 1
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "addr": "0x0",
+      "name": "popen",
+      "start_ea": "0x0",
+      "end_ea": "0x2d0",
+      "size": 720,
+      "prototype": "FILE *__fastcall(int, const char *modes)",
+      "flags": 4096,
+      "segment": ".text",
+      "callers": [],
+      "callees": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x44",
+          "snippet": "bnez    $s4, loc_B0"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x54",
+          "snippet": "beq     $v1, $v0, loc_B0"
+        },
+        {
+          "function_addr": "0x3b4",
+          "function_name": "__errno_location",
+          "callsite": "0x68",
+          "snippet": "jalr    $t9  # __errno_location"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0xbc",
+          "snippet": "bnez    $v0, loc_60"
+        },
+        {
+          "function_addr": "0x3b8",
+          "function_name": "pipe",
+          "callsite": "0xd0",
+          "snippet": "jalr    $t9  # pipe"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0xe0",
+          "snippet": "bnez    $v0, loc_84"
+        },
+        {
+          "function_addr": "0x3bc",
+          "function_name": "fdopen",
+          "callsite": "0x120",
+          "snippet": "jalr    $t9  # fdopen"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x130",
+          "snippet": "beqz    $v0, loc_290"
+        },
+        {
+          "function_addr": "0x3c0",
+          "function_name": "fork",
+          "callsite": "0x144",
+          "snippet": "jalr    $t9  # fork"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x154",
+          "snippet": "beqz    $v0, loc_1B0"
+        },
+        {
+          "function_addr": "0x3c4",
+          "function_name": "close",
+          "callsite": "0x16c",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x17c",
+          "snippet": "bgtz    $s2, loc_84"
+        },
+        {
+          "function_addr": "0x3c8",
+          "function_name": "fclose",
+          "callsite": "0x194",
+          "snippet": "jalr    $t9  # fclose"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x1a4",
+          "snippet": "b       loc_84"
+        },
+        {
+          "function_addr": "0x3c4",
+          "function_name": "close",
+          "callsite": "0x1bc",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x1cc",
+          "snippet": "beq     $s1, $s4, loc_230"
+        },
+        {
+          "function_addr": "0x3c4",
+          "function_name": "close",
+          "callsite": "0x1e0",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x3cc",
+          "function_name": "dup2",
+          "callsite": "0x200",
+          "snippet": "jalr    $t9  # dup2"
+        },
+        {
+          "function_addr": "0x3c4",
+          "function_name": "close",
+          "callsite": "0x21c",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x3d0",
+          "function_name": "execl",
+          "callsite": "0x264",
+          "snippet": "jalr    $t9  # execl"
+        },
+        {
+          "function_addr": "0x3d4",
+          "function_name": "_exit",
+          "callsite": "0x280",
+          "snippet": "jalr    $t9  # _exit"
+        },
+        {
+          "function_addr": "0x3c4",
+          "function_name": "close",
+          "callsite": "0x29c",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x3c4",
+          "function_name": "close",
+          "callsite": "0x2b8",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x2c8",
+          "snippet": "b       loc_84"
+        }
+      ],
+      "string_refs": [
+        {
+          "string_addr": "0x3a0",
+          "xref_addr": "0x238",
+          "snippet": "addiu   $a0, %lo(aBinSh) # \"/bin/sh\""
+        }
+      ],
+      "import_refs": [],
+      "data_refs": [
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x0",
+          "snippet": "li      $gp, (_GLOBAL_OFFSET_TABLE_+0x7FF0)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x60",
+          "snippet": "lw      $t9, (__errno_location_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3e0",
+          "target_name": "__errno_location_ptr",
+          "xref_addr": "0x60",
+          "snippet": "lw      $t9, (__errno_location_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0xc8",
+          "snippet": "lw      $t9, (pipe_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3e4",
+          "target_name": "pipe_ptr",
+          "xref_addr": "0xc8",
+          "snippet": "lw      $t9, (pipe_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x118",
+          "snippet": "lw      $t9, (fdopen_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3e8",
+          "target_name": "fdopen_ptr",
+          "xref_addr": "0x118",
+          "snippet": "lw      $t9, (fdopen_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x13c",
+          "snippet": "lw      $t9, (fork_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3ec",
+          "target_name": "fork_ptr",
+          "xref_addr": "0x13c",
+          "snippet": "lw      $t9, (fork_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x164",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3f0",
+          "target_name": "close_ptr",
+          "xref_addr": "0x164",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x18c",
+          "snippet": "lw      $t9, (fclose_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3f4",
+          "target_name": "fclose_ptr",
+          "xref_addr": "0x18c",
+          "snippet": "lw      $t9, (fclose_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x1b4",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3f0",
+          "target_name": "close_ptr",
+          "xref_addr": "0x1b4",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x1d8",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3f0",
+          "target_name": "close_ptr",
+          "xref_addr": "0x1d8",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x1f8",
+          "snippet": "lw      $t9, (dup2_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3f8",
+          "target_name": "dup2_ptr",
+          "xref_addr": "0x1f8",
+          "snippet": "lw      $t9, (dup2_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x214",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3f0",
+          "target_name": "close_ptr",
+          "xref_addr": "0x214",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x230",
+          "snippet": "lw      $a0, (off_3FC-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3fc",
+          "target_name": "off_3FC",
+          "xref_addr": "0x230",
+          "snippet": "lw      $a0, (off_3FC-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x23c",
+          "snippet": "lw      $a1, (off_3FC-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3fc",
+          "target_name": "off_3FC",
+          "xref_addr": "0x23c",
+          "snippet": "lw      $a1, (off_3FC-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3a8",
+          "target_name": "aSh",
+          "xref_addr": "0x244",
+          "snippet": "addiu   $a1, %lo(aSh) # \"sh\""
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x248",
+          "snippet": "lw      $a2, (off_3FC-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3fc",
+          "target_name": "off_3FC",
+          "xref_addr": "0x248",
+          "snippet": "lw      $a2, (off_3FC-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3ac",
+          "target_name": "aC",
+          "xref_addr": "0x250",
+          "snippet": "addiu   $a2, %lo(aC) # \"-c\""
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x25c",
+          "snippet": "lw      $t9, (execl_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x400",
+          "target_name": "execl_ptr",
+          "xref_addr": "0x25c",
+          "snippet": "lw      $t9, (execl_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x278",
+          "snippet": "lw      $t9, (_exit_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x404",
+          "target_name": "_exit_ptr",
+          "xref_addr": "0x278",
+          "snippet": "lw      $t9, (_exit_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x294",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3f0",
+          "target_name": "close_ptr",
+          "xref_addr": "0x294",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x2b0",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3f0",
+          "target_name": "close_ptr",
+          "xref_addr": "0x2b0",
+          "snippet": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        }
+      ],
+      "disassembly": [
+        {
+          "addr": "0x0",
+          "size": 8,
+          "bytes": "01001c3ccc839c27",
+          "text": "li      $gp, (_GLOBAL_OFFSET_TABLE_+0x7FF0)"
+        },
+        {
+          "addr": "0x8",
+          "size": 4,
+          "bytes": "21e09903",
+          "text": "addu    $gp, $t9"
+        },
+        {
+          "addr": "0xc",
+          "size": 4,
+          "bytes": "b8ffbd27",
+          "text": "addiu   $sp, -0x48"
+        },
+        {
+          "addr": "0x10",
+          "size": 4,
+          "bytes": "1800bcaf",
+          "text": "sw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x14",
+          "size": 4,
+          "bytes": "3c00b5af",
+          "text": "sw      $s5, 0x44+var_8($sp)"
+        },
+        {
+          "addr": "0x18",
+          "size": 4,
+          "bytes": "3800b4af",
+          "text": "sw      $s4, 0x44+var_C($sp)"
+        },
+        {
+          "addr": "0x1c",
+          "size": 4,
+          "bytes": "2800b0af",
+          "text": "sw      $s0, 0x44+var_1C($sp)"
+        },
+        {
+          "addr": "0x20",
+          "size": 4,
+          "bytes": "4400bfaf",
+          "text": "sw      $ra, 0x44+var_s0($sp)"
+        },
+        {
+          "addr": "0x24",
+          "size": 4,
+          "bytes": "4000bcaf",
+          "text": "sw      $gp, 0x44+var_4($sp)"
+        },
+        {
+          "addr": "0x28",
+          "size": 4,
+          "bytes": "3400b3af",
+          "text": "sw      $s3, 0x44+var_10($sp)"
+        },
+        {
+          "addr": "0x2c",
+          "size": 4,
+          "bytes": "3000b2af",
+          "text": "sw      $s2, 0x44+var_14($sp)"
+        },
+        {
+          "addr": "0x30",
+          "size": 4,
+          "bytes": "2c00b1af",
+          "text": "sw      $s1, 0x44+var_18($sp)"
+        },
+        {
+          "addr": "0x34",
+          "size": 4,
+          "bytes": "0000a380",
+          "text": "lb      $v1, 0($a1)"
+        },
+        {
+          "addr": "0x38",
+          "size": 4,
+          "bytes": "2180a000",
+          "text": "move    $s0, $a1"
+        },
+        {
+          "addr": "0x3c",
+          "size": 4,
+          "bytes": "72006238",
+          "text": "xori    $v0, $v1, 0x72"
+        },
+        {
+          "addr": "0x40",
+          "size": 4,
+          "bytes": "0100542c",
+          "text": "sltiu   $s4, $v0, 1"
+        },
+        {
+          "addr": "0x44",
+          "size": 4,
+          "bytes": "1a008016",
+          "text": "bnez    $s4, loc_B0"
+        },
+        {
+          "addr": "0x48",
+          "size": 4,
+          "bytes": "21a88000",
+          "text": "move    $s5, $a0"
+        },
+        {
+          "addr": "0x4c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x50",
+          "size": 4,
+          "bytes": "77000224",
+          "text": "li      $v0, 0x77  # 'w'"
+        },
+        {
+          "addr": "0x54",
+          "size": 4,
+          "bytes": "16006210",
+          "text": "beq     $v1, $v0, loc_B0"
+        },
+        {
+          "addr": "0x58",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x5c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x60",
+          "size": 4,
+          "bytes": "1480998f",
+          "text": "lw      $t9, (__errno_location_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x64",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x68",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # __errno_location"
+        },
+        {
+          "addr": "0x6c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x70",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x74",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x78",
+          "size": 4,
+          "bytes": "16000324",
+          "text": "li      $v1, 0x16"
+        },
+        {
+          "addr": "0x7c",
+          "size": 4,
+          "bytes": "000043ac",
+          "text": "sw      $v1, 0($v0)"
+        },
+        {
+          "addr": "0x80",
+          "size": 4,
+          "bytes": "21100000",
+          "text": "move    $v0, $zero"
+        },
+        {
+          "addr": "0x84",
+          "size": 4,
+          "bytes": "4400bf8f",
+          "text": "lw      $ra, 0x44+var_s0($sp)"
+        },
+        {
+          "addr": "0x88",
+          "size": 4,
+          "bytes": "3c00b58f",
+          "text": "lw      $s5, 0x44+var_8($sp)"
+        },
+        {
+          "addr": "0x8c",
+          "size": 4,
+          "bytes": "3800b48f",
+          "text": "lw      $s4, 0x44+var_C($sp)"
+        },
+        {
+          "addr": "0x90",
+          "size": 4,
+          "bytes": "3400b38f",
+          "text": "lw      $s3, 0x44+var_10($sp)"
+        },
+        {
+          "addr": "0x94",
+          "size": 4,
+          "bytes": "3000b28f",
+          "text": "lw      $s2, 0x44+var_14($sp)"
+        },
+        {
+          "addr": "0x98",
+          "size": 4,
+          "bytes": "2c00b18f",
+          "text": "lw      $s1, 0x44+var_18($sp)"
+        },
+        {
+          "addr": "0x9c",
+          "size": 4,
+          "bytes": "2800b08f",
+          "text": "lw      $s0, 0x44+var_1C($sp)"
+        },
+        {
+          "addr": "0xa0",
+          "size": 4,
+          "bytes": "4800bd27",
+          "text": "addiu   $sp, 0x48"
+        },
+        {
+          "addr": "0xa4",
+          "size": 4,
+          "bytes": "0800e003",
+          "text": "jr      $ra"
+        },
+        {
+          "addr": "0xa8",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0xb0",
+          "size": 4,
+          "bytes": "01000282",
+          "text": "lb      $v0, 1($s0)"
+        },
+        {
+          "addr": "0xb4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0xb8",
+          "size": 4,
+          "bytes": "2000a427",
+          "text": "addiu   $a0, $sp, 0x44+pipedes # pipedes"
+        },
+        {
+          "addr": "0xbc",
+          "size": 4,
+          "bytes": "e8ff4014",
+          "text": "bnez    $v0, loc_60"
+        },
+        {
+          "addr": "0xc0",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0xc4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0xc8",
+          "size": 4,
+          "bytes": "1880998f",
+          "text": "lw      $t9, (pipe_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0xcc",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0xd0",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # pipe"
+        },
+        {
+          "addr": "0xd4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0xd8",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0xdc",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0xe0",
+          "size": 4,
+          "bytes": "e8ff4014",
+          "text": "bnez    $v0, loc_84"
+        },
+        {
+          "addr": "0xe4",
+          "size": 4,
+          "bytes": "21100000",
+          "text": "move    $v0, $zero"
+        },
+        {
+          "addr": "0xe8",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0xec",
+          "size": 4,
+          "bytes": "01000224",
+          "text": "li      $v0, 1"
+        },
+        {
+          "addr": "0xf0",
+          "size": 4,
+          "bytes": "23105400",
+          "text": "subu    $v0, $s4"
+        },
+        {
+          "addr": "0xf4",
+          "size": 4,
+          "bytes": "2000a327",
+          "text": "addiu   $v1, $sp, 0x44+pipedes"
+        },
+        {
+          "addr": "0xf8",
+          "size": 4,
+          "bytes": "80100200",
+          "text": "sll     $v0, 2"
+        },
+        {
+          "addr": "0xfc",
+          "size": 4,
+          "bytes": "21104300",
+          "text": "addu    $v0, $v1"
+        },
+        {
+          "addr": "0x100",
+          "size": 4,
+          "bytes": "0000538c",
+          "text": "lw      $s3, 0($v0)"
+        },
+        {
+          "addr": "0x104",
+          "size": 4,
+          "bytes": "80101400",
+          "text": "sll     $v0, $s4, 2"
+        },
+        {
+          "addr": "0x108",
+          "size": 4,
+          "bytes": "21104300",
+          "text": "addu    $v0, $v1"
+        },
+        {
+          "addr": "0x10c",
+          "size": 4,
+          "bytes": "21280002",
+          "text": "move    $a1, $s0 # modes"
+        },
+        {
+          "addr": "0x110",
+          "size": 4,
+          "bytes": "21206002",
+          "text": "move    $a0, $s3 # fd"
+        },
+        {
+          "addr": "0x114",
+          "size": 4,
+          "bytes": "0000518c",
+          "text": "lw      $s1, 0($v0)"
+        },
+        {
+          "addr": "0x118",
+          "size": 4,
+          "bytes": "1c80998f",
+          "text": "lw      $t9, (fdopen_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x11c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x120",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # fdopen"
+        },
+        {
+          "addr": "0x124",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x128",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x12c",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x130",
+          "size": 4,
+          "bytes": "57004010",
+          "text": "beqz    $v0, loc_290"
+        },
+        {
+          "addr": "0x134",
+          "size": 4,
+          "bytes": "21804000",
+          "text": "move    $s0, $v0"
+        },
+        {
+          "addr": "0x138",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x13c",
+          "size": 4,
+          "bytes": "2080998f",
+          "text": "lw      $t9, (fork_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x140",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x144",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # fork"
+        },
+        {
+          "addr": "0x148",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x14c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x150",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x154",
+          "size": 4,
+          "bytes": "16004010",
+          "text": "beqz    $v0, loc_1B0"
+        },
+        {
+          "addr": "0x158",
+          "size": 4,
+          "bytes": "21904000",
+          "text": "move    $s2, $v0"
+        },
+        {
+          "addr": "0x15c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x160",
+          "size": 4,
+          "bytes": "21202002",
+          "text": "move    $a0, $s1 # fd"
+        },
+        {
+          "addr": "0x164",
+          "size": 4,
+          "bytes": "2480998f",
+          "text": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x168",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x16c",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # close"
+        },
+        {
+          "addr": "0x170",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x174",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x178",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x17c",
+          "size": 4,
+          "bytes": "c1ff401e",
+          "text": "bgtz    $s2, loc_84"
+        },
+        {
+          "addr": "0x180",
+          "size": 4,
+          "bytes": "21100002",
+          "text": "move    $v0, $s0"
+        },
+        {
+          "addr": "0x184",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x188",
+          "size": 4,
+          "bytes": "21200002",
+          "text": "move    $a0, $s0 # stream"
+        },
+        {
+          "addr": "0x18c",
+          "size": 4,
+          "bytes": "2880998f",
+          "text": "lw      $t9, (fclose_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x190",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x194",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # fclose"
+        },
+        {
+          "addr": "0x198",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x19c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x1a0",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x1a4",
+          "size": 4,
+          "bytes": "b7ff0010",
+          "text": "b       loc_84"
+        },
+        {
+          "addr": "0x1a8",
+          "size": 4,
+          "bytes": "21100000",
+          "text": "move    $v0, $zero"
+        },
+        {
+          "addr": "0x1b0",
+          "size": 4,
+          "bytes": "21206002",
+          "text": "move    $a0, $s3 # fd"
+        },
+        {
+          "addr": "0x1b4",
+          "size": 4,
+          "bytes": "2480998f",
+          "text": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x1b8",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x1bc",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # close"
+        },
+        {
+          "addr": "0x1c0",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x1c4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x1c8",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x1cc",
+          "size": 4,
+          "bytes": "18003412",
+          "text": "beq     $s1, $s4, loc_230"
+        },
+        {
+          "addr": "0x1d0",
+          "size": 4,
+          "bytes": "21208002",
+          "text": "move    $a0, $s4 # fd"
+        },
+        {
+          "addr": "0x1d4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x1d8",
+          "size": 4,
+          "bytes": "2480998f",
+          "text": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x1dc",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x1e0",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # close"
+        },
+        {
+          "addr": "0x1e4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x1e8",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x1ec",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x1f0",
+          "size": 4,
+          "bytes": "21202002",
+          "text": "move    $a0, $s1 # fd"
+        },
+        {
+          "addr": "0x1f4",
+          "size": 4,
+          "bytes": "21288002",
+          "text": "move    $a1, $s4 # fd2"
+        },
+        {
+          "addr": "0x1f8",
+          "size": 4,
+          "bytes": "2c80998f",
+          "text": "lw      $t9, (dup2_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x1fc",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x200",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # dup2"
+        },
+        {
+          "addr": "0x204",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x208",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x20c",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x210",
+          "size": 4,
+          "bytes": "21202002",
+          "text": "move    $a0, $s1 # fd"
+        },
+        {
+          "addr": "0x214",
+          "size": 4,
+          "bytes": "2480998f",
+          "text": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x218",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x21c",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # close"
+        },
+        {
+          "addr": "0x220",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x224",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x228",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x22c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x230",
+          "size": 4,
+          "bytes": "3080848f",
+          "text": "lw      $a0, (off_3FC-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x234",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x238",
+          "size": 4,
+          "bytes": "a0038424",
+          "text": "addiu   $a0, %lo(aBinSh) # \"/bin/sh\""
+        },
+        {
+          "addr": "0x23c",
+          "size": 4,
+          "bytes": "3080858f",
+          "text": "lw      $a1, (off_3FC-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x240",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x244",
+          "size": 4,
+          "bytes": "a803a524",
+          "text": "addiu   $a1, %lo(aSh) # \"sh\""
+        },
+        {
+          "addr": "0x248",
+          "size": 4,
+          "bytes": "3080868f",
+          "text": "lw      $a2, (off_3FC-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x24c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x250",
+          "size": 4,
+          "bytes": "ac03c624",
+          "text": "addiu   $a2, %lo(aC) # \"-c\""
+        },
+        {
+          "addr": "0x254",
+          "size": 4,
+          "bytes": "2138a002",
+          "text": "move    $a3, $s5"
+        },
+        {
+          "addr": "0x258",
+          "size": 4,
+          "bytes": "1000a0af",
+          "text": "sw      $zero, 0x44+var_34($sp)"
+        },
+        {
+          "addr": "0x25c",
+          "size": 4,
+          "bytes": "3480998f",
+          "text": "lw      $t9, (execl_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x260",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x264",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # execl"
+        },
+        {
+          "addr": "0x268",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x26c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x270",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x274",
+          "size": 4,
+          "bytes": "ff000424",
+          "text": "li      $a0, 0xFF # status"
+        },
+        {
+          "addr": "0x278",
+          "size": 4,
+          "bytes": "3880998f",
+          "text": "lw      $t9, (_exit_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x27c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x280",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # _exit"
+        },
+        {
+          "addr": "0x284",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x28c",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x290",
+          "size": 4,
+          "bytes": "21202002",
+          "text": "move    $a0, $s1 # fd"
+        },
+        {
+          "addr": "0x294",
+          "size": 4,
+          "bytes": "2480998f",
+          "text": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x298",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x29c",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # close"
+        },
+        {
+          "addr": "0x2a0",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x2a4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x2a8",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x2ac",
+          "size": 4,
+          "bytes": "21206002",
+          "text": "move    $a0, $s3 # fd"
+        },
+        {
+          "addr": "0x2b0",
+          "size": 4,
+          "bytes": "2480998f",
+          "text": "lw      $t9, (close_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x2b4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x2b8",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # close"
+        },
+        {
+          "addr": "0x2bc",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x2c0",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x2c4",
+          "size": 4,
+          "bytes": "1800bc8f",
+          "text": "lw      $gp, 0x44+var_2C($sp)"
+        },
+        {
+          "addr": "0x2c8",
+          "size": 4,
+          "bytes": "6eff0010",
+          "text": "b       loc_84"
+        },
+        {
+          "addr": "0x2cc",
+          "size": 4,
+          "bytes": "21100000",
+          "text": "move    $v0, $zero"
+        }
+      ],
+      "pseudocode": "FILE *__fastcall popen(int a1, const char *modes)\n{\n  int v2; // $t9\n  int v3; // $gp\n  int n0x72; // $v1\n  int fd_1; // $s4\n  FILE *stream_1; // $v0\n  bool v9; // dc\n  int fd; // $s3\n  int fd_2; // $s1\n  FILE *stream; // $s0\n  int v13; // $s2\n  int v14; // $gp\n  int v15; // [sp+18h] [-2Ch]\n  int pipedes[2]; // [sp+20h] [-24h] BYREF\n  int v17; // [sp+40h] [-4h]\n\n  v3 = 0x83CC + v2;\n  v15 = 0x83CC + v2;\n  v17 = 0x83CC + v2;\n  n0x72 = *modes;\n  fd_1 = n0x72 == 0x72;\n  if ( (n0x72 == 114 || n0x72 == 119) && !modes[1] )\n  {\n    v9 = (*(int (__fastcall **)(int[2]))(v3 + 0xFFFF83F4 - 988))(pipedes) != 0;\n    stream_1 = 0;\n    if ( !v9 )\n    {\n      fd = pipedes[1 - fd_1];\n      fd_2 = pipedes[fd_1];\n      stream = (*(FILE *(__fastcall **)(int, const char *))(v15 + 0xFFFF83F8 - 988))(fd, modes);\n      if ( stream )\n      {\n        v13 = (*(__pid_t (**)(void))(v15 + 0xFFFF83FC - 988))();\n        if ( !v13 )\n        {\n          (*(void (__fastcall **)(int))(v15 + 0xFFFF8400 - 988))(fd);\n          v14 = v15;\n          if ( fd_2 != fd_1 )\n          {\n            (*(void (__fastcall **)(int))(v15 + 0xFFFF8400 - 988))(fd_1);\n            (*(void (__fastcall **)(int, int))(v15 + 0xFFFF8408 - 988))(fd_2, fd_1);\n            (*(void (__fastcall **)(int))(v15 + 0xFFFF8400 - 988))(fd_2);\n            v14 = v15;\n          }\n          (*(void (**)(const char *, const char *, ...))(v14 + 0xFFFF8410 - 988))(\n            (const char *)(*(_DWORD *)(v14 + 0xFFFF840C - 988) + (__int16)\"/bin/sh\"),\n            (const char *)(*(_DWORD *)(v14 + 0xFFFF840C - 988) + (__int16)\"sh\"),\n            *(_DWORD *)(v14 + 0xFFFF840C - 988) + (__int16)\"-c\",\n            a1,\n            0);\n          (*(void (__fastcall **)(int))(v15 + 0xFFFF8414 - 988))(255);\n        }\n        (*(void (__fastcall **)(int))(v15 + 0xFFFF8400 - 988))(fd_2);\n        stream_1 = stream;\n        if ( v13 <= 0 )\n        {\n          (*(void (__fastcall **)(FILE *))(v15 + 0xFFFF8404 - 988))(stream);\n          return 0;\n        }\n      }\n      else\n      {\n        (*(void (__fastcall **)(int))(v15 + 0xFFFF8400 - 988))(fd_2);\n        (*(void (__fastcall **)(int))(v15 + 0xFFFF8400 - 988))(fd);\n        return 0;\n      }\n    }\n  }\n  else\n  {\n    *(*(int *(**)(void))(v3 + 0xFFFF83F0 - 988))() = 22;\n    return 0;\n  }\n  return stream_1;\n}\n",
+      "decompile_error": null
+    },
+    {
+      "addr": "0x2d4",
+      "name": "pclose",
+      "start_ea": "0x2d4",
+      "end_ea": "0x374",
+      "size": 160,
+      "prototype": "int __fastcall(FILE *stream)",
+      "flags": 4096,
+      "segment": ".text",
+      "callers": [],
+      "callees": [
+        {
+          "function_addr": "0x3c8",
+          "function_name": "fclose",
+          "callsite": "0x2f8",
+          "snippet": "jalr    $t9  # fclose"
+        },
+        {
+          "function_addr": "0x2d4",
+          "function_name": "pclose",
+          "callsite": "0x30c",
+          "snippet": "beqz    $v0, loc_330"
+        },
+        {
+          "function_addr": "0x3d8",
+          "function_name": "wait",
+          "callsite": "0x344",
+          "snippet": "jalr    $t9  # wait"
+        },
+        {
+          "function_addr": "0x2d4",
+          "function_name": "pclose",
+          "callsite": "0x35c",
+          "snippet": "beq     $v0, $v1, loc_318"
+        },
+        {
+          "function_addr": "0x2d4",
+          "function_name": "pclose",
+          "callsite": "0x36c",
+          "snippet": "b       loc_318"
+        }
+      ],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x2d4",
+          "snippet": "li      $gp, (_GLOBAL_OFFSET_TABLE_+0x7FF0 - .)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x2f0",
+          "snippet": "lw      $t9, (fclose_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3f4",
+          "target_name": "fclose_ptr",
+          "xref_addr": "0x2f0",
+          "snippet": "lw      $t9, (fclose_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x3dc",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x33c",
+          "snippet": "lw      $t9, (wait_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "target_addr": "0x408",
+          "target_name": "wait_ptr",
+          "xref_addr": "0x33c",
+          "snippet": "lw      $t9, (wait_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        }
+      ],
+      "disassembly": [
+        {
+          "addr": "0x2d4",
+          "size": 8,
+          "bytes": "01001c3cf8809c27",
+          "text": "li      $gp, (_GLOBAL_OFFSET_TABLE_+0x7FF0 - .)"
+        },
+        {
+          "addr": "0x2dc",
+          "size": 4,
+          "bytes": "21e09903",
+          "text": "addu    $gp, $t9"
+        },
+        {
+          "addr": "0x2e0",
+          "size": 4,
+          "bytes": "d8ffbd27",
+          "text": "addiu   $sp, -0x28"
+        },
+        {
+          "addr": "0x2e4",
+          "size": 4,
+          "bytes": "1000bcaf",
+          "text": "sw      $gp, 0x24+var_14($sp)"
+        },
+        {
+          "addr": "0x2e8",
+          "size": 4,
+          "bytes": "2400bfaf",
+          "text": "sw      $ra, 0x24+var_s0($sp)"
+        },
+        {
+          "addr": "0x2ec",
+          "size": 4,
+          "bytes": "2000bcaf",
+          "text": "sw      $gp, 0x24+var_4($sp)"
+        },
+        {
+          "addr": "0x2f0",
+          "size": 4,
+          "bytes": "2880998f",
+          "text": "lw      $t9, (fclose_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x2f4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x2f8",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # fclose"
+        },
+        {
+          "addr": "0x2fc",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x300",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x304",
+          "size": 4,
+          "bytes": "1000bc8f",
+          "text": "lw      $gp, 0x24+var_14($sp)"
+        },
+        {
+          "addr": "0x308",
+          "size": 4,
+          "bytes": "ffff0424",
+          "text": "li      $a0, 0xFFFFFFFF"
+        },
+        {
+          "addr": "0x30c",
+          "size": 4,
+          "bytes": "08004010",
+          "text": "beqz    $v0, loc_330"
+        },
+        {
+          "addr": "0x310",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x314",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x318",
+          "size": 4,
+          "bytes": "2400bf8f",
+          "text": "lw      $ra, 0x24+var_s0($sp)"
+        },
+        {
+          "addr": "0x31c",
+          "size": 4,
+          "bytes": "21108000",
+          "text": "move    $v0, $a0"
+        },
+        {
+          "addr": "0x320",
+          "size": 4,
+          "bytes": "2800bd27",
+          "text": "addiu   $sp, 0x28"
+        },
+        {
+          "addr": "0x324",
+          "size": 4,
+          "bytes": "0800e003",
+          "text": "jr      $ra"
+        },
+        {
+          "addr": "0x328",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x330",
+          "size": 4,
+          "bytes": "1c00a227",
+          "text": "addiu   $v0, $sp, 0x24+stat_loc"
+        },
+        {
+          "addr": "0x334",
+          "size": 4,
+          "bytes": "21204000",
+          "text": "move    $a0, $v0 # stat_loc"
+        },
+        {
+          "addr": "0x338",
+          "size": 4,
+          "bytes": "1800a2af",
+          "text": "sw      $v0, 0x24+var_C($sp)"
+        },
+        {
+          "addr": "0x33c",
+          "size": 4,
+          "bytes": "3c80998f",
+          "text": "lw      $t9, (wait_ptr-0x7FF0 - _GLOBAL_OFFSET_TABLE_)($gp)"
+        },
+        {
+          "addr": "0x340",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x344",
+          "size": 4,
+          "bytes": "09f82003",
+          "text": "jalr    $t9  # wait"
+        },
+        {
+          "addr": "0x348",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x34c",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x350",
+          "size": 4,
+          "bytes": "1000bc8f",
+          "text": "lw      $gp, 0x24+var_14($sp)"
+        },
+        {
+          "addr": "0x354",
+          "size": 4,
+          "bytes": "ffff0324",
+          "text": "li      $v1, 0xFFFFFFFF"
+        },
+        {
+          "addr": "0x358",
+          "size": 4,
+          "bytes": "ffff0424",
+          "text": "li      $a0, 0xFFFFFFFF"
+        },
+        {
+          "addr": "0x35c",
+          "size": 4,
+          "bytes": "eeff4310",
+          "text": "beq     $v0, $v1, loc_318"
+        },
+        {
+          "addr": "0x360",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x364",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        },
+        {
+          "addr": "0x368",
+          "size": 4,
+          "bytes": "1c00a48f",
+          "text": "lw      $a0, 0x24+stat_loc($sp)"
+        },
+        {
+          "addr": "0x36c",
+          "size": 4,
+          "bytes": "eaff0010",
+          "text": "b       loc_318"
+        },
+        {
+          "addr": "0x370",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        }
+      ],
+      "pseudocode": "int __fastcall pclose(FILE *stream)\n{\n  int v1; // $t9\n  int v2; // $v0\n  int v3; // $a0\n  __pid_t v5; // $v0\n  int v6; // [sp+10h] [-14h]\n  _DWORD stat_loc[2]; // [sp+1Ch] [-8h] BYREF\n\n  v6 = 0x83CC - 724 + v1;\n  stat_loc[1] = v6;\n  v2 = (*(int (__fastcall **)(FILE *))(v6 + 0xFFFF8404 - 988))(stream);\n  v3 = -1;\n  if ( !v2 )\n  {\n    v5 = (*(__pid_t (__fastcall **)(void *))(v6 + 0xFFFF8418 - 988))(stat_loc);\n    v3 = -1;\n    if ( v5 != -1 )\n      return stat_loc[0];\n  }\n  return v3;\n}\n",
+      "decompile_error": null
+    },
+    {
+      "addr": "0x3b4",
+      "name": "__errno_location",
+      "start_ea": "0x3b4",
+      "end_ea": "0x3b8",
+      "size": 4,
+      "prototype": "int *(void)",
+      "flags": 4096,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x68",
+          "snippet": "jalr    $t9  # __errno_location"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3b4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern __errno_location"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    },
+    {
+      "addr": "0x3b8",
+      "name": "pipe",
+      "start_ea": "0x3b8",
+      "end_ea": "0x3bc",
+      "size": 4,
+      "prototype": "int(int pipedes[2])",
+      "flags": 4096,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0xd0",
+          "snippet": "jalr    $t9  # pipe"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3b8",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern pipe"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    },
+    {
+      "addr": "0x3bc",
+      "name": "fdopen",
+      "start_ea": "0x3bc",
+      "end_ea": "0x3c0",
+      "size": 4,
+      "prototype": "FILE *(int fd, const char *modes)",
+      "flags": 4096,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x120",
+          "snippet": "jalr    $t9  # fdopen"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3bc",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern fdopen"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    },
+    {
+      "addr": "0x3c0",
+      "name": "fork",
+      "start_ea": "0x3c0",
+      "end_ea": "0x3c4",
+      "size": 4,
+      "prototype": "__pid_t(void)",
+      "flags": 4096,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x144",
+          "snippet": "jalr    $t9  # fork"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3c0",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern fork"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    },
+    {
+      "addr": "0x3c4",
+      "name": "close",
+      "start_ea": "0x3c4",
+      "end_ea": "0x3c8",
+      "size": 4,
+      "prototype": "int(int fd)",
+      "flags": 4096,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x16c",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x1bc",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x1e0",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x21c",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x29c",
+          "snippet": "jalr    $t9  # close"
+        },
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x2b8",
+          "snippet": "jalr    $t9  # close"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3c4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern close"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    },
+    {
+      "addr": "0x3c8",
+      "name": "fclose",
+      "start_ea": "0x3c8",
+      "end_ea": "0x3cc",
+      "size": 4,
+      "prototype": "int(FILE *stream)",
+      "flags": 4096,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x194",
+          "snippet": "jalr    $t9  # fclose"
+        },
+        {
+          "function_addr": "0x2d4",
+          "function_name": "pclose",
+          "callsite": "0x2f8",
+          "snippet": "jalr    $t9  # fclose"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3c8",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern fclose"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    },
+    {
+      "addr": "0x3cc",
+      "name": "dup2",
+      "start_ea": "0x3cc",
+      "end_ea": "0x3d0",
+      "size": 4,
+      "prototype": "int(int fd, int fd2)",
+      "flags": 4096,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x200",
+          "snippet": "jalr    $t9  # dup2"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3cc",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern dup2"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    },
+    {
+      "addr": "0x3d0",
+      "name": "execl",
+      "start_ea": "0x3d0",
+      "end_ea": "0x3d4",
+      "size": 4,
+      "prototype": "int(const char *path, const char *arg, ...)",
+      "flags": 4096,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x264",
+          "snippet": "jalr    $t9  # execl"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3d0",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern execl"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    },
+    {
+      "addr": "0x3d4",
+      "name": "_exit",
+      "start_ea": "0x3d4",
+      "end_ea": "0x3d8",
+      "size": 4,
+      "prototype": "void(int status)",
+      "flags": 4097,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "callsite": "0x280",
+          "snippet": "jalr    $t9  # _exit"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3d4",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern _exit"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    },
+    {
+      "addr": "0x3d8",
+      "name": "wait",
+      "start_ea": "0x3d8",
+      "end_ea": "0x3dc",
+      "size": 4,
+      "prototype": "__pid_t(void *stat_loc)",
+      "flags": 4096,
+      "segment": "extern",
+      "callers": [
+        {
+          "function_addr": "0x2d4",
+          "function_name": "pclose",
+          "callsite": "0x344",
+          "snippet": "jalr    $t9  # wait"
+        }
+      ],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [],
+      "disassembly": [
+        {
+          "addr": "0x3d8",
+          "size": 4,
+          "bytes": "00000000",
+          "text": ".extern wait"
+        }
+      ],
+      "pseudocode": null,
+      "decompile_error": "decompile_returned_none"
+    }
+  ],
+  "callgraph_edges": [
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x44"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x54"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "__errno_location",
+      "callee_addr": "0x3b4",
+      "callsite": "0x68"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0xbc"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "pipe",
+      "callee_addr": "0x3b8",
+      "callsite": "0xd0"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0xe0"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "fdopen",
+      "callee_addr": "0x3bc",
+      "callsite": "0x120"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x130"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "fork",
+      "callee_addr": "0x3c0",
+      "callsite": "0x144"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x154"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x16c"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x17c"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "fclose",
+      "callee_addr": "0x3c8",
+      "callsite": "0x194"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x1a4"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x1bc"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x1cc"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x1e0"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "dup2",
+      "callee_addr": "0x3cc",
+      "callsite": "0x200"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x21c"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "execl",
+      "callee_addr": "0x3d0",
+      "callsite": "0x264"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "_exit",
+      "callee_addr": "0x3d4",
+      "callsite": "0x280"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x29c"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x2b8"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x2c8"
+    },
+    {
+      "caller": "pclose",
+      "caller_addr": "0x2d4",
+      "callee": "fclose",
+      "callee_addr": "0x3c8",
+      "callsite": "0x2f8"
+    },
+    {
+      "caller": "pclose",
+      "caller_addr": "0x2d4",
+      "callee": "pclose",
+      "callee_addr": "0x2d4",
+      "callsite": "0x30c"
+    },
+    {
+      "caller": "pclose",
+      "caller_addr": "0x2d4",
+      "callee": "wait",
+      "callee_addr": "0x3d8",
+      "callsite": "0x344"
+    },
+    {
+      "caller": "pclose",
+      "caller_addr": "0x2d4",
+      "callee": "pclose",
+      "callee_addr": "0x2d4",
+      "callsite": "0x35c"
+    },
+    {
+      "caller": "pclose",
+      "caller_addr": "0x2d4",
+      "callee": "pclose",
+      "callee_addr": "0x2d4",
+      "callsite": "0x36c"
+    }
+  ],
+  "analysis_warnings": [
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3b4",
+      "function_name": "__errno_location",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3b8",
+      "function_name": "pipe",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3bc",
+      "function_name": "fdopen",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3c0",
+      "function_name": "fork",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3c4",
+      "function_name": "close",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3c8",
+      "function_name": "fclose",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3cc",
+      "function_name": "dup2",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3d0",
+      "function_name": "execl",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3d4",
+      "function_name": "_exit",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3d8",
+      "function_name": "wait",
+      "message": "decompile_returned_none"
+    }
+  ],
+  "summary": {
+    "import_count": 0,
+    "export_count": 2,
+    "name_count": 27,
+    "string_count": 1,
+    "function_count": 12,
+    "callgraph_edge_count": 29
+  }
+}

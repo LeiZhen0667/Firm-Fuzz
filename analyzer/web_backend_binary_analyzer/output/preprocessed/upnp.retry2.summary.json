@@ -1,0 +1,25 @@
+{
+  "total": 1,
+  "ok": 1,
+  "non_ok": 0,
+  "results": [
+    {
+      "binary_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\upnp",
+      "relative_path": "upnp",
+      "output_path": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\upnp.preprocessed.json",
+      "log_path": "analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\upnp.ida.log",
+      "status": "ok",
+      "elapsed_seconds": 13.745,
+      "returncode": 0,
+      "message": "Retried in an isolated temporary directory after source IDB path access-denied, and preprocessing succeeded.",
+      "command": [
+        "C:\\Users\\admin\\Desktop\\IDA Professional_9.1\\idat.exe",
+        "-A",
+        "-LG:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\logs\\Linksys_e1200_v1.0.04.001_us\\upnp.ida.log",
+        "-S\"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\ida_scripts\\export_full_context.py\" --output \"G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\upnp.preprocessed.json\" --min-string-len 4 --include-pseudocode --include-disassembly",
+        "-c",
+        "C:\\Users\\admin\\AppData\\Local\\Temp\\ida_preprocess_3e3tm47_\\upnp"
+      ]
+    }
+  ]
+}

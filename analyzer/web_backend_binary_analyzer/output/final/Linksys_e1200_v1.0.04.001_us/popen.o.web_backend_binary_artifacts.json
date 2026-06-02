@@ -1,0 +1,449 @@
+{
+  "version": "1.0",
+  "artifact_type": "web_backend_binary",
+  "input_type": "unreadable_web_backend_binary",
+  "binary": {
+    "source_file": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\popen.o",
+    "idb_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\popen.o",
+    "sha256": "1464b4c4485a468954bda70c139503b2afd5785deb310668c739c20cdf8e6933",
+    "size": 2460,
+    "format": "ELF for MIPS (Relocatable)",
+    "arch": "mipsl",
+    "bits": 32,
+    "endian": "little",
+    "entry": "0xffffffffffffffff",
+    "segments": [
+      {
+        "name": ".text",
+        "start": "0x0",
+        "end": "0x380",
+        "size": 896,
+        "perm": 5
+      },
+      {
+        "name": ".data",
+        "start": "0x380",
+        "end": "0x381",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": ".bss",
+        "start": "0x390",
+        "end": "0x391",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": ".rodata",
+        "start": "0x3a0",
+        "end": "0x3b0",
+        "size": 16,
+        "perm": 4
+      },
+      {
+        "name": "extern",
+        "start": "0x3b0",
+        "end": "0x3dc",
+        "size": 44,
+        "perm": 0
+      },
+      {
+        "name": ".got",
+        "start": "0x3dc",
+        "end": "0x40c",
+        "size": 48,
+        "perm": 4
+      }
+    ],
+    "preprocess_source": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\popen.o.preprocessed.json"
+  },
+  "routes": [
+    {
+      "route": "/bin/sh",
+      "route_type": "string_literal",
+      "source": "preprocessed_string",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\popen.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "string_classifier",
+          "confidence": "high",
+          "address": "0x3a0",
+          "snippet": "/bin/sh"
+        }
+      ]
+    }
+  ],
+  "handlers": [],
+  "route_mappings": [
+    {
+      "route": "/bin/sh",
+      "handler": "popen",
+      "handler_addr": "0x0",
+      "source": "string_xref",
+      "confidence": "medium",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\popen.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "string_xref",
+          "confidence": "medium",
+          "function": "popen",
+          "function_addr": "0x0",
+          "address": "0x238",
+          "snippet": "addiu   $a0, %lo(aBinSh) # \"/bin/sh\""
+        }
+      ]
+    }
+  ],
+  "params": [],
+  "constraints": [
+    {
+      "kind": "numeric_boundary",
+      "target": "v13",
+      "value": "0",
+      "function": "popen",
+      "function_addr": "0x0",
+      "source": "function_text",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\popen.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "constraint",
+          "confidence": "medium",
+          "function": "popen",
+          "function_addr": "0x0",
+          "address": "0x0",
+          "snippet": "if ( v13 <= 0 )"
+        }
+      ],
+      "operator": "<="
+    },
+    {
+      "kind": "numeric_boundary",
+      "target": "v5",
+      "value": "-1",
+      "function": "pclose",
+      "function_addr": "0x2d4",
+      "source": "function_text",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\popen.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "constraint",
+          "confidence": "medium",
+          "function": "pclose",
+          "function_addr": "0x2d4",
+          "address": "0x2d4",
+          "snippet": "if ( v5 != -1 )"
+        }
+      ],
+      "operator": "!="
+    }
+  ],
+  "config_accesses": [],
+  "sinks": [],
+  "response_strings": [],
+  "auth_hints": [],
+  "state_hints": [],
+  "strings": [
+    {
+      "value": "/bin/sh",
+      "addr": "0x3a0",
+      "categories": [
+        "route"
+      ],
+      "xref_count": 1,
+      "xrefs": [
+        {
+          "xref_addr": "0x238",
+          "function_addr": "0x0",
+          "function_name": "popen",
+          "snippet": "addiu   $a0, %lo(aBinSh) # \"/bin/sh\"",
+          "xref_type": 1
+        }
+      ],
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\popen.o.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "string_classifier",
+          "confidence": "high",
+          "address": "0x3a0",
+          "snippet": "/bin/sh"
+        }
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "name": "popen",
+      "addr": "0x0",
+      "size": 720,
+      "caller_count": 0,
+      "callee_count": 24
+    }
+  ],
+  "xrefs": [],
+  "callgraph_edges": [
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x44"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x54"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "__errno_location",
+      "callee_addr": "0x3b4",
+      "callsite": "0x68"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0xbc"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "pipe",
+      "callee_addr": "0x3b8",
+      "callsite": "0xd0"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0xe0"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "fdopen",
+      "callee_addr": "0x3bc",
+      "callsite": "0x120"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x130"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "fork",
+      "callee_addr": "0x3c0",
+      "callsite": "0x144"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x154"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x16c"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x17c"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "fclose",
+      "callee_addr": "0x3c8",
+      "callsite": "0x194"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x1a4"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x1bc"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x1cc"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x1e0"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "dup2",
+      "callee_addr": "0x3cc",
+      "callsite": "0x200"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x21c"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "execl",
+      "callee_addr": "0x3d0",
+      "callsite": "0x264"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "_exit",
+      "callee_addr": "0x3d4",
+      "callsite": "0x280"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x29c"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "close",
+      "callee_addr": "0x3c4",
+      "callsite": "0x2b8"
+    },
+    {
+      "caller": "popen",
+      "caller_addr": "0x0",
+      "callee": "popen",
+      "callee_addr": "0x0",
+      "callsite": "0x2c8"
+    }
+  ],
+  "analysis_warnings": [
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3b4",
+      "function_name": "__errno_location",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3b8",
+      "function_name": "pipe",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3bc",
+      "function_name": "fdopen",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3c0",
+      "function_name": "fork",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3c4",
+      "function_name": "close",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3c8",
+      "function_name": "fclose",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3cc",
+      "function_name": "dup2",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3d0",
+      "function_name": "execl",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3d4",
+      "function_name": "_exit",
+      "message": "decompile_returned_none"
+    },
+    {
+      "level": "warning",
+      "kind": "decompile",
+      "function_addr": "0x3d8",
+      "function_name": "wait",
+      "message": "decompile_returned_none"
+    }
+  ],
+  "summary": {
+    "route_count": 1,
+    "handler_count": 0,
+    "route_mapping_count": 1,
+    "param_count": 0,
+    "constraint_count": 2,
+    "config_access_count": 0,
+    "sink_count": 0,
+    "response_string_count": 0,
+    "interesting_string_count": 1,
+    "candidate_function_count": 1,
+    "hint_categories": {
+      "auth": 0,
+      "state": 0,
+      "response": 0
+    }
+  },
+  "pseudo_snippets": []
+}

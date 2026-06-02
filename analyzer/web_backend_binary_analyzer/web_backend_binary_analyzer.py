@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-"""Repository entrypoint for the web backend binary analyzer.
+"""Legacy helper for the optional MCP-driven path-A workflow.
 
-This CLI builds the worklist and JSON manifest used by the path-A MCP driver.
-The active Codex/IDA session can then consume that manifest and execute the
-analysis by calling :func:`analyze_directory_via_mcp` from ida_mcp_driver.py.
+The primary production pipeline now uses two explicit entrypoints:
+
+1. preprocess_web_backend_binaries.py
+2. analyze_preprocessed_web_backend.py
+
+This file remains as a convenience helper for interactive MCP-driven work
+manifests and direct MCP execution when needed.
 """
 
 from __future__ import annotations

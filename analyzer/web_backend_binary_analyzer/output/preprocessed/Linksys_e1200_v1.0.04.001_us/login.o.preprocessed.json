@@ -1,0 +1,139 @@
+{
+  "version": "1.0",
+  "artifact_type": "web_backend_binary_preprocessed",
+  "input_type": "unreadable_web_backend_binary",
+  "binary": {
+    "source_file": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\login.o",
+    "idb_path": "G:\\GPLFuzz\\collector\\output\\unreadable_files\\web_backend_sources\\Linksys_e1200_v1.0.04.001_us\\login.o",
+    "sha256": "49404a0014f45fdce5187b64fabb4ae37af998719bef75e11ae0a4e89289217c",
+    "size": 1168,
+    "format": "ELF for MIPS (Relocatable)",
+    "arch": "mipsl",
+    "bits": 32,
+    "endian": "little",
+    "entry": "0xffffffffffffffff",
+    "segments": [
+      {
+        "name": ".text",
+        "start": "0x0",
+        "end": "0x20",
+        "size": 32,
+        "perm": 5
+      },
+      {
+        "name": ".data",
+        "start": "0x20",
+        "end": "0x21",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": ".bss",
+        "start": "0x30",
+        "end": "0x31",
+        "size": 1,
+        "perm": 6
+      },
+      {
+        "name": "extern",
+        "start": "0x34",
+        "end": "0x38",
+        "size": 4,
+        "perm": 0
+      },
+      {
+        "name": ".got",
+        "start": "0x38",
+        "end": "0x3c",
+        "size": 4,
+        "perm": 4
+      }
+    ]
+  },
+  "imports": [],
+  "exports": [
+    {
+      "index": 0,
+      "ordinal": 0,
+      "addr": "0x0",
+      "name": "login"
+    }
+  ],
+  "names": [
+    {
+      "addr": "0x0",
+      "name": "login"
+    },
+    {
+      "addr": "0x34",
+      "name": "_gp_disp"
+    },
+    {
+      "addr": "0x38",
+      "name": "_GLOBAL_OFFSET_TABLE_"
+    }
+  ],
+  "strings": [],
+  "functions": [
+    {
+      "addr": "0x0",
+      "name": "login",
+      "start_ea": "0x0",
+      "end_ea": "0x14",
+      "size": 20,
+      "prototype": "void()",
+      "flags": 4096,
+      "segment": ".text",
+      "callers": [],
+      "callees": [],
+      "string_refs": [],
+      "import_refs": [],
+      "data_refs": [
+        {
+          "target_addr": "0x38",
+          "target_name": "_GLOBAL_OFFSET_TABLE_",
+          "xref_addr": "0x0",
+          "snippet": "li      $gp, (_GLOBAL_OFFSET_TABLE_+0x7FF0)"
+        }
+      ],
+      "disassembly": [
+        {
+          "addr": "0x0",
+          "size": 8,
+          "bytes": "01001c3c28809c27",
+          "text": "li      $gp, (_GLOBAL_OFFSET_TABLE_+0x7FF0)"
+        },
+        {
+          "addr": "0x8",
+          "size": 4,
+          "bytes": "21e09903",
+          "text": "addu    $gp, $t9"
+        },
+        {
+          "addr": "0xc",
+          "size": 4,
+          "bytes": "0800e003",
+          "text": "jr      $ra"
+        },
+        {
+          "addr": "0x10",
+          "size": 4,
+          "bytes": "00000000",
+          "text": "nop"
+        }
+      ],
+      "pseudocode": "void login()\n{\n  ;\n}\n",
+      "decompile_error": null
+    }
+  ],
+  "callgraph_edges": [],
+  "analysis_warnings": [],
+  "summary": {
+    "import_count": 0,
+    "export_count": 1,
+    "name_count": 3,
+    "string_count": 0,
+    "function_count": 1,
+    "callgraph_edge_count": 0
+  }
+}
