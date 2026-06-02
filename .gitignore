@@ -1,6 +1,7 @@
 /collector/
 /analyzer/web_frontend_analyzer/output/
-
+/analyzer/web_backend_sources_parser/output/
+/analyzer/web_server_config_parser/output/
 # Common local artifacts
 .DS_Store
 Thumbs.db
