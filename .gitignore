@@ -2,6 +2,8 @@
 /analyzer/web_frontend_analyzer/output/
 /analyzer/web_backend_sources_parser/output/
 /analyzer/web_server_config_parser/output/
+/analyzer/web_backend_binary_analyzer/output/
+
 # Common local artifacts
 .DS_Store
 Thumbs.db
@@ -10,3 +12,4 @@ __pycache__/
 *.pyc
 .idea/
 .vscode/
+
