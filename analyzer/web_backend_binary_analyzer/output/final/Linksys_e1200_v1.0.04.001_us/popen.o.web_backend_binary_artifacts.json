@@ -176,6 +176,7 @@
       ]
     }
   ],
+  "references": [],
   "functions": [
     {
       "name": "popen",
@@ -438,6 +439,7 @@
     "sink_count": 0,
     "response_string_count": 0,
     "interesting_string_count": 1,
+    "reference_count": 0,
     "candidate_function_count": 1,
     "hint_categories": {
       "auth": 0,

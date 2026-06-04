@@ -128,6 +128,7 @@ Top-level structure:
   "auth_hints": [],
   "state_hints": [],
   "strings": [],
+  "references": [],
   "functions": [],
   "xrefs": [],
   "callgraph_edges": [],
@@ -200,6 +201,7 @@ Typical fields:
 
 - `name`
 - `reader_api`
+- `param_source`
 - `default`
 - `source`
 - `function`
@@ -330,6 +332,24 @@ Typical fields:
 - `categories`
 - `xref_count`
 - `xrefs`
+- `evidence`
+
+### `references`
+
+General-purpose references kept for later fusion with frontend/config/readable
+backend artifacts.
+
+These include useful paths, route registrations, CGI references, filesystem
+references, and environment-related strings that are worth preserving even when
+they are not best represented as routes or parameters alone.
+
+Typical fields:
+
+- `value`
+- `reference_type`
+- `addr`
+- `function`
+- `function_addr`
 - `evidence`
 
 ### `functions`

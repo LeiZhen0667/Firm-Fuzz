@@ -138,6 +138,9 @@ HANDLER_PATTERNS = (
     re.compile(r"(?i)(?:^|_)(?:cgi|asp|ej|hnap|login|logout|apply|upgrade|reboot|handler)(?:_|$)"),
     re.compile(r"(?i)do_(?:login|apply|upgrade|reboot|auth)"),
 )
+REFERENCE_RE = re.compile(
+    r"(?i)(?:/www/|/etc/|/tmp/|/var/|\.asp$|\.cgi$|\.htm$|\.html$|/goform/|/cgi-bin/|/HNAP1/|query_string|content_length|http_cookie|request_method)"
+)
 
 
 def _confidence(rank: int) -> str:
@@ -150,6 +153,23 @@ def _confidence(rank: int) -> str:
 
 def _string_literals(text: str) -> List[str]:
     return [match.group(1) for match in re.finditer(r'"([^"\\]*(?:\\.[^"\\]*)*)"', text)]
+
+
+def _infer_param_source(api_name: str, param_name: str, context_text: str) -> str:
+    lowered_api = api_name.lower()
+    lowered_param = param_name.lower()
+    lowered_text = context_text.lower()
+    if "cookie" in lowered_api or "cookie" in lowered_param or "http_cookie" in lowered_param:
+        return "cookie"
+    if "header" in lowered_api or "http_" in lowered_param:
+        return "header"
+    if "getenv" in lowered_api or "query_string" in lowered_param:
+        return "env"
+    if "query" in lowered_api or "query_string" in lowered_text:
+        return "query"
+    if "form" in lowered_api or "post" in lowered_text or "content_length" in lowered_text:
+        return "body"
+    return "unknown"
 
 
 def _classify_string(value: str) -> List[str]:
@@ -238,6 +258,7 @@ def analyze_preprocessed_artifact(data: Dict[str, Any], *, preprocess_path: Path
     auth_hints: List[Dict[str, Any]] = []
     state_hints: List[Dict[str, Any]] = []
     response_strings: List[Dict[str, Any]] = []
+    references: List[Dict[str, Any]] = []
     candidate_functions: Set[str] = set()
 
     for string_item in strings:
@@ -298,6 +319,15 @@ def analyze_preprocessed_artifact(data: Dict[str, Any], *, preprocess_path: Path
             response_strings.append(
                 {
                     "value": value,
+                    "addr": string_addr,
+                    "evidence": interesting["evidence"],
+                }
+            )
+        if REFERENCE_RE.search(value):
+            references.append(
+                {
+                    "value": value,
+                    "reference_type": "string",
                     "addr": string_addr,
                     "evidence": interesting["evidence"],
                 }
@@ -391,6 +421,7 @@ def analyze_preprocessed_artifact(data: Dict[str, Any], *, preprocess_path: Path
                         {
                             "name": import_name,
                             "reader_api": import_name,
+                            "param_source": _infer_param_source(import_name, import_name, str(ref.get("snippet") or "")),
                             "source": "import_xref",
                             "function": func_name,
                             "function_addr": func_addr,
@@ -521,6 +552,7 @@ def analyze_preprocessed_artifact(data: Dict[str, Any], *, preprocess_path: Path
                     "name": param_name,
                     "reader_api": api,
                     "default": default_value,
+                    "param_source": _infer_param_source(api, param_name, match.group(0)),
                     "source": "function_text",
                     "function": func_name,
                     "function_addr": func_addr,
@@ -603,6 +635,25 @@ def analyze_preprocessed_artifact(data: Dict[str, Any], *, preprocess_path: Path
                     ],
                 }
             )
+            references.append(
+                {
+                    "value": route,
+                    "reference_type": "registration_route",
+                    "function": func_name,
+                    "function_addr": func_addr,
+                    "evidence": [
+                        _evidence(
+                            preprocess_file,
+                            "handler_registration",
+                            function_name=func_name,
+                            function_addr=func_addr,
+                            address=func_addr,
+                            snippet=match.group(0),
+                            confidence="high",
+                        )
+                    ],
+                }
+            )
 
         for kind, pattern in CONSTRAINT_PATTERNS:
             for match in pattern.finditer(text):
@@ -646,6 +697,7 @@ def analyze_preprocessed_artifact(data: Dict[str, Any], *, preprocess_path: Path
     state_hints = _dedupe_dict_items(state_hints, ("hint", "addr"))
     interesting_strings = _dedupe_dict_items(interesting_strings, ("addr",))
     response_strings = _dedupe_dict_items(response_strings, ("addr",))
+    references = _dedupe_dict_items(references, ("value", "reference_type", "function_addr"))
     xrefs = _dedupe_dict_items(xrefs, ("api", "function_addr", "xref_addr"))
 
     candidate_function_rows = []
@@ -694,6 +746,7 @@ def analyze_preprocessed_artifact(data: Dict[str, Any], *, preprocess_path: Path
         "auth_hints": auth_hints,
         "state_hints": state_hints,
         "strings": interesting_strings,
+        "references": references,
         "functions": candidate_function_rows,
         "xrefs": xrefs,
         "callgraph_edges": filtered_callgraph,
@@ -708,6 +761,7 @@ def analyze_preprocessed_artifact(data: Dict[str, Any], *, preprocess_path: Path
             "sink_count": len(sinks),
             "response_string_count": len(response_strings),
             "interesting_string_count": len(interesting_strings),
+            "reference_count": len(references),
             "candidate_function_count": len(candidate_function_rows),
             "hint_categories": dict(keyword_counter),
         },

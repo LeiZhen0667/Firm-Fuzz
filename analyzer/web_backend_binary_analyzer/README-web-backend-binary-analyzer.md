@@ -183,6 +183,7 @@ It includes:
 - `auth_hints`
 - `state_hints`
 - `strings`
+- `references`
 - `functions`
 - `xrefs`
 - `callgraph_edges`

@@ -30775,6 +30775,38 @@
       ]
     }
   ],
+  "references": [
+    {
+      "value": "/tmp/bcmupnp.pid",
+      "reference_type": "string",
+      "addr": "0x41fdb0",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\upnp.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "string_classifier",
+          "confidence": "high",
+          "address": "0x41fdb0",
+          "snippet": "/tmp/bcmupnp.pid"
+        }
+      ]
+    },
+    {
+      "value": "/tmp/upnp_map",
+      "reference_type": "string",
+      "addr": "0x420ef4",
+      "evidence": [
+        {
+          "source_file": "G:\\GPLFuzz\\analyzer\\web_backend_binary_analyzer\\output\\preprocessed\\Linksys_e1200_v1.0.04.001_us\\upnp.preprocessed.json",
+          "tool": "preprocessed_ida",
+          "parser": "string_classifier",
+          "confidence": "high",
+          "address": "0x420ef4",
+          "snippet": "/tmp/upnp_map"
+        }
+      ]
+    }
+  ],
   "functions": [
     {
       "name": "OnTimeEvent",
@@ -49814,6 +49846,7 @@
     "sink_count": 191,
     "response_string_count": 42,
     "interesting_string_count": 705,
+    "reference_count": 2,
     "candidate_function_count": 165,
     "hint_categories": {
       "auth": 0,
