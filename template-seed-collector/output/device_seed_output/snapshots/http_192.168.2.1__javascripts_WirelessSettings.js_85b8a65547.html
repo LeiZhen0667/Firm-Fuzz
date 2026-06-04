@@ -1,0 +1,660 @@
+<html><head><meta name="color-scheme" content="light dark"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">function isNOnly(modeVal) {
+	if (modeVal === '2' || modeVal === 'ac' || modeVal === 'nac') {
+		return true;
+	}
+	return false;
+}
+
+function includesN(modeVal) {
+	//if (modeVal.indexOf('n') !== -1 || modeVal === 'ac') {
+	if (modeVal == 2 | modeVal == 3 | modeVal == 4 ) {
+		return true;
+	}
+	return false;
+}
+function setCaps(caps) {
+	var i = 0;
+	$('#p2500f24Chan').find('option').remove().end().append('&lt;option value="constAuto" tid="gtAuto"&gt;Auto&lt;/option&gt;');
+	for (i = 0; i &lt; caps.Channels24.length; i++) {
+		$('#p2500f24Chan').append('&lt;option value=\"' + caps.Channels24[i] + '\"&gt;' + caps.Channels24[i] + '&lt;/option&gt;');
+	}
+	$('#p2500f5Chan').find('option').remove().end().append('&lt;option value="constAuto" tid="gtAuto"&gt;Auto&lt;/option&gt;');
+	for (i = 0; i &lt; caps.Channels5.length; i++) {
+		$('#p2500f5Chan').append('&lt;option value=\"' + caps.Channels5[i] + '\"&gt;' + caps.Channels5[i] + '&lt;/option&gt;');
+	}
+
+	if (caps.Has5G == "false") {
+		$('#p2500f24G').removeClass("six").addClass("twelve");
+		$('#p2500f5G').remove();
+		$('#p2500iHeaderDB').remove();
+		$('#p2500iHeaderSB').show();
+	}
+	
+	// We're not selling any G only routers!
+	//MaxBandwidth24: 40,	
+
+	if (caps.MaxBandwidth5 == 80) {
+		$('#p2500f5Mode option:first').before('&lt;option value="anac" tid="gtModeAC+N+A"&gt;802.11 a/n/ac&lt;/option&gt;').before('&lt;option value="nac"  tid="gtModeAC+N"&gt;802.11 n/ac&lt;/option&gt;').before('&lt;option value="ac"   tid="gtModeOnlyAC"&gt;802.11 ac&lt;/option&gt;');
+		$('#p2500f5BW option:first').before('&lt;option value="80" tid="gt204080MHz"&gt;20/40/80 Mhz&lt;/option&gt;');
+	}
+}
+function displaySettings(idPrefix, net) {
+	$(idPrefix + "SSID").val(net.SSID);
+	$(idPrefix +"PSK").val(net.Passkey);
+	if ($(idPrefix + "Security option[value='" + net.Auth + "']").length &gt; 0) {
+		$(idPrefix + "Security option[value='" + net.Auth + "']").prop('selected', true);
+	} else {
+		// For the WEP/Open case
+		$(idPrefix +"Security option[value='" + net.Encryption + "'").prop('selected', true);
+	}
+	// Store the previous value
+	$(idPrefix + "Security").data("previous-value", $(idPrefix + "Security").val());
+
+	// Show the correct status if the network is not Enabled
+	if (!net.Enabled) {
+		$(idPrefix + "EnableOff").show();
+		$(idPrefix + "EnableOn").hide();
+	}
+	$(idPrefix + "EnableVal").val(net.Enabled == true);
+	$(idPrefix + "Chan option[value=\"" + net.Channel + "\"]").prop('selected', true);
+	if (net.Channel == "constAuto" || net.Bandwidth == 20) {
+		$(idPrefix + "Ext").prop('disabled', true);
+	} else {
+		$(idPrefix + "Ext").prop('disabled', false);
+	}
+	$(idPrefix + "Broadcast").attr('checked', net.BroadcastSSIDEnabled?true:false);
+	
+	$(idPrefix + "Ext option[value=\"" + net.ExtensionChannel + "\"]").prop('selected', true);
+	$(idPrefix + "BW option[value=\"" + net.Bandwidth + "\"]").prop('selected', true);
+	$(idPrefix + "Mode option[value=\"" + net.WirelessMode + "\"]").prop('selected', true);
+	$(idPrefix + "Mode").data("previous-value", $(idPrefix +"Mode").val());
+	if (includesN(net.WirelessMode)) {
+		$(idPrefix + "ModeWarning").hide();	
+	} else {
+		$(idPrefix + "ModeWarning").slideDown();
+	}
+	setBW(idPrefix + "Mode", net.WirelessMode);
+}
+
+/// Event handlers
+function setPSKVisible(secID) {
+	var newMode;
+	var modeID = secID.indexOf("24")&gt;=0?"#p2500f24Mode":"#p2500f5Mode";
+	var PSKid = secID.indexOf("24")&gt;=0?"#p2500f24PSK":"#p2500f5PSK";
+	var errPSKid = secID.indexOf("24")&gt;=0?"#p2500e24PSK":"#p2500e5PSK";
+	if ($("#"+secID).val() == "constNone") {
+		$(PSKid).css("visibility", "hidden");
+		$(errPSKid).hide();
+	} else {
+		$(PSKid).css("visibility", "visible");
+		validatePSK_single(PSKid.substring(0,PSKid.length-3), errPSKid.substring(0, errPSKid.length-3)); 
+	}
+	
+	//console.log("Updating to " + secID + ", new Value: " + $("#"+secID).val() + " prev Value:" + $("#"+secID).data("previous-value"));
+	// Check if we need to update the mode because we went to/from WEP
+	if ($("#"+secID).val() == "constWEP") {
+		// We changed TO WEP
+		if (includesN($(modeID).val())) {
+			// N modes are not allowed in WEP.  Auto-select most permissive mode
+			var newMode = secID.indexOf("24")&gt;=0?"5":"1";
+
+			$(modeID + " option[value=\"" + newMode + "\"]").prop('selected', true);
+			// Trigger any updates to the rest of the Adv Options
+			setBW(modeID, newMode);
+			$(modeID + "Warning").slideDown();
+		}
+	} else if ($("#"+secID).val() == "constWPA2Personal") {
+		// non-N modes are not allowed in WPA2.  Auto-select most permissive mode
+		var newMode = "2";
+		if ($(modeID +" option[value='ac']").length &gt; 0)
+			newMode = "nac";
+
+		$(modeID + " option[value=\"" + newMode + "\"]").prop('selected', true);
+		// Trigger any updates to the rest of the Adv Options
+		setBW(modeID, newMode);
+		$(modeID + "Warning").slideUp();
+	} else if ($("#"+secID).val() == "constWPAPersonalMixed" &amp;&amp; isNOnly($(modeID).val())) {
+		// non-N modes are needed for mixed mode.  Auto-select most permissive mode
+		//var newMode = secID.indexOf("24")&gt;=0?"bgn":"an";
+		var newMode = "3";
+		if ($(modeID +" option[value='ac']").length &gt; 0)
+			newMode = "anac";
+			
+		$(modeID + " option[value=\"" + newMode + "\"]").prop('selected', true);
+		// Trigger any updates to the rest of the Adv Options
+		setBW(modeID, newMode);
+		$(modeID + "Warning").slideUp();
+	} else if ($("#"+secID).val() != "constWEP" &amp;&amp; 
+		!includesN($(modeID).val())) {
+		// We changed AWAY from WEP
+		// N modes are now allowed in non-WEP.  Auto-select most permissive mode
+		//var newMode = secID.indexOf("24")&gt;=0?"bgn":"an";
+		var newMode = "3";
+		if ($(modeID +" option[value='ac']").length &gt; 0)
+			newMode = "anac";
+
+		$(modeID + " option[value=\"" + newMode + "\"]").prop('selected', true);
+		// Trigger any updates to the rest of the Adv Options
+		setBW(modeID, newMode);
+		$(modeID + "Warning").slideUp();
+	}
+	$(modeID).data("previous-value", $(modeID).val());
+}
+
+// [ODM TODO: remove this comment] Though it is not memory efficient to keep another copy of original settings, it is very convenient.
+var origCheckbox = {}; // This is initialized in JSON callback to /BelkinAPI/GetWirelessSettings
+function copyVal() {
+	// Save the value entered
+	//origCheckbox[this.id] = $(this).val();
+	if (!$('#p2500fSame').attr('checked'))
+		return;
+	
+	// Copy the value
+	var idOther = this.id.indexOf("24")&gt;=0?this.id.replace("f24", "f5"):this.id.replace("f5", "f24");
+	$("#"+idOther).val($(this).val());
+	
+	// Update the PSK, in case it changed modes.
+	var secID = "p2500f5Security", secIDOther = "p2500f24Security";
+	if (this.id.indexOf("24")&gt;=0) {
+		secID = "p2500f24Security";
+		secIDOther = "p2500f5Security";		
+	}
+	setPSKVisible(secID);
+	setPSKVisible(secIDOther);
+}
+
+function validateSSID() {
+	if ($('#p2500f24SSID').val() == "") {
+		$('#p2500e24SSID').text(langDictionary["errorSSIDEmpty"]).fadeTo(200, 1);
+	} else {
+		$('#p2500e24SSID').hide();
+	}
+	if ($('#p2500f5SSID').val() == "") {
+		$('#p2500e5SSID').text(langDictionary["errorSSIDEmpty"]).fadeTo(200, 1);
+	} else {
+		$('#p2500e5SSID').hide();
+	}
+}
+
+function validatePSK_single(idPrefix, errPrefix) {
+	var sec = $(idPrefix + 'Security').val();
+	if (sec != "constNone") {
+		var psk = $(idPrefix + 'PSK').val();
+		if (psk == "") {
+			$(errPrefix + 'PSK').text(langDictionary["errorWPAPasswordEmpty"]).fadeTo(200, 1);
+		} else if (sec == "constWEP") {
+			if (!(psk.length == 10 || psk.length == 26)) {
+				$(errPrefix + 'PSK').text(langDictionary["errorWEPPasswordInvalidLength"]).fadeTo(200, 1);
+			} else if (!psk.match("^[a-fA-F0-9_]*$")) {
+				$(errPrefix + 'PSK').text(langDictionary["errorWEPPasswordInvalidChars"]).fadeTo(200, 1);
+			} else {
+				$(errPrefix + 'PSK').hide();
+			}
+		} else {
+			if (psk.length &lt; 8) {
+				$(errPrefix + 'PSK').text(langDictionary["errorWPAPasswordInvalidLength"]).fadeTo(200, 1);
+			} else if( validStr(psk) == false || validVisibleStr(psk) == false){
+				$(errPrefix + 'PSK').text(langDictionary["errorWPAPasswordInvalidChars"]).fadeTo(200, 1);
+			} else {
+				$(errPrefix + 'PSK').hide();
+			}
+		}
+	} else {
+		$(errPrefix + 'PSK').hide();
+	}
+}
+
+function validatePSK() {
+	validatePSK_single("#p2500f24", "#p2500e24");
+	validatePSK_single("#p2500f5", "#p2500e5");
+}
+
+$('#p2500f24SSID,#p2500f5SSID,#p2500f24PSK,#p2500f5PSK,#p2500f24Security,#p2500f5Security').bind("change keyup input", copyVal);
+//$('#p2500f24SSID,#p2500f5SSID').bind("change keyup input", validateSSID);
+//$('#p2500f24PSK,#p2500f5PSK,#p2500f24Security,#p2500f5Security').bind("change keyup input", validatePSK);
+
+$('#p2500f24Enable,#p2500f5Enable').click(function() {
+	var ids= "#" + this.id + "On,#" + this.id + "Off";
+	var enValID = "#" + this.id + "Val";
+	$(ids).toggle();
+	var enVal = $(enValID).val();
+	$(enValID).val((enVal == "true")?false:true);
+	//console.log("new val: " + $(enValID).val());
+	if (this.id == "p2500f24Enable") {
+		if ($("#p2500f5EnableVal").val() == "true") {
+			$("#p2500f5EnableVal").val(false)
+			$("#p2500f5EnableOn, #p2500f5EnableOff").toggle()
+		}
+	}
+	else {
+		if ($("#p2500f24EnableVal").val() == "true") {
+			$("#p2500f24EnableVal").val(false)
+			$("#p2500f24EnableOn, #p2500f24EnableOff").toggle()
+		}
+	}
+});
+
+function onChangeSecurity(self) {
+	setPSKVisible(self.prop('id'));
+	$(self).data("previous-value", self.val());
+}
+
+$('#p2500f24Security,#p2500f5Security').bind("change", function() {onChangeSecurity($(this));});
+
+$('#p2500fSame').click(function() {
+	if ($(this).is(':checked')) {
+		// Set the values the same!
+		$('#p2500f5SSID').val($('#p2500f24SSID').val() );
+		$('#p2500f5PSK').val($('#p2500f24PSK').val());
+		$('#p2500f5Security').val($('#p2500f24Security').val());
+		validateSSID();
+		validatePSK();
+		setPSKVisible("p2500f5Security"); // Only 5G is changing, so we only have to test 5G
+	} else {
+		// restore the last entered values
+		for (var elemId in origCheckbox) {
+			console.log("Restoring " + elemId + " to " + origCheckbox[elemId]);
+			$("#" + elemId).val(origCheckbox[elemId]);
+		}
+		// Both 2.4G and 5G could be changing, so test for both.
+		setPSKVisible("p2500f5Security");
+		setPSKVisible("p2500f24Security");
+	}
+});
+
+function setBW(modeID, newMode) {
+	var idPrefix = modeID.substring(0, modeID.length-4);
+/*
+	if (newMode.indexOf("ac") &gt;= 0) {
+		if ($(idPrefix + "BW option[value=40]").length == 0)
+			$(idPrefix + "BW").prepend('&lt;option value="40" tid="gt2040MHz"&gt;20/40 Mhz&lt;/option&gt;');
+		if (idPrefix.indexOf("f5") &gt;= 0 &amp;&amp; $(idPrefix + "BW option[value=80]").length == 0)
+			$(idPrefix + "BW").prepend('&lt;option value="80" tid="gt204080MHz"&gt;20/40/80 Mhz&lt;/option&gt;');
+	} else if (newMode.indexOf("n")&gt;=0) {
+		if ($(idPrefix + "BW option[value=40]").length == 0)
+			$(idPrefix + "BW").prepend('&lt;option value="40" tid="gt2040MHz"&gt;20/40 Mhz&lt;/option&gt;');
+		$(idPrefix + "BW option[value=80]").remove();
+	} else {
+		$(idPrefix + "BW option[value!=20]").remove();
+	}
+	testForExt(idPrefix);
+*/
+ 	if (newMode==2 || newMode==3 || newMode==4) {
+		if ($(idPrefix + "BW option[value=1]").length == 0)
+			$(idPrefix + "BW").prepend('&lt;option value="1" tid="gt2040MHz"&gt;20/40 Mhz&lt;/option&gt;');
+	}
+	else {
+		$(idPrefix + "BW option[value!=0]").remove();
+	}
+	testForExt(idPrefix);
+}
+
+function testForExt(idPrefix) {
+	if ($(idPrefix + "BW").val() == "0" || $(idPrefix + "Chan").val() == "0") {
+		$(idPrefix + "Ext").prop('disabled', true);
+	} else {
+		$(idPrefix + "Ext").prop('disabled', false);
+	}
+}
+
+function setExt(id, newChan) {
+	var idPrefix = "#" + id.substring(0, id.length-4);
+	testForExt(idPrefix);
+	if (newChan != "constAuto") {
+		var req = {
+			RequestID: Math.floor(Math.random() * 10000),
+			Chan24: $('#p2500f24Chan').val(),
+			Chan5: $('#p2500f5Chan').val(),
+			BW24: $('#p2500f24BW').val(),
+			BW5: $('#p2500f5BW').val()
+		}
+		$.getJSON("../BelkinAPI/GetAllowedExtensionChannels", req, function(caps) {
+			var old24Ext = $('#p2500f24Ext').val();
+			$('#p2500f24Ext option').remove();
+			var old5Ext = $('#p2500f5Ext').val();
+			$('#p2500f5Ext option').remove();
+			for (var i = 0; i &lt; caps.ExtChannels24.length; i++) {
+				var selected = (caps.ExtChannels24[i] == old24Ext)?' selected':'';
+				var newOne = '&lt;option value=\"' + caps.ExtChannels24[i] + '\"' + selected + '&gt;' + caps.ExtChannels24[i] + '&lt;/option&gt;';
+				$('#p2500f24Ext').append(newOne);
+			}
+			for (var i = 0; i &lt; caps.ExtChannels5.length; i++) {
+				var selected = (caps.ExtChannels5[i] == old5Ext)?' selected':'';
+				var newOne = '&lt;option value=\"' + caps.ExtChannels5[i] + '\"' + selected + '&gt;' + caps.ExtChannels5[i] + '&lt;/option&gt;';
+				$('#p2500f5Ext').append(newOne);
+			}
+		});
+	}	
+};
+
+$('#p2500f24BW,#p2500f5BW').bind("change", function() {
+	testForExt("#" + this.id.substring(0, this.id.length-2));
+});	
+$('#p2500f24Mode,#p2500f5Mode').bind("change", function() {
+	var previousValue = $(this).data("previous-value");
+	var secID = this.id.indexOf("24")&gt;=0?"#p2500f24Security":"#p2500f5Security";
+	
+	// If we're not "Open" AND
+	// 	(changing to N mode and we're set to use WEP, not changing to WPA2 and N only, changing to WPA2 and not N only)
+	// show big warning msg
+	if ($(secID).val() != "constNone" &amp;&amp;
+		(($(secID).val() == "constWEP" &amp;&amp; includesN($(this).val())) ||
+		($(secID).val() != "constWPA2Personal" &amp;&amp; isNOnly($(this).val())) ||
+		($(secID).val() == "constWPA2Personal" &amp;&amp; !isNOnly($(this).val())))) {
+		$('#p2510').data('newSecMode', "constWPAPersonalMixed");
+		$('#p2510 *[tid="gtNewWifiSecurity"]').html("WPA/WPA2");
+		if (isNOnly($(this).val())) {
+			// ODM TODO: Make sure this string ("WPA2") is translated as needed
+			$('#p2510 *[tid="gtNewWifiSecurity"]').html("WPA2");
+			$('#p2510').data('newSecMode', "constWPA2Personal");
+		}
+		$('#p2510').data('modeID', this.id);
+		$('#p2510').data('secID', secID);
+		$('#p2510').data('prevModeVal', previousValue);
+		$('#p2510').data('modeVal', $(this).val());
+		$('#p2510').reveal({
+			animation : 'fade',
+			animationspeed : 100
+		});
+	} else {
+		updateMode(this.id, $(this).val());
+	}
+});	
+
+$('#p2510a003').click(function() {
+	// Update the mode and security type.
+	$($('#p2510').data('secID')).data("previous-value", $('#p2510').data('newSecMode'));
+	$($('#p2510').data('secID') + " option[value=\"" + $('#p2510').data('newSecMode') + "\"]").prop('selected', true);
+
+	updateMode($('#p2510').data('modeID'), $('#p2510').data('modeVal'));
+	$($('#p2510').data('secID') + " option[value=\"" + $('#p2510').data('newSecMode') + "\"]").prop('selected', true);
+	$('#p2510').trigger('reveal:close');
+	
+	// Apply change across other side, if the checkbox is checked.
+	copyVal.call($($('#p2510').data('secID')).get(0));
+});
+$('#p2510a004').click(function() {
+	// Close dialog and reselect old mode
+	$('#p2510').trigger('reveal:close');
+	console.log($('#p2510').data('modeID'));
+	console.log($('#p2510').data('prevModeVal'));
+	$("#" + $('#p2510').data('modeID') + " option[value=\"" + $('#p2510').data('prevModeVal') + "\"]").prop('selected', true);
+	updateMode($('#p2510').data('modeID'), $('#p2510').data('prevModeVal'));
+});
+
+function updateMode(modeID, modeVal) {
+	setBW("#" + modeID, modeVal);
+	// If we're changing to/from N/non-N, update the warning message.
+	//if (modeVal.indexOf("n") == -1 &amp;&amp; modeVal.indexOf("ac") == -1) {
+	if (modeVal != 2 &amp;&amp; modeVal != 3 &amp;&amp; modeVal != 4) {
+		$("#" + modeID + "Warning").slideDown();
+	} else {
+		$("#" + modeID + "Warning").slideUp();
+	}
+	$("#" + modeID).data("previous-value", modeVal);
+}
+
+$('#p2500f24Chan,#p2500f5Chan').bind("change", function () {
+	setExt(this.id, $(this).val());
+});
+
+/*****
+ * @method testForNSpeedWarning
+ * This function checks the wireless mode and shows/hides the warning about lower speeds.
+ * This is meant to fix the bug where display status can't be changed while the advanced options are collapsed (hidden).
+ */
+function testForNSpeedWarning() {
+	if (includesN($('#p2500f24Mode').val())) {
+		$('#p2500f24ModeWarning').hide();
+	} else {
+		$('#p2500f24ModeWarning').show();
+	}
+	if (includesN($('#p2500f5Mode').val())) {
+		$('#p2500f5ModeWarning').hide();
+	} else {
+		$('#p2500f5ModeWarning').show();
+	}
+}
+
+
+// ODM TODO: Show/Hide Advanced settings (both!) in initial state.  Like other 
+//  collapsible sections, it should be collapsed by default and remember
+//  expanded state (a client side cookie is sufficient).
+//  For initial state: if 2.4 is hidden, also hide 5. if 2.4 is shown, also show 5.
+
+// Show/Hide the Advanced settings
+$('#Adv24_toggle').click(function() {
+	if ($('#AdvOpt24').is(":hidden")) {
+		$('#expandoArrow24').rotate({animateTo:90, duration:600});
+		$('#AdvOpt24').slideDown();
+		if ($('#AdvOpt5').is(":hidden") &amp;&amp; !$('#p2500i002').is(":hidden")) {
+			$('#expandoArrow5').rotate({animateTo:90, duration:600});
+			$('#AdvOpt5').slideDown();
+		}
+	} else {
+		$('#expandoArrow24').rotate({animateTo:0, duration:600});
+		$('#AdvOpt24').slideUp();		
+		if (!$('#AdvOpt5').is(":hidden") &amp;&amp; !$('#p2500i002').is(":hidden")) {
+			$('#expandoArrow5').rotate({animateTo:0, duration:600});
+			$('#AdvOpt5').slideUp();
+		}
+	}
+	testForNSpeedWarning();
+});
+$('#Adv5_toggle').click(function() {
+	if ($('#AdvOpt5').is(":hidden")) {
+		$('#expandoArrow5').rotate({animateTo:90, duration:600});
+		$('#AdvOpt5').slideDown();
+	} else {
+		$('#expandoArrow5').rotate({animateTo:0, duration:600});
+		$('#AdvOpt5').slideUp();
+	}
+	testForNSpeedWarning();
+});	
+
+function readNetwork(idPrefix) {
+	var sec = $(idPrefix + 'Security').val();
+	var netObj = {
+		"Passkey": $(idPrefix + 'PSK').val(), 
+		"SSID": $(idPrefix + 'SSID').val(), 
+		"Auth": sec, 
+		"Encryption": sec,
+		"Channel": $(idPrefix + "Chan option").val(),
+		"ExtensionChannel": $(idPrefix + "Ext option").val(),
+		"Bandwidth": $(idPrefix + "BW option").val(),
+		"WirelessMode" : $(idPrefix + "Mode option").val(),
+		"Enabled" : ($(idPrefix + "EnableVal").val() == "true")
+	}
+	if (sec == "constWPA2Personal")
+		netObj.Encryption = "constAES";
+	if (sec == "constWPAPersonalMixed")
+		netObj.Encryption = "constAES";
+	if (sec == "constWEP")
+		netObj.Auth = "constNone";
+	
+	return netObj;
+}
+
+var isChanged = false;
+var originalSettings = ""; // This is populated by Ajax call that loads current settings.  Save this as a string because it's easier for the beforeunload check.
+var orig24 = {}, orig5 = {};
+$(window).bind('beforeunload', function(){
+	// If the serialized settings are different, return the translated string for the browser to show.
+	isChanged = originalSettings != $("#p2500f001").serialize();
+	if (isChanged) {
+		// TODO: translate string
+		//return 'You have unsaved settings. Stay here to save them, or leave or reload to discard the changes.';
+		return langDictionary['gtSettingsNotSaved'];
+	} else {
+		return;
+	}
+});
+// Don't forget! Save values in originalSettings after validation to prevent this msg from showing up after save.
+
+function updateHeaders(SSID24, PSK24, SSID5, PSK5) {
+	$("[tid='Network24SSID']").not("#p2500f24SSID").each(function(index) {
+		$(this).text(SSID24);
+	});
+	$("[tid='Network24Passkey']").not("#p2500f24PSK").each(function(index) {
+		$(this).text(PSK24);
+	});
+	$("[tid='Network5SSID']").not("#p2500f5SSID").each(function(index) {
+		$(this).text(SSID5);
+	});
+	$("[tid='Network5Passkey']").not("#p2500f5PSK").each(function(index) {
+		$(this).text(PSK5);
+	});
+	$("[tid='dhSSID24']").text(SSID24);
+	$("[tid='dhPassword24']").text(PSK24);
+	// ODM TODO: make sure header is correct
+	$("[tid='dhPasswordObscured24']").text(PSK24);
+
+}
+
+// Initial state
+if (!$('#AdvOpt5').is(":hidden")) {
+	$('#expandoArrow5').rotate(90);
+}
+if (!$('#AdvOpt24').is(":hidden")) {
+	$('#expandoArrow24').rotate(90);
+}
+
+// Initial state
+//setPSKVisible('p2500f24Security');
+
+var isWireless = false;
+$.getJSON("../BelkinAPI/IsClientWireless", { RequestID: Math.floor(Math.random() * 10000) }, function(json) {
+	isWireless = json.IsClientWireless;
+});
+
+// Start loading data about our router
+$.getJSON("../BelkinAPI/GetRouterCaps", { RequestID: Math.floor(Math.random() * 10000) }, function(json) {
+	setCaps(json);
+});
+
+// TODO: Move back into response of GetRouterCaps
+$.getJSON("../BelkinAPI/GetWirelessSettings", { RequestID: Math.floor(Math.random() * 10000) }, function(json) {
+	$(document).ready(function(){  //&lt;-- When the doc is ready, populate the field
+		displaySettings("#p2500f24", json.net24);
+		displaySettings("#p2500f5", json.net5);
+		updateHeaders(json.net24.SSID, json.net24.Passkey, json.net5.SSID, json.net5.Passkey);
+
+		console.log("Yeah!");
+		var isSame = true;
+		if ($('#p2500f24SSID').val() != $('#p2500f5SSID').val())
+			isSame = false;
+		if ($('#p2500f24PSK').val() != $('#p2500f5PSK').val())
+			isSame = false;
+		if ($('#p2500f24Security').val() != $('#p2500f5Security').val())
+			isSame = false;
+		$('#p2500fSame').attr('checked', isSame);
+		originalSettings = $("#p2500f001").serialize();
+		orig24 = json.net24;
+		orig5 = json.net5;
+		$("#p2500f5SSID,#p2500f5PSK,#p2500f5Security").each(function() {
+			origCheckbox[this.id] = $(this).val();
+		});
+	});
+});
+/*
+$("#p2500aSave").click( function(e) {
+	e.preventDefault();
+	validateSSID();
+	validatePSK();
+	if ($(".error").filter(":visible").length!=0)
+		return false;
+
+	var net24 = readNetwork("#p2500f24");
+	var net5 = readNetwork("#p2500f5");
+		
+	// Show p2505 if the user turned off one or both wifi radios.
+//	if ((!net24.Enabled &amp;&amp; orig24.Enabled) || (!net5.Enabled  &amp;&amp; orig5.Enabled)) {
+	if ($("#p2500f24EnableVal").val() == "true" || $("#p2500f5EnableVal").val() == "true") {		
+		showMsgMask("p2505")
+		$('#p2505').reveal({
+			animation : 'fade',
+			animationspeed : 100
+		});		
+	} else {
+		evaltF();
+		//saveForm();
+	}
+});
+*/
+$('#p2505a003').click(function() {evaltF();});
+$('#p2505a004').click(function() {
+	closeMsgMask("p2505")
+//	$('#p2505').trigger('reveal:close');
+});
+	
+function saveForm() {
+	var net24 = readNetwork("#p2500f24");
+	var net5 = readNetwork("#p2500f5");
+		
+	var saveReq = {
+		"RequestID": Math.floor(Math.random() * 10000),
+		"Commit": true,
+		"net24" : net24,
+		"net5" : net5,
+		// These are older API values.
+		"Network24Enabled": true, 
+		"Network24Auth": net24.Auth, 
+		"Network24Encryption": net24.Encryption, 
+		"Network24Passkey": $('#p2500f24PSK').val(), 
+		"Network24SSID": $('#p2500f24SSID').val(), 
+		"Network5Enabled": true, 
+		"Network5Auth": net5.Auth, 
+		"Network5Encryption": net5.Encryption, 
+		"Network5Passkey": $('#p2500f5PSK').val(), 
+		"Network5SSID": $('#p2500f5SSID').val()
+	};
+	console.log(saveReq);
+	
+	// ODM TODO: Hook up to real apply settings process.  This is faked.
+	
+	// Submit the form!
+	$.getJSON("../BelkinAPI/SetWirelessSettings", saveReq, function(json) {
+		updateHeaders(saveReq.Network24SSID, saveReq.Network24Passkey, saveReq.Network5SSID, saveReq.Network5Passkey);
+
+		$('#p800').reveal({
+			animation : 'fade',
+			animationspeed : 100
+		});
+		$("#p800Progress").animate({
+			width : '100%'
+		}, json.CheckAgain*1000);
+		originalSettings = $("#p2500f001").serialize(); // Commit the values so we don't get the "don't leave" popup from the browser
+		// Fake the progress - reload the page after the reboot time
+		setTimeout( function() {after800()}, json.CheckAgain*1000); 
+	});
+};
+
+function waitForRouter() {
+console.log("waitForRouter");
+	// Endless loop until APIversion succeeds
+	$.ajax({
+		type: "GET",
+		url: "../BelkinAPI/IsClientWireless",
+		data: { RequestID: Math.floor(Math.random() * 10000) },
+		cache: false
+	}).fail(function() {setTimeout("waitForRouter();", 5000);})
+	.done( function () {setTimeout("location.reload(true);", 3000);});
+}
+
+function after800() {
+	if (isWireless) {
+		$('#p802').reveal({
+			animation : 'fade',
+			animationspeed : 100
+		});
+	} else {
+		$('#p801').reveal({
+			animation : 'fade',
+			animationspeed : 100
+		});		
+	}
+	waitForRouter();
+}
+
+//alert("ODM - please remove this message and implement the ODM TODO items before delivery");
+</pre></body></html>

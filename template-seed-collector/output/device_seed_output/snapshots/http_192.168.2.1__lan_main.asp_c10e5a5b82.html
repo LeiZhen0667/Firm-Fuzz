@@ -1,0 +1,689 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	  <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+	<title tid="gtDashTitle">Belkin router dashboard</title>
+	<link rel="icon" href="images/favicon/favicon.ico">
+	<!-- For third-generation iPad with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+	<!-- For iPhone with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+	<!-- For first- and second-generation iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+	<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+	<link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+	<link rel="stylesheet" href="stylesheets/app.css">
+	<!--[if lt IE 9]>
+		<link rel="stylesheet" href="stylesheets/ie.css">
+	<![endif]-->
+</head>
+<body>
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<script>
+var ts = new Date().getTime();
+function showhideL(){
+	if(document.lan_form.dhcp_enable[0].checked == true){
+		document.getElementById('u_DHCP1').style.display = "block";
+		document.getElementById('u_DHCP2').style.display = "block";
+		document.getElementById('u_DHCP3').style.display = "block";
+		document.getElementById('u_DHCP4').style.display = "block";
+	}
+	else{
+		document.getElementById('u_DHCP1').style.display = "none";
+		document.getElementById('u_DHCP2').style.display = "none";
+		document.getElementById('u_DHCP3').style.display = "none";
+		document.getElementById('u_DHCP4').style.display = "none";
+	}
+
+}
+$(document).ready(function(){
+	var index = "0";
+	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+	var f=document.lan_form;
+	var t1,t2;
+	var lan_ipadder='192.168.2.1';
+	var mask='255.255.255.0';
+	var lan_proto='Fixed IP';
+	var dhcpEnable='2';
+	var dhcpRangeStart='192.168.2.2';
+	var dhcpRangeEnd='192.168.2.200';
+	var dhcp_lease='7';
+	var wan_domain='Belkin';
+
+	f.leaseTime.selectedIndex=dhcp_lease;
+	t1=lan_ipadder.indexOf('.');
+	if(t1!=-1)f.lan_ip[0].value=lan_ipadder.substring(0,t1);
+	t2=lan_ipadder.indexOf('.',(t1+1));
+	if(t2!=-1)f.lan_ip[1].value=lan_ipadder.substring((t1+1),t2);
+	t1=lan_ipadder.indexOf('.',(t2+1));
+	if(t1!=-1)f.lan_ip[2].value=lan_ipadder.substring((t2+1),t1);
+	f.lan_ip[3].value=lan_ipadder.substring(t1+1);
+
+	t1=mask.indexOf('.');
+	t2=mask.indexOf('.',(t1+1));
+	if(t2!=-1)f.lan_mask[1].value=mask.substring((t1+1),t2);
+	t1=mask.indexOf('.',(t2+1));
+	if(t1!=-1)f.lan_mask[2].value=mask.substring((t2+1),t1);
+	f.lan_mask[3].value=mask.substring(t1+1);
+
+	if(dhcpEnable=='2') f.dhcp_enable[0].checked=true;
+	else f.dhcp_enable[1].checked=true;
+
+	t1=dhcpRangeStart.indexOf('.');
+	if(t1!=-1)f.dhcp_startip[0].value=dhcpRangeStart.substring(0,t1);
+	t2=dhcpRangeStart.indexOf('.',(t1+1));
+	if(t2!=-1)f.dhcp_startip[1].value=dhcpRangeStart.substring((t1+1),t2);
+	t1=dhcpRangeStart.indexOf('.',(t2+1));
+	if(t1!=-1)f.dhcp_startip[2].value=dhcpRangeStart.substring((t2+1),t1);
+	f.dhcp_startip[3].value=dhcpRangeStart.substring(t1+1);
+
+	t1=dhcpRangeEnd.indexOf('.');
+	if(t1!=-1)f.dhcp_endip[0].value=dhcpRangeEnd.substring(0,t1);
+	t2=dhcpRangeEnd.indexOf('.',(t1+1));
+	if(t2!=-1)f.dhcp_endip[1].value=dhcpRangeEnd.substring((t1+1),t2);
+	t1=dhcpRangeEnd.indexOf('.',(t2+1));
+	if(t1!=-1)f.dhcp_endip[2].value=dhcpRangeEnd.substring((t2+1),t1);
+	f.dhcp_endip[3].value=dhcpRangeEnd.substring(t1+1);
+
+	f.domain_name.value=wan_domain;
+	showhideL();
+	initDataHeader();
+});
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var str24gpwd
+var str5gpwd
+var str24genc
+var tmpssid=1;
+function initDataHeader(){
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);//ken
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str5gpwd="66caye9w"
+	}
+
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+} 
+function storeData(){
+	var f=document.lan_form;
+	f.ip.value=f.lan_ip[0].value+'.'+f.lan_ip[1].value+'.'+f.lan_ip[2].value+'.'+f.lan_ip[3].value;
+	f.mask.value='255.'+f.lan_mask[1].value+'.'+f.lan_mask[2].value+'.'+f.lan_mask[3].value;
+
+	if(f.dhcp_enable[0].checked==true) f.lan_proto.value='dhcp';
+	else f.lan_proto.value='static';
+	if(f.dhcp_enable[0].checked==true) f.dhcp.value=2;
+	else f.dhcp.value=0;
+
+	f.dhcp_lease.value=f.leaseTime.value;
+	f.dhcpRangeStart.value=f.dhcp_startip[0].value+'.'+f.dhcp_startip[1].value+'.'+f.dhcp_startip[2].value+'.'+f.dhcp_startip[3].value;
+	f.dhcpRangeEnd.value=f.dhcp_endip[0].value+'.'+f.dhcp_endip[1].value+'.'+f.dhcp_endip[2].value+'.'+f.dhcp_endip[3].value;
+	f.DomainName.value=f.domain_name.value;
+	if((f.lan_ip[3].value-0)==0 || f.lan_ip[3].value=='255')
+	{
+		alert(langDictionary[1240]);
+		return false;
+	}
+	if(f.lan_ip[0].value=='127'|| f.lan_ip[0].value=='0' )
+	{
+		alert(langDictionary['lsipm2']);
+		return false;
+	}
+	var localname=f.domain_name.value.toLowerCase();
+	if (!/^[A-Za-z0-9-_.]+$/.test(localname)) {
+		alert(langDictionary[713].replace(/:/i ,""))
+		return false
+	}
+	return true;
+}
+function validStr(x) {
+        var y = /^ +/
+        if (y.test(x)) return false
+        var y = / +$/
+        if (y.test(x)) return false
+        return true
+}
+//welly add 20111128
+function isIncludeDot(s)
+{
+	var i;
+	var c;
+	for(i=0;i<s.length;i++)
+	{
+		c=s.charAt(i);
+		if((c=='.'))return true;
+	}
+	return false;
+}
+function ipcheck() {
+	var f=document.lan_form;
+	if(f.lan_ip[0].value<128)
+	{
+		f.lan_mask[1].value = 0;
+		f.lan_mask[2].value = 0;
+		f.lan_mask[3].value = 0;
+	}
+	if((f.lan_ip[0].value<192)&&(f.lan_ip[0].value>127))
+	{
+		f.lan_mask[1].value = 255;
+		f.lan_mask[2].value = 0;
+		f.lan_mask[3].value = 0;
+	}
+	if((f.lan_ip[0].value<240)&&(f.lan_ip[0].value>191))
+	{
+		f.lan_mask[1].value = 255;
+		f.lan_mask[2].value = 255;
+		f.lan_mask[3].value = 0;
+	}
+}
+function setDHCPAddress() {
+	var f=document.lan_form;
+	f.dhcp_startip[0].value = f.lan_ip[0].value;
+	f.dhcp_startip[1].value = f.lan_ip[1].value;
+	f.dhcp_startip[2].value = f.lan_ip[2].value;
+	f.dhcp_endip[0].value = f.lan_ip[0].value;
+	f.dhcp_endip[1].value = f.lan_ip[1].value;
+	f.dhcp_endip[2].value = f.lan_ip[2].value;
+}
+function evaltF(){
+	var f=document.lan_form;
+	if( isIncludeDot(f.lan_ip[0].value) || isIncludeDot(f.lan_ip[1].value) || isIncludeDot(f.lan_ip[2].value) || isIncludeDot(f.lan_ip[3].value)) { alert(langDictionary[1240]); return false; }//check no dot	//ken 20130123
+	if((isBlank(f.lan_ip[0].value))||(isNaN(f.lan_ip[0].value))||(f.lan_ip[0].value<0||f.lan_ip[0].value>255)) { alert(langDictionary[1240]); return false; }
+	if((isBlank(f.lan_ip[1].value))||(isNaN(f.lan_ip[1].value))||(f.lan_ip[1].value<0||f.lan_ip[1].value>255)) { alert(langDictionary[1240]); return false; }
+	if((isBlank(f.lan_ip[2].value))||(isNaN(f.lan_ip[2].value))||(f.lan_ip[2].value<0||f.lan_ip[2].value>255)) { alert(langDictionary[1240]); return false; }
+	if((isBlank(f.lan_ip[3].value))||(isNaN(f.lan_ip[3].value))||(f.lan_ip[3].value<0||f.lan_ip[3].value>255)) { alert(langDictionary[1240]); return false; }
+
+	if(f.lan_ip[0].value>239)
+	{ alert(langDictionary[403]); return false; }
+	if(f.dhcp_enable[0].checked==true)
+	{
+		if((isBlank(f.dhcp_startip[3].value))||(isNaN(f.dhcp_startip[3].value))||(f.dhcp_startip[3].value<=0||f.dhcp_startip[3].value>254)) { alert(langDictionary[1228]); return false; }
+		if((isBlank(f.dhcp_endip[3].value))||(isNaN(f.dhcp_endip[3].value))||(f.dhcp_endip[3].value<=0||f.dhcp_endip[3].value>254)) { alert(langDictionary[1229]); return false; }
+		if((f.dhcp_endip[3].value - f.dhcp_startip[3].value) < 0){ alert(langDictionary[398]); return false; }
+		if(((f.lan_ip[3].value-f.dhcp_startip[3].value) >= 0) && ((f.dhcp_endip[3].value-f.lan_ip[3].value) >= 0)){ alert(langDictionary[399]); return false; }
+		f.dhcp.value = 2
+	}
+	else
+		f.dhcp.value = 0
+	if(!storeData())return false;
+	if(checklan()==false)return false;
+	if('192.168.2.1'!=f.ip.value)
+	{
+		if (!confirm(langDictionary[406])) return false;
+		alert(langDictionary[404]);
+	}
+	$.post("/goform/formTcpipSetup", $("#p600101").serialize());
+	SubmitDelayA(15);
+	//return true;
+}
+function SubmitDelayA(time){
+	$.get("getLoginStatus.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+		if(data == 0){
+			document.location.replace("000-dashboard.asp?LockUrl=loginlock");
+			return  ;
+		}
+		else{
+			showMsgMask("p800");
+			window.clearInterval(StopBGfunction);
+			$("#p800Progress").animate({width: '100%'}, time*1000,function(){
+				ChkRebootTypeStop = self.setInterval("SubmitDelayB(5000)", 1000);
+			});
+		}
+	});
+}
+function SubmitDelayB(time){
+	showMsgMask("p801");
+	window.clearInterval(ChkRebootTypeStop);
+	ChkRebootTypeStop = self.setInterval("ChkRebootTypeC()", time);
+}
+
+function ChkRebootTypeC(){
+	if(window.location.port == null)
+		window.top.location.assign("http://"+document.lan_form.ip.value+"/lan_main.asp")
+	else
+		window.top.location.assign("http://"+location.hostname+":"+location.port+"/lan_main.asp")
+	//location.reload();
+	window.clearInterval(ChkRebootTypeStop);
+}
+function validateLanClassANetmask(val)
+{
+	if(val!='255.255.255.0' && val!='255.255.255.128' && val!='255.255.255.192' && val!='255.255.255.224' &&
+		val!='255.255.255.240' && val!='255.255.255.248' && val!='255.255.255.252' && val!='255.255.255.254'&&
+		val!='255.255.0.0' && val!='255.255.128.0' && val!='255.255.192.0' && val!='255.255.224.0' &&
+		val!='255.255.240.0' && val!='255.255.248.0' && val!='255.255.252.0' && val!='255.255.254.0' &&
+		val!='255.0.0.0' && val!='255.128.0.0' && val!='255.192.0.0' && val!='255.224.0.0' &&
+		val!='255.240.0.0' && val!='255.248.0.0' && val!='255.252.0.0' && val!='255.254.0.0')
+	{
+		alert(langDictionary['vjs42']);//ken 20130123
+		return false;
+	}
+}
+function validateLanNetmask(val)
+{
+	if(val!='255.255.255.0' && val!='255.255.255.128' && val!='255.255.255.192' && val!='255.255.255.224' &&
+		val!='255.255.255.240' && val!='255.255.255.248' && val!='255.255.255.252' )
+	{
+		alert(langDictionary['vjs42']);//ken 20130123
+		return false;
+	}
+}
+function checklan(){
+	var f=document.lan_form;
+	var token;
+	if((f.lan_ip[0].value)!='192' || (f.lan_ip[1].value)!='168')
+	{
+		if((f.lan_ip[0].value)!='10'){
+			if ((f.lan_ip[0].value)!='172' || (f.lan_ip[1].value) < 16 || (f.lan_ip[1].value) > 31)
+			{
+				alert(langDictionary['msg_privateIP_invalid_']);
+				return false;
+			}
+		}
+	}
+	if((f.lan_ip[0].value)=='192' && (f.lan_ip[1].value)=='168')
+	{
+		if(validateLanNetmask(f.mask.value)==false) return false;
+	}
+	if((f.lan_ip[0].value)=='10')
+	{	
+		if(validateLanClassANetmask(f.mask.value)==false) return false;
+	}
+	if ((f.lan_ip[0].value=='172') && (f.lan_ip[1].value >=16) && (f.lan_ip[1].value <=31))
+	{	
+		if(validateLanClassANetmask(f.mask.value)==false) return false;
+	}
+	if(validateGateway(f.ip.value,f.mask.value,f.dhcpRangeStart.value)==false)return false;
+	if(validateStartEndIp(f.ip.value,f.mask.value,f.dhcpRangeStart.value,f.dhcpRangeEnd.value)==false)return false;
+	return true;
+}
+</script>
+
+
+<!-- / .lock -->
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+
+<div class="container top-pane hide-on-phones">
+        <div class="row">
+                <div class="twelve columns">
+                        <a href="000-dashboard.asp" tid="gtBackToDashboard"><script>dwt('gtBackToDashboard');</script></a>
+                        <ul class="sub-nav hide-on-phones" id="top_sub_nav">
+                                <li class="current">
+                                <a href="lan_main.asp" ><script>dwt('9');</script></a>
+                                </li>
+                                <li>
+                                <a href="a200-ConnDev.asp" ><script>dwt('10');</script></a>
+                                </li>
+                        </ul>
+                </div>
+        </div>
+</div>
+<div class="main container mobileNav show-on-phones">
+	<div class="row">
+		<div class="twelve columns">
+			<a href="000-Dashboard.asp" id="pLANaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard');</script></span></a>
+			<h2 tid="gtLocalSettings"><script>dwt('gtLocalSettings');</script></h2>
+		</div>
+	</div>
+</div>
+<div class="main container">
+<div class="row">
+   <div class="eight columns">
+<div class="page-title hide-on-phones">
+	<h2 tid="gtLocalSettings"><script>dwt('gtLocalSettings');</script></h2>
+</div>
+	   <form class="nice" name="lan_form" method="post" action="" target="OUTfrm" id="p600101">
+		   <div class="row">
+			   <div class="twelve columns">
+				   <p class="drop-ip">
+					   <label class="has-more"><b><font tid="371"><script>dwt('760');</script></font></b>  <span class="more"><span class="desc" tid="909"><script>dwt('909');</script></span></span>
+					   </label><span>
+		<input class="input-text xsmall" maxLength="3" name="lan_ip" size="3" onkeyup=setDHCPAddress();ipcheck(); value="">. 
+		<input class="input-text xsmall" maxLength="3" name="lan_ip" size="3" onkeyup=setDHCPAddress();ipcheck(); value="">. 
+		<input class="input-text xsmall" maxLength="3" name="lan_ip" size="3" onkeyup=setDHCPAddress();ipcheck(); value="">. 
+		<input class="input-text xsmall" maxLength="3" name="lan_ip" size="3" value=""> </span> 
+				   </p>
+				   <p class="drop-ip">
+					   <label class="has-more"> <b><font tid="372"><script>dwt('372');</script></font></b><span class="more"><span class="desc" tid="917"><script>dwt('917');</script></span></span>
+					   </label><span><input class="input-text xsmall" maxLength="3" name="lan_mask" size="3" Disabled value="255">. 
+		<input class="input-text xsmall" maxLength="3" name="lan_mask" size="3" value="">. 
+		<input class="input-text xsmall" maxLength="3" name="lan_mask" size="3" value="">. 
+		<input class="input-text xsmall" maxLength="3" name="lan_mask" size="3" value=""> </span> 
+				   </p>
+				   <p>
+					   <label class="has-more"><b><font tid="373"><script>dwt('373');</script></font></b>  <span class="more"><span class="desc" tid="929"><script>dwt('929');</script></span></span>
+					   </label>
+					   <input type="radio" value="1" name="dhcp_enable" onClick="showhideL();"><font tid="374"><script>dwt('374');</script></font> 
+					   <input type="radio" value="0" name="dhcp_enable" onClick="showhideL();"><font tid="375"><script>dwt('375');</script></font> 
+				   </p>
+				   <p class="drop-ip" id="u_DHCP1">
+					   <label class="has-more"><b><font tid="379"><script>dwt('379');</script></font></b>
+					   </label>
+					   <input class="input-text xsmall" type="text" name="dhcp_startip" maxlength="3"
+					   size="3" disabled value="">.
+					   <input class="input-text xsmall" type="text" name="dhcp_startip" maxlength="3"
+					   size="3" disabled value="">.
+					   <input class="input-text xsmall" type="text" name="dhcp_startip" maxlength="3"
+					   size="3" disabled value="">.
+					   <input class="input-text xsmall" type="text" name="dhcp_startip" maxlength="3"
+					   size="3" value="">
+				   </p>
+				   <p class="drop-ip" id="u_DHCP2">
+					   <label class="has-more"><b><font tid="380"><script>dwt('380');</script></font></b>
+					   </label>
+					   <input class="input-text xsmall" type="text" name="dhcp_endip" maxlength="3"
+					   size="3" disabled value="">.
+					   <input class="input-text xsmall" type="text" name="dhcp_endip" maxlength="3"
+					   size="3" disabled value="">.
+					   <input class="input-text xsmall" type="text" name="dhcp_endip" maxlength="3"
+					   size="3" disabled value="">.
+					   <input class="input-text xsmall" type="text" name="dhcp_endip" maxlength="3"
+					   size="3" value="">
+				   </p>
+				   <p id="u_DHCP3">
+					   <label><b><font tid="381"><script>dwt('381');</script></font></b>
+					   </label>
+					   <select class="input-text small" name="leaseTime">
+						   <option value="2592000" tid="382"><script>dwt('382');</script></option>
+						   <option value="1800" tid="383"><script>dwt('383');</script></option>
+						   <option value="3600" tid="384"><script>dwt('384');</script></option>
+						   <option value="7200" tid="385"><script>dwt('385');</script></option>
+						   <option value="43200" tid="386"><script>dwt('386');</script></option>
+						   <option value="86400" tid="387"><script>dwt('387');</script></option>
+						   <option value="172800" tid="388"><script>dwt('388');</script></option>
+						   <option value="604800" tid="389"><script>dwt('389');</script></option>
+						   <option value="1209600" tid="390"><script>dwt('390');</script></option>
+					   </select>
+				   </p>
+				   <p id="u_DHCP4">
+					   <label class="has-more"><b><font tid="392"><script>dwt('392');</script></font>&nbsp;(<font tid="393"><script>dwt('393');</script></font>)</b>&nbsp;
+						   <span class="more"><span class="desc" tid="935"><script>dwt('935');</script></span></span>
+					   </label>
+					   <input class="input-text small no-margin" type="text" name="domain_name" maxlength="60">
+				   </p>
+			   </div>
+		   </div>
+   <br><a href="#save" class="nice radius large green button" onClick="return evaltF()" id="btnapply"><script>dwt('49');</script></a>
+		   <!--br><input type="button" value="Save" class="nice radius large green button" tid="49" onClick="return evaltF()" id="btnapply"></a-->
+<input type=hidden name="dhcp">
+<input type=hidden name="ip">
+<input type=hidden name="mask">
+<input type=hidden name="lan_proto">
+<input type=hidden name="dhcp_lease">
+<input type=hidden name="dhcpRangeStart">
+<input type=hidden name="dhcpRangeEnd">
+<input type=hidden value="Belkin" name="m_wan_domain">
+<input type=hidden name="DomainName">
+	   </form>
+   </div>
+<div class="sidebar four columns">
+<div>
+<h6 tid="htLAN" class="tpad30"><script>dwt('htLAN')</script></h6>
+<p><span tid="370"><script>dwt('370')</script></span><span class="nub"></span></p>
+</div>
+</div>
+</div>
+</div>
+<div id="p800" class="large reveal-modal">
+        <h1 tid="p800t001"><script>dwt('p800t001');</script>&hellip;</h1>
+        <p class="lead" tid="p800t002" id="submit_run"><script>dwt('p800t002');</script></p>
+        <p class="lead hide" tid="2053" id="submit_ok"><script>dwt('2053');</script></p>
+        <p class="lead hide" tid="422" id="submit_rsok"><script>dwt('422');</script></p>
+        <p class="lead hide" tid="2054" id="submit_fmwok"><script>dwt('2054');</script></p>
+	<div class="installation">
+		<span class="progress" id="p800Progress"></span>
+	</div>
+</div>
+<div id="p801" class="large reveal-modal">
+        <h1 tid="gtReconnectingHell"><script>dwt('gtReconnectingHell');</script></h1>
+        <p class="waiting"><img width="28" src="images/loading.gif"><span tid="p801t002"><script>dwt('p801t002');</script></span></p>
+</div>
+<div id="bg"></div>
+
+<!-- Dashboard Footer -->
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<!-- container -->
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>

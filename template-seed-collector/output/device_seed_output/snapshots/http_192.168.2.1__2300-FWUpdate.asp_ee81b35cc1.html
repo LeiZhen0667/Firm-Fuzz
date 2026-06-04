@@ -1,0 +1,856 @@
+
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012-2013 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	  <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+	<title tid="gtDashTitle">Belkin router dashboard</title>
+	<link rel="icon" href="../images/favicon/favicon.ico">
+	<!-- For third-generation iPad with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="../images/favicon/belkin_144.png">
+	<!-- For iPhone with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="../images/favicon/belkin_114.png">
+	<!-- For first- and second-generation iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="../images/favicon/belkin_72.png">
+	<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+	<link rel="apple-touch-icon-precomposed" href="../images/favicon/belkin_57.png">
+	<link rel="stylesheet" href="../stylesheets/app.css">
+	<!--[if lt IE 9]>
+		<link rel="stylesheet" href="../stylesheets/ie.css">
+	<![endif]-->
+</head>
+<body>
+	<!-- Included JS Files -->
+	<script type="text/javascript" src="lang/language_en.js"></script>
+	<script src="javascripts/jquery.min.js"></script>
+	<script src="javascripts/app.js"></script>
+	<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<script>
+
+</script>
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+
+<div class="container top-pane hide-on-phones">
+	<div class="row">
+		<div class="twelve columns">
+			<a href="000-dashboard.asp"><script>dwt('gtBackToDashboard');</script></a>
+			<ul class="sub-nav">
+				<li><a href="tl_sys_r.asp" id="navRestartRouter" tid="gtRestartRouter"><script>dwt('gtRestartRouter');</script></a></li>
+				<li><a href="tl_save_restore.asp" id="navSaveRestore" tid="gtSaveRestore"><script>dwt('gtSaveRestore');</script></a></li>
+				<li class="current"><a href="2300-FWUpdate.asp" id="navFirmwareUpdate" tid="gtFirmwareUpdate"><script>dwt('gtFirmwareUpdate');</script></a></li>
+				<li><a href="tl_sys.asp" id="navSystemSettings" tid="gtSystemSettings"><script>dwt('gtSystemSettings');</script></a></li>
+				<li><a href="tl_health.asp" id="navSelfHealing" tid="gtSelfHealing"><script>dwt('gtSelfHealing');</script></a></li>
+				<li><a href="h500-Reg.asp" id="navReg" tid="gtRegistration"><script>dwt('gtRegistration');</script></a></li>
+				<li><a href="opt_sw.asp" id="navOptSW" tid="gtOptSW"><script>dwt('gtOptSW');</script></a></li>
+			</ul>
+		</div>
+	</div>
+</div>
+
+<div class="main container mobileNav show-on-phones">
+	<div class="row">
+		<div class="twelve columns">
+			<a href="000-dashboard.asp" id="pUtilsaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard');</script></span></a>
+			<h2 tid="gtFirmwareUpdate"><script>dwt('gtFirmwareUpdate');</script></h2>
+		</div>
+	</div>
+</div>
+
+<div class="main container" id="p2300" style='display:none'>
+<div class="row page-title2 hide-on-phones">
+	<h3 tid="gtFirmwareUpdate"><script>dwt('gtFirmwareUpdate');</script></h3>
+</div>
+<div class="row">
+	<div class="eight columns">
+		<!-- FW Update content -->
+		<!-- IF new firmware available -->
+		<div class="separator" id="p1100sep" style="display: none;">
+		<!-- Firmware Needs Upgrade -->
+		<div id="p1100content" style='display:none;'>
+			<h2 tid="p1100t001"><script>dwt('p1100t001');</script></h2>
+			<p class="lead" tid="p1100t002"><script>dwt('p1100t002');</script></p>
+			<a href="#" class="large green button nice radius" id="p1100a003" tid="p1100t003"><script>dwt('p1100t003');</script></a>
+		</div>
+		</div>
+		
+		<!-- IF firmware is up to date, show this: -->
+		<div id="p1302" class="ancillary greytop" style="display:none;font-weight:bold;"><img src="../images/Checkmark.png" alt="Checkmark" /><span tid="p1302t001"><script>dwt('p1302t001');</script></span></div>
+
+		
+		<!-- IF firmware install failed, show this: -->
+		<div id="p1316" tid="p1316t001" class="ancillary greytop" style="font-weight: bold; display: none;"><script>dwt('p1316t001');</script></div>
+
+		<!-- IF firmware install from a local file failed, show this: -->
+		<div id="p1318" tid="p1318t001" class="ancillary greytop" style="font-weight: bold; display: none;"><script>dwt('p1318t001');</script></div>
+
+
+		<!-- IF firmware update is successful, show this: -->
+		<div id="p1333" class="ancillary greytop" style="font-weight: bold; display: none;"><img src="../images/Checkmark.png" alt="Checkmark"><span tid="p1333t001"><script>dwt('p1333t001');</script></span></div>
+		
+			
+		<!-- DO NOT SHOW if offer_firmware is showing -->
+		<div class="tspace15">
+			<a href="#" id="p2300a010" tid="p2300t010" class="nice radius large green button" style="display:none;"><script>dwt('p2300t010');</script></a>
+		</div>
+		<!-- /DO NOT SHOW -->
+		
+		<div id="p2300iRouterLocal">
+			<h4 tid="gtRouter"><script>dwt('gtRouter');</script></h4>
+			<h5 tid="p2300t051"><script>dwt('p2300t051');</script></h5>
+			<p tid="gtVersionNum">Version 1.04.34 
+			(<script>Belkin_fw_date_time = "2015.01.29-11:19:50"
+			year = parseInt(Belkin_fw_date_time.substr(0,4))
+			month = parseInt(Belkin_fw_date_time.substr(5,2))
+			//day = parseInt(Belkin_fw_date_time.substr(8,2))
+			day = Belkin_fw_date_time.substr(8,2)/1
+			if (month == 1) month = "Jan"
+			else if (month == 2) month = "Feb"
+			else if (month == 3) month = "Mar"
+			else if (month == 4) month = "Apr"
+			else if (month == 5) month = "May"
+			else if (month == 6) month = "Jun"
+			else if (month == 7) month = "Jul"
+			else if (month == 8) month = "Aug"
+			else if (month == 9) month = "Sep"
+			else if (month == 10) month = "Oct"
+			else if (month == 11) month = "Nov"
+			else if (month == 12) month = "Dec"
+			document.write(month + " " + day + ", " + year)
+			</script>)</p>
+			<div class="hide-on-iOS">
+				<h5 tid="p2300t002"><script>dwt('p2300t002');</script></h5>
+				<form enctype="multipart/form-data"  id="p2300a003" name="updateLocal" method="post" action="/goform/formUpload" target="frame_upload">
+					<!-- See script later to handle change event -->
+					<input type="file" id="p2300a004" name="upfile">
+					<iframe src="" style="display:none;" id="frame_upload" name="frame_upload"></iframe>
+					<span tid="p2300t006" style="display:none"><script>dwt('p2300t006');</script></span>
+					<!-- ODM: alert this if the file is unusable.  It's placed here so that it gets translated automatically. -->
+					<span tid="gtFileInstallError" style="display:none"><script>dwt('gtFileInstallError');</script></span>
+				</form>
+			</div>
+		</div>
+	</div>
+	<!-- Content Sidebar -->
+	<div class="sidebar2 four columns">
+		<div>
+			<h6 tid="htFWUpdate"><script>dwt('htFWUpdate');</script></h6>
+			<p><span tid="htFWUpdateContent"><script>dwt('htFWUpdateContent');</script></span><span class="nub"></span></p>
+		</div>
+	</div>
+	<!-- / #sidebar -->
+</div>  
+</div>
+
+<div id="p2301" class="container main" style="display:none">
+	<div class="row">
+		<div class="content eight columns">
+		<!-- Content Area -->
+
+			<h1 tid="p310t001"><script>dwt('p300t001');</script></h1>            
+	        <br class="hide-on-phones">
+			<div class="row">
+				<div class="loader panel">
+					<img class="loader left" style="margin-right: 10px;" width="32" src="../images/loading.gif"><strong tid="p310t002"><script>dwt('p300t002');</script>&hellip;</strong>
+				</div>
+		        <br class="show-on-phones">
+			</div>
+		</div>
+		<!-- / #content -->
+		<!-- Content Sidebar -->
+		<div class="sidebar four columns">
+			<div>
+				<h6 tid="p310t003"><script>dwt('p310t006');</script></h6>
+				<p tid="p310t004"><script>dwt('p310t007');</script><span class="nub"></span></p>
+			</div>
+		</div>
+		<!-- / #sidebar -->
+	</div>
+</div>
+<!-- /end p2301 #main -->
+
+<div id="p2320" style="display:none">
+<!--#include virtual="../Setup/320-InstallingFirmware_contents.htm" -->
+<!-- Main Area support6-->
+<div class="main container" id="Support6" style="display:none">
+	<!-- Ancillary Text -->
+	<div class="row">
+		<div class="eight columns">
+			<div class="ancillary warning">
+				<h6 tid="Support6t001"><script>dwt('Support6t001');</script></h6>				
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<!-- Main Content -->
+		<div class="content eight columns">
+			<!-- Troubleshooting -->
+			<h1 tid="Support6t004"><script>dwt('Support6t004');</script></h1>
+			<h4 tid="Support6t005"><script>dwt('Support6t005');</script></h4>
+			<br>
+			<p tid="Support6t006"><script>dwt('Support6t006');</script></p>
+			<p tid="Support6t007"><script>dwt('Support6t007');</script></p>
+			<img style="margin-bottom: 20px;" src="images/troubleshooting/restartRouter.png">
+			<br>
+			<h4 tid="Support6t008"><script>dwt('Support6t008');</script></h4>
+			<br>
+			<!-- Ideally we'd only show the relevant segment of instructions -->
+			<div id="Support6dIOS" class="hide-on-Windows hide-on-Mac hide-on-Android">
+				<h5 tid="gtIOSConnect01"><script>dwt('gtIOSConnect01');</script></h5>
+				<p tid="gtIOSConnect02"><script>dwt('gtIOSConnect02');</script></p>
+				<ol>
+					<li tid="gtIOSConnect03"><script>dwt('gtIOSConnect03');</script></li>
+					<li tid="gtIOSConnect04"><script>dwt('gtIOSConnect04');</script>
+					<!-- /IF -->
+					</li>
+				</ol>
+			</div>
+			<div id="Support6dMac" class="hide-on-Windows hide-on-iOS hide-on-Android">
+				<h5 tid="gtMacConnect01"><script>dwt('gtMacConnect01');</script>Mac OS X</h5>
+				<p tid="gtMacConnect02"><script>dwt('gtMacConnect02');</script></p>
+				<ol>
+					<li tid="gtMacConnect03"><script>dwt('gtMacConnect03');</script></li>
+					<li tid="gtMacConnect04"><script>dwt('gtMacConnect04');</script>
+					<!-- /IF -->
+					 </li>
+				</ol>
+			</div>
+			<div id="Support6dAndroid" class="hide-on-Windows hide-on-iOS hide-on-Mac">
+				<h5 tid="gtAndroidConnect01"><script>dwt('gtAndroidConnect01');</script></h5>
+				<p tid="gtAndroidConnect02"><script>dwt('gtAndroidConnect02');</script></p>
+				<ol>
+					<li tid="gtAndroidConnect03"><script>dwt('gtAndroidConnect03');</script></li>
+					<li tid="gtAndroidConnect04"><script>dwt('gtAndroidConnect04');</script></li>
+					<li tid="gtAndroidConnect05"><script>dwt('gtAndroidConnect05');</script>
+					<!-- /IF -->
+					 </li>
+				</ol>
+			</div>
+			<div id="Support6dWin" class="hide-on-Mac hide-on-iOS hide-on-Android">
+				<h5 tid="gtWinConnect01"><script>dwt('gtWinConnect01');</script></h5>
+				<p tid="gtWinConnect02"><script>dwt('gtWinConnect02');</script></p>
+				<ol>
+					<li tid="gtWinConnect03"><script>dwt('gtWinConnect03');</script></li>
+					<li tid="gtWinConnect04"><script>dwt('gtWinConnect04');</script>
+					<!-- /IF -->
+					</li>
+				</ol>
+				<h5 tid="gtWinConnect05"><script>dwt('gtWinConnect05');</script></h5>
+				<p tid="gtWinConnect06"><script>dwt('gtWinConnect06');</script></p>
+				<ol>
+					<li tid="gtWinConnect07"><script>dwt('gtWinConnect07');</script></li>
+					<li tid="gtWinConnect08"><script>dwt('gtWinConnect08');</script></li>
+					<li tid="gtWinConnect09"><script>dwt('gtWinConnect09');</script>
+					<!-- /IF -->
+					</li>
+				</ol>
+			</div>
+			<!-- /Ideally we'd only show the relevant segment of instructions -->
+			<p tid="Support6t031"><script>dwt('Support6t031');</script></p>
+			<br>
+		<!-- We don't have wired
+			<h4 tid="Support6t032"><script>dwt('Support6t032');</script></h4>
+			<p tid="Support6t033"><script>dwt('Support6t033');</script></p>
+			<p class="lead" tid="Support6t034"><script>dwt('Support6t034');</script></p>
+		-->
+			<br>
+			<a class="nice radius large green button" id="Support6TryAgain" tid="gtTryAgain"><script>dwt('gtTryAgain');</script></a>
+			<br>
+			<hr>
+			<h4 tid="gtReadAllAboutIt"><script>dwt('gtReadAllAboutIt');</script></h4>
+			<p tid="Support6t037"><script>dwt('Support6t037');</script></p>
+		</div>
+		<!-- / #content -->
+		<!-- Content Sidebar -->
+		<div class="sidebar four columns">
+			<div>
+				<h6 tid="Support6t050"><script>dwt('Support6t050');</script></h6>
+				<p tid="Support6t051"><script>dwt('Support6t051');</script><span class="nub"></span></p>
+			</div>
+		</div>
+		<!-- / #sidebar -->
+	</div>
+</div>
+<!-- //Main Area support6 -->
+<div id="FormDiv" style="display:none">
+	<form id="checkFWform">
+		<input type="hidden" name="action" value="install_FW">
+	</form>
+</div>
+<!-- Main Area -->
+<div id="antip320">
+<div id="p320" class="container main" >
+	<div class="row">
+		<!-- Content Area -->
+
+		<div class="content eight columns">
+			<h1 tid="p320t001"><script>dwt('p320t001');</script></h1>            
+			<div class="row">
+		        <br class="show-on-phones">
+<!-- IF ROUTER OR IMR UPDATE -->
+		        <div><p class="lead hide-on-phones" tid="gtUpdateNoPowerRouter"><script>dwt('gtUpdateNoPower');</script></p></div>
+		        <div><p class="show-on-phones" tid="gtUpdateNoPowerRouter"><script>dwt('gtUpdateNoPower');</script></p></div>
+		        <div><p tid="p320t002"><script>dwt('p320t002');</script></p></div>
+<!-- /IF. REPEAT IF TANDEM UPDATE -->
+				<p tid="p320t006"><script>dwt('p320t003');</script></p>
+				<div class="installation">
+					<span class="progress" id="p320Progress"></span>
+				</div>
+			</div>
+		</div>
+		<!-- / #content -->
+		<!-- Content Sidebar -->
+		<div class="sidebar four columns">
+			<div>
+				<h6 tid="p320t004"><script>dwt('p320t004');</script></h6>
+				<p tid="p320t005"><script>dwt('p320t005');</script><span class="nub"></span></p>
+			</div>
+		</div>
+		<!-- / #sidebar -->
+	</div>
+</div>
+</div>
+<!-- / #main -->
+<div id="p330" class="large reveal-modal">
+	<h1 tid="p330t001"><script>dwt('p330t001');</script>&hellip;</h1>
+	<!-- Omit if no message -->
+	<!-- 331 --> <h6 id="p331a001" tid="p331t001" style="display:none"><script>dwt('p331t001');</script></h6> 
+	<!-- 332 --> <h6 id="p332a001" tid="p332t001" style="display:none"><script>dwt('p332t001');</script></h6> 
+	<!-- 333 --> <h6 id="p333a001" tid="p333t001" style="display:none"><script>dwt('p333t001');</script></h6> 
+	<!-- /Omit if no message -->
+	<p tid="p330t002"><script>dwt('p330t002');</script></p>
+	<div class="installation">
+		<span class="progress" id="p330Progress"></span>
+	</div>
+</div>
+<div id="p341" class="large reveal-modal">
+	<h1 tid="p341t001"><script>dwt('p341t001');</script></h1>
+	<p tid="p341t002"><script>dwt('p341t002');</script></p>
+	<p tid="p341t003"><script>dwt('p341t003');</script></p>
+	<p class="waiting"><img width="28" src="images/loading.gif"><span tid="p341t004"><script>dwt('p341t004');</script></span></p>
+	<img style="margin-bottom: 20px;" src="images/troubleshooting/restartRouter.png">
+</div>
+<div id="p343" class="large reveal-modal">
+	<h1 tid="gtReconnectingHell"><script>dwt('gtReconnectingHell');</script></h1>
+	<p class="waiting"><img width="28" src="images/loading.gif"><span tid="p343t002"><script>dwt('p343t002');</script></span></p>
+	<p tid="p343t003"><script>dwt('p343t003');</script></p>
+			<!-- Ideally we'd only show the relevant segment of instructions -->
+			<div id="p343dIOS" class="hide-on-Windows hide-on-Mac hide-on-Android">
+				<h5 tid="gtIOSConnect01"><script>dwt('gtIOSConnect01');</script></h5>
+				<p tid="gtIOSConnect02"><script>dwt('gtIOSConnect02');</script></p>
+				<ol>
+					<li tid="gtIOSConnect03"><script>dwt('gtIOSConnect03');</script></li>
+					<li tid="gtIOSConnect04"><script>dwt('gtIOSConnect04');</script></li>
+				</ol>
+			</div>
+			<div id="p343dMac" class="hide-on-Windows hide-on-iOS hide-on-Android">
+				<h5 tid="gtMacConnect01"><script>dwt('gtMacConnect01');</script></h5>
+				<p tid="gtMacConnect02"><script>dwt('gtMacConnect02');</script></p>
+				<ol>
+					<li tid="gtMacConnect03"><script>dwt('gtMacConnect03');</script></li>
+					<li tid="gtMacConnect04"><script>dwt('gtMacConnect04');</script></li>
+				</ol>
+			</div>
+			<div id="p343dAndroid" class="hide-on-Windows hide-on-iOS hide-on-Mac">
+				<h5 tid="gtAndroidConnect01"><script>dwt('gtAndroidConnect01');</script></h5>
+				<p tid="gtAndroidConnect02"><script>dwt('gtAndroidConnect02');</script></p>
+				<ol>
+					<li tid="gtAndroidConnect03"><script>dwt('gtAndroidConnect03');</script></li>
+					<li tid="gtAndroidConnect04"><script>dwt('gtAndroidConnect04');</script></li>
+					<li tid="gtAndroidConnect05"><script>dwt('gtAndroidConnect05');</script></li>
+				</ol>
+			</div>
+			<div id="p343dWin" class="hide-on-Mac hide-on-iOS hide-on-Android">
+				<h5 tid="gtWinConnect01"><script>dwt('gtWinConnect01');</script></h5>
+				<p tid="gtWinConnect02"><script>dwt('gtWinConnect02');</script></p>
+				<ol>
+					<li tid="gtWinConnect03"><script>dwt('gtWinConnect03');</script></li>
+					<li tid="gtWinConnect04"><script>dwt('gtWinConnect04');</script></li>
+				</ol>
+				<h5 tid="gtWinConnect05"><script>dwt('gtWinConnect05');</script></h5>
+				<p tid="gtWinConnect06"><script>dwt('gtWinConnect06');</script></p>
+				<ol>
+					<li tid="gtWinConnect07"><script>dwt('gtWinConnect07');</script></li>
+					<li tid="gtWinConnect08"><script>dwt('gtWinConnect08');</script></li>
+					<li tid="gtWinConnect09"><script>dwt('gtWinConnect09');</script></li>
+				</ol>
+			</div>
+			<!-- /Ideally we'd only show the relevant segment of instructions -->
+	<a class="large button nice white radius" id="p343a004" tid="gtNoMyNet"><script>dwt('gtNoMyNet');</script></a>
+</div>
+<div id="p344" class="large reveal-modal">
+	<h1 tid="p344t001"><script>dwt('p344t001');</script></h1>
+	<p tid="p344t002"><script>dwt('p344t002');</script></p>
+	<p tid="p344t003"><script>dwt('p344t003');</script></p>
+	<p class="waiting"><img width="28" src="images/loading.gif"><span tid="p344t004"><script>dwt('p344t004');</script></span></p>
+	<img style="margin-bottom: 20px;" src="images/troubleshooting/restartRouter.png">
+</div>
+<div id="p342" class="large reveal-modal">
+	<h1 tid="gtReconnectingHell"><script>dwt('gtReconnectingHell');</script></h1>
+	<p class="waiting"><img width="28" src="images/loading.gif"><span tid="p342t001"><script>dwt('p342t001');</script></span></p>
+	<p tid="p342t002"><script>dwt('p342t002');</script></p>
+	<a class="large button nice white radius" id="p342a003" tid="gtNoMyNet"><script>dwt('gtNoMyNet');</script></a>
+</div>
+</div> 
+<!--end 2320-->
+<script>
+$(document).ready( function() {
+	var index = "0";
+	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+	initDataHeader();
+	$("[tid='Network24SSID']").text(ssid);
+	$("[tid='Network24Passkey']").text(str24gpwd);
+	//self.setTimeout("CheckOfferNewFW()",5000);
+	var url = window.location.toString();
+	if(url.indexOf("?") != -1){
+		$("#p2301").hide();
+		$("#p2300").show();
+		$("#p2300a010").show();
+		var str = url.split("?")[1];
+		if(str == "1318")
+			$('#p1318').show();
+		else if(str == "1316")
+			$('#p1316').show();
+		else if(str == "updated")
+			$('#p1333').show();
+	}else{
+		$("#p2301").show();
+		self.setTimeout("CheckOfferNewFW()",5000);
+	}
+	// Do stuff when the user selects a file.
+	$('#p2300a004').change(function(e) {
+		var msg_temp = $("[tid='p2300t006']").text();
+		var msg = msg_temp.split(";")[1];
+		if (typeof(msg) == 'undefined')
+			msg = msg_temp;
+		
+		var file = $('#p2300a004').val();
+		file = file.replace("C:\\fakepath\\", "");
+		msg = msg.replace("{{file}}", file);
+		if (confirm(msg)) {
+			//alert(ufe11);
+			var ext = $('INPUT[name="upfile"]').val().split('.').pop().toLowerCase();
+			if($.inArray(ext, ['bin']) == -1) {
+					//alert(upgrade_err1);
+					//$("#p1318").show();
+					document.location.replace("2300-FWUpdate.asp?1318");
+					//return false    
+			}
+			$('#p2300a003').submit();
+			$('#p2300').hide();
+			$('#p2320').show();
+			//Do2320Routing();
+			//self.setInterval("document.location.replace(\"2320-InstallingFirmware.asp?updateLocal\")",20000);
+			//document.location.replace("2320-InstallingFirmware.asp");
+			SubmitDelayF();
+			//check upgrade status
+			//CheckFWUploadStop = self.setInterval("CheckFWUpload()",1500);
+		} else {
+			// clear the value so that it works in Safari
+			$('#p2300a004').val("");
+		}
+	});
+	
+	//Specail msg in FWGUI
+	$("#p1100a003").click(function(){
+		document.location.replace("2310-UpdateAvailable.asp?FW_SP_MSG");
+	})
+	$("#p2300a010").click(function(){
+		document.location.replace("2300-FWUpdate.asp");
+	})
+	$("#Support6TryAgain").click(function(e) {
+		retryTimer_F = 0;
+		DoFrouting();
+	});
+	
+	$("#p343a004").click(function(e) {
+		SetRetryTimer(40);
+	});
+	
+	$("#p342a003").click(function(e) {
+		SetRetryTimer(40);
+	});
+});
+function CheckOfferNewFW(){
+	$("#p2301").hide();
+	$("#p2300").show();
+	var FW_Server_Alive = 0;
+	FW_Server_Alive=0
+	if(FW_Server_Alive == 1){
+		$.post("/goform/formAutoFWupdate", { NoCache: Math.floor(Math.random() * 10000), action:"check_new_FW" },function(data){
+			if(data=="new_fw_ok"){
+				$("#p1100content").show();
+				$("#p1100sep").show();
+				$("#p2300a010").hide();
+			}
+			else if(data=="up_to_date"){
+				$("#p1302").show();
+				$("#p2300a010").show();
+			}
+			else{
+				FW_Server_Alive=0
+				$("#p1302").show();
+				$("#p2300a010").show();
+			}
+		},"text")
+		.fail(function() {
+			FW_Server_Alive=0
+			$("#p1302").show();
+			$("#p2300a010").show();
+		});
+	}
+	else{
+		$("#p1302").show();
+		$("#p2300a010").show();
+	}
+}
+
+var ChkRebootTypeStopF;
+var DelayTmpStop;
+function SubmitDelayF(){
+	$.get("getLoginStatus.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+		if(data == 0){
+			document.location.replace("000-dashboard.asp?LockUrl=loginlock");
+			return  ;
+		}
+		else{
+			//showMsgMask("p800");
+			//$("#p800Progress").animate({width: '100%'}, 110000,function(){
+			//	DelayTmpStop = self.setInterval("DelayTmp()", 5000);
+			//$("#p320Progress").animate({width: '100%'}, 180000,function(){
+			CheckFWUploadStop = self.setInterval("CheckFWUpload()",8000);
+			$("#p320Progress").animate({width: '100%'}, 60000,function(){
+				if(install_status==1){
+					DoFrouting();
+					$('#p344').trigger('reveal:close');
+				}
+				else{
+					if(isFrom("DB_SP_MSG"))
+						WaltzJump("000-dashboard.asp?remind-later");
+					else if(isFrom("FW_SP_MSG"))
+						WaltzJump("2300-FWUpdate.asp?1316");
+					else
+						WaltzJump("2300-FWUpdate.asp?1316");
+				}
+			});
+			//});
+		}
+	});
+}
+function DelayTmp(){
+	//showMsgMask("p801");
+	window.clearInterval(DelayTmpStop);
+    ChkRebootTypeStopF = self.setInterval("ChkRebootTypeF()", 5000);
+
+}
+function ChkRebootTypeF(){
+	$.get("testalive.html", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+		if(data==1){
+			window.clearInterval(ChkRebootTypeStopF);
+			window.location = "000-dashboard.asp";
+		}
+	});
+}
+/*
+function Do2320Routing(){
+	CheckFWUploadStop = self.setInterval("CheckFWUpload()",1500);
+	$("#p320Progress").animate({width: '100%'}, 180000,function(){
+		if(install_status==1){
+			DoFrouting();
+			$('#p344').trigger('reveal:close');
+		}
+		else{
+			if(isFrom("DB_SP_MSG"))
+				WaltzJump("000-dashboard.asp?remind-later");
+			else if(isFrom("FW_SP_MSG"))
+				WaltzJump("2300-FWUpdate.asp?1316");
+			else
+				WaltzJump("2300-FWUpdate.asp?1316");
+		}
+	});
+	
+}
+*/
+function SetRetryTimer(time){
+	retryTimer_F = time;
+}
+var install_status =1;
+var reTest = 0;
+function CheckFWUpload(){
+	$.get("BelkinAPI/GetUploadFileStatus.asp", { NoCache: Math.floor(Math.random() * 10000) }, function (data) {
+		if(data == 1){
+			//fail
+			//alert(upgrade_err1)
+			install_status = 0;
+			window.clearInterval(CheckFWUploadStop);
+			document.location.replace("2300-FWUpdate.asp?1318");
+		}
+		else{
+			reTest++;
+			if(reTest==4){
+				window.clearInterval(CheckFWUploadStop)
+				install_status = 1;
+			}
+			return true;
+		}
+	});
+}
+//for header
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var str24gpwd
+var str5gpwd
+var str24genc
+var tmpssid=1;
+function initDataHeader(){
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);//ken
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+		$("[tid='gtNotOpen']").hide()
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str5gpwd="66caye9w"
+	}
+
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+}
+</script>
+<!-- Dashboard Footer -->
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<!-- container -->
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>

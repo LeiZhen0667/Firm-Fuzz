@@ -1,0 +1,1090 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	  <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+	<title tid="gtDashTitle">Belkin router dashboard</title>
+	<link rel="icon" href="images/favicon/favicon.ico">
+	<!-- For third-generation iPad with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+	<!-- For iPhone with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+	<!-- For first- and second-generation iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+	<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+	<link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+	<link rel="stylesheet" href="stylesheets/app.css">
+	<!--[if lt IE 9]>
+		<link rel="stylesheet" href="stylesheets/ie.css">
+	<![endif]-->
+</head>
+<body style="min-width:700px">
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/fw_port.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<style type="text/css">
+table.minimal tbody tr td:first-child{width: auto;}
+</style>
+<script>
+var ts = new Date().getTime();
+function storeData()
+{
+	var lan_dhcpStart='192.168.2.2';
+	var last_ip=dhcp_start.indexOf('.');
+	last_ip = dhcp_start.indexOf('.',(last_ip+1));
+	last_ip=dhcp_start.indexOf('.',(last_ip+1));
+	var lan_sebnet=dhcp_start.substring(0,last_ip);
+	var virtual_server_host;
+	var str_ip;
+	var temp_str='';
+	var temp_des_str='';
+	i=1;
+	while(i<=20)
+	{
+		if(eval("document.tF.private_ip_"+i+".value")!='')
+		{
+			virtual_server_host = lan_sebnet+'.'+eval("document.tF.private_ip_"+i+".value");
+			/* Can type Gateway IP	
+			if(document.tF.lan_ip.value == virtual_server_host){
+				if(eval("document.tF.enable_"+i+".checked")==true){
+					alert(msg_hostIP_invalid);
+					eval("document.tF.private_ip_"+i+".focus();");
+					return false;
+				}
+			}
+			*/
+			if(eval("document.tF.private_ip_"+i+".value") <= 0 || eval("document.tF.private_ip_"+i+".value") >= 255 ){
+				alert(langDictionary[130])
+				return false;
+			}
+			else if(isIncludeDot(eval("document.tF.private_ip_"+i+".value")) ){
+				alert(langDictionary[1240])
+				return false;
+			}
+			if(eval("document.tF.enable_"+i+".checked")==true) temp_str+='1';
+			else    temp_str+='0';
+			var temp_des=eval("document.tF.description_"+i+".value");
+			if(validVisibleStr(temp_des)==false){
+				alert(langDictionary['msg_invalid_char_'])
+				return false
+			}
+			t1=temp_des.indexOf(' ');
+			while(t1!=-1)
+			{
+				temp_des=temp_des.replace(' ','__');
+				t1=temp_des.indexOf(' ');
+			}
+			temp_str+='-x';
+			if(temp_des!='') temp_des_str+=temp_des+" ";
+			else temp_des_str+="__ ";
+			var in_port_low=eval("document.tF.inbound_port_low_"+i+".value");
+			var in_port_high=eval("document.tF.inbound_port_high_"+i+".value");
+			var pr_port_low=eval("document.tF.private_port_low_"+i+".value");
+			var pr_port_high=eval("document.tF.private_port_high_"+i+".value");
+			if (in_port_high != pr_port_high || in_port_low != pr_port_low){ 
+				alert(langDictionary[132]);
+				eval("document.tf.inbound_port_"+i+".focus();"); return false;
+			}
+			else if(in_port_high < pr_port_high){
+				alert(langDictionary[132]);
+				eval("document.tf.inbound_port_"+i+".focus();"); return false;
+			}
+			/*
+			if (in_port_high>in_port_low && (in_port_high!=pr_port_high || in_port_low!=pr_port_low)){ 
+				alert(fv201);
+				eval("document.tF.inbound_port_"+i+".focus();"); return false;
+			}
+			else if(in_port_high==in_port_low && pr_port_low!=pr_port_high){
+				alert(fv201);
+				eval("document.tF.inbound_port_"+i+".focus();"); return false;
+			}
+			*/
+			var type=eval("document.tF.type_"+i+".value");
+			if (eval("document.tF.enable_"+i+".checked")==true){
+				for (j=1;j<i;j++){
+					if (eval("document.tF.type_"+j+".value")==type){
+						var in_port_low_j=eval("document.tF.inbound_port_low_"+j+".value");
+						var in_port_high_j=eval("document.tF.inbound_port_high_"+j+".value");
+						if ((in_port_low_j-0)>=in_port_low&&(in_port_low_j-0)<=in_port_high
+							|| (in_port_high_j-0)>=in_port_low&&(in_port_high_j-0)<=in_port_high
+							|| (in_port_low-0)>=in_port_low_j&&(in_port_low-0)<=in_port_high_j
+							|| (in_port_high-0)>=in_port_low_j&&(in_port_low-0)<=in_port_high_j) {
+							alert("Entry "+j+" and "+i+" have same protocol and overlapped port range.");
+							eval("document.tF.inbound_port_"+i+".focus();"); return false;
+						}
+					}
+				}
+			}
+			temp_str+='-'+in_port_low;
+			temp_str+='-'+in_port_high;
+			temp_str+='-'+type
+			temp_str+='-'+eval("document.tF.private_ip_"+i+".value");
+			temp_str+='-'+pr_port_low;
+			temp_str+='-'+pr_port_high;
+			temp_str+=' ';
+		}
+		i++;
+	}
+	document.tF.fwi.value=temp_str;
+	document.tF.fwi_des.value=temp_des_str;
+	return true;
+}
+function evaltF()
+{
+	for(tmp=1 ; tmp <=20 ; tmp++){
+		inboundport=eval('document.tF.inbound_port_'+tmp+'.value')
+		t1=inboundport.indexOf('-');
+		if(t1 == -1){
+			eval('document.tF.inbound_port_low_'+tmp+'.value = document.tF.inbound_port_'+tmp+'.value')
+			eval('document.tF.inbound_port_high_'+tmp+'.value = document.tF.inbound_port_'+tmp+'.value')
+		}
+		else{
+			eval('document.tF.inbound_port_low_'+tmp+'.value = inboundport.substring(0,t1)' )
+			eval('document.tF.inbound_port_high_'+tmp+'.value = inboundport.substring(t1+1)' )
+		}
+		privateport=eval('document.tF.private_port_'+tmp+'.value')
+		t1=privateport.indexOf('-');
+		if(t1 == -1){
+			eval('document.tF.private_port_low_'+tmp+'.value = document.tF.private_port_'+tmp+'.value')
+			eval('document.tF.private_port_high_'+tmp+'.value = document.tF.private_port_'+tmp+'.value')
+		}
+		else{
+			eval('document.tF.private_port_low_'+tmp+'.value = privateport.substring(0,t1)' )
+			eval('document.tF.private_port_high_'+tmp+'.value = privateport.substring(t1+1)' )
+		}
+	}
+	for(tmp=1;tmp<=6;tmp++)
+	{
+		if(!(isBlank(eval("document.tF.private_ip_"+tmp+".value"))) || !(isBlank(eval("document.tF.private_port_low_"+tmp+".value"))) || !(isBlank(eval("document.tF.inbound_port_low_"+tmp+".value"))) || !(isBlank(eval("document.tF.private_port_high_"+tmp+".value"))) || !(isBlank(eval("document.tF.inbound_port_high_"+tmp+".value"))) )
+		{
+			if (isNValidIP(eval("document.tF.private_ip_"+tmp+".value"))){ alert(langDictionary[130]); return false; }
+			if (isNValidPort(eval("document.tF.private_port_low_"+tmp+".value")) || isNValidPort(eval("document.tF.inbound_port_low_"+tmp+".value"))){ alert(langDictionary[88]); return false; }
+			if (isNValidPort(eval("document.tF.private_port_high_"+tmp+".value")) || isNValidPort(eval("document.tF.inbound_port_high_"+tmp+".value"))){ alert(langDictionary[88]); return false; }
+			if ((parseInt(eval("document.tF.inbound_port_low_"+tmp+".value")) <= parseInt("") && parseInt(eval("document.tF.inbound_port_high_"+tmp+".value")) >= parseInt("")) && (eval("document.tF.enable_"+tmp+".checked") == true) && (document.tF.h_remote_management.value == "enable" ))
+			{
+				alert(langDictionary['fvrm']);
+				eval("document.tF.inbound_port_"+tmp).focus();
+				eval("document.tF.inbound_port_"+tmp).select();
+				return false;
+			}
+			/*if (eval("document.tF.inbound_port_low_"+tmp+".value") == 88){ alert(fvrm); return false; } */
+			if (!(isBlank(eval("document.tF.inbound_port_high_"+tmp+".value")))&&(eval("document.tF.inbound_port_low_"+tmp+".value")>eval("document.tF.inbound_port_high_"+tmp+".value"))) { alert(langDictionary[132]); return false; }
+			if (!(isBlank(eval("document.tF.private_port_high_"+tmp+".value")))&&(eval("document.tF.private_port_low_"+tmp+".value")>eval("document.tF.private_port_high_"+tmp+".value"))) { alert(langDictionary[133]); return false; }
+		}
+	}
+
+	/* check inbound ports' singleness */
+	for(tmp = 1;tmp <= 20; tmp++)
+	{
+		if(!eval("document.tF.enable_"+tmp+".checked"))
+			continue;
+	        
+		if(!(isBlank(eval("document.tF.private_ip_"+tmp+".value"))) || !(isBlank(eval("document.tF.private_port_low_"+tmp+".value"))) || !(isBlank(eval("document.tF.inbound_port_low_"+tmp+".value"))) || !(isBlank(eval("document.tF.private_port_high_"+tmp+".value"))) || !(isBlank(eval("document.tF.inbound_port_high_"+tmp+".value"))) )
+		{
+			for(k = 1; k < tmp; k++)
+			{
+		        	if(!eval("document.tF.enable_"+k+".checked"))
+		                	continue;
+	                
+	        		if(!(isBlank(eval("document.tF.private_ip_"+k+".value"))) || !(isBlank(eval("document.tF.private_port_low_"+k+".value"))) || !(isBlank(eval("document.tF.inbound_port_low_"+k+".value"))) || !(isBlank(eval("document.tF.private_port_high_"+k+".value"))) || !(isBlank(eval("document.tF.inbound_port_high_"+k+".value"))) )
+	        		{
+		        		if(parseInt(eval("document.tF.type_"+k+".value")) == parseInt(eval("document.tF.type_"+tmp+".value")) 
+						|| 3 == parseInt(eval("document.tF.type_"+k+".value")) 
+						|| 3 == parseInt(eval("document.tF.type_"+tmp+".value")))
+		        		{
+						if( (parseInt(eval("document.tF.inbound_port_low_"+k+".value")) <= parseInt(eval("document.tF.inbound_port_low_"+tmp+".value"))
+							&& parseInt(eval("document.tF.inbound_port_low_"+tmp+".value")) <= parseInt(eval("document.tF.inbound_port_high_"+k+".value")))
+							|| (parseInt(eval("document.tF.inbound_port_low_"+tmp+".value")) <= parseInt(eval("document.tF.inbound_port_low_"+k+".value"))
+							&& parseInt(eval("document.tF.inbound_port_high_"+k+".value")) <= parseInt(eval("document.tF.inbound_port_high_"+tmp+".value"))))
+	    	        			{
+							alert(langDictionary[133]);
+							eval("document.tF.inbound_port_low_"+tmp).focus();
+							eval("document.tF.inbound_port_low_"+tmp).select();
+							return false;
+						}
+						if(parseInt(eval("document.tF.inbound_port_low_"+k+".value")) <= parseInt(eval("document.tF.inbound_port_high_"+tmp+".value"))
+							&& parseInt(eval("document.tF.inbound_port_high_"+tmp+".value")) <= parseInt(eval("document.tF.inbound_port_high_"+k+".value")))
+						{
+							alert(langDictionary[133]);
+							eval("document.tF.inbound_port_high_"+tmp).focus();
+							eval("document.tF.inbound_port_high_"+tmp).select();
+							return false;
+						}
+					}
+				}
+			}
+		}
+	}
+
+	if(storeData()==false)
+	{
+		return false;
+	}
+	$.post("/goform/formPortFwSimple", $("#p600602").serialize());
+        SubmitDelay(15);
+	return true;
+}
+$(document).ready(function(){
+	var index = "0";
+	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+	var f=document.tF;
+	if('' == '1')
+		f.h_remote_management.value="enable";
+	else
+		f.h_remote_management.value="disable";
+	initDataHeader();
+});
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var str24gpwd
+var str5gpwd
+var str24genc
+var tmpssid=1;
+function initDataHeader(){
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);//ken
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str5gpwd="66caye9w"
+	}
+
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+} 
+</script>
+
+<!-- / .lock -->
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+
+<div class="container top-pane hide-on-phones">
+        <div class="row">
+                <div class="twelve columns">
+                        <a href="000-dashboard.asp" tid="gtBackToDashboard"><script>dwt('gtBackToDashboard');</script></a>
+                        <ul class="sub-nav hide-on-phones" id="top_sub_nav">
+                                <li >
+                                <a href="fw_main.asp" ><script>dwt('23');</script></a>
+                                </li>
+                                <li class="current">
+                                <a href="fw_port.asp" ><script>dwt('24');</script></a>
+                                </li>
+                                <li >
+                                <a href="fw_mac.asp" ><script>dwt('26');</script></a>
+                                </li>
+                                <li >
+                                <a href="fw_dmz.asp" ><script>dwt('27');</script></a>
+                                </li>
+                                <li>
+                                <a href="ddns.asp" ><script>dwt('41');</script></a>
+                                </li>
+                                <li >
+                                <a href="fw_ping.asp" ><script>dwt('28');</script></a>
+                                </li>
+                                <li>
+                                <a href="log.asp" ><script>dwt('29');</script></a>
+                                </li>
+                        </ul>
+                </div>
+        </div>
+</div>
+<div class="main container mobileNav show-on-phones">
+        <div class="row">
+                <div class="twelve columns">
+                        <a href="000-dashboard.asp" id="pUtilsaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard');</script></span></a>
+                        <h2 tid=""><script>dwt('gtPortForwarding');</script></h2>
+                </div>
+        </div>
+</div>
+
+     <div class="main container">
+         <div class="row">
+             <div class="eight columns">
+        <div class="row page-title hide-on-phones">
+                <h3 tid="gtPortForwarding"><script>dwt('gtPortForwarding');</script></h3>
+        </div>
+                 <form class="nice" name="tF" method="post" action="" target="OUTfrm" id="p600602">
+				<p class="drop-ip">
+				<span>
+					<b><span tid="277"><script>dwt('277');</script></span></b>
+				</span>
+				<span style="vertical-align:middle;">
+					<select name=virtual_server_list>
+					<option value="Active Worlds">Active Worlds</option>
+					<option value="Age of Empires">Age of Empires</option>
+					<option value="Age of Empires Expansion: The Rise of Rome">Age of Empires Expansion: The Rise of Rome</option>
+					<option value="Age of Empires II Expansion: The Conquerors">Age of Empires II Expansion: The Conquerors</option>
+					<option value="Age of Empires II: The Age of Kings">Age of Empires II: The Age of Kings</option>
+					<option value="Age of Kings">Age of Kings</option>
+					<option value="Age of Wonders">Age of Wonders</option>
+					<option value="Aliens vs. Predator">Aliens vs. Predator</option>
+					<option value="Anarchy Online (BETA)">Anarchy Online (BETA)</option>
+					<option value="AOL Instant Messenger">AOL Instant Messenger</option>
+					<option value="Audiogalaxy Satellite">Audiogalaxy Satellite</option>
+					<option value="Baldur\'s Gate">Baldur's Gate</option>
+					<option value="BattleCom">BattleCom</option>
+					<option value="Battlefield Communicator">Battlefield Communicator</option>
+					<option value="Black and White">Black and White</option>
+					<option value="Blizzard Battle.net">Blizzard Battle.net</option>
+					<option value="Buddy Phone">Buddy Phone</option>
+					<option value="Bungie.net">Bungie.net</option>
+					<option value="Camerades">Camerades</option>
+					<option value="CART Precision Racing">CART Precision Racing</option>
+					<option value="Close Combat for Windows">Close Combat for Windows</option>
+					<option value="Close Combat III: The Russian Front">Close Combat III: The Russian Front</option>
+					<option value="Close Combat: A Bridge Too Far">Close Combat: A Bridge Too Far</option>
+					<option value="Combat Flight Simulator 2: WWII Pacific Theater">Combat Flight Simulator 2: WWII Pacific Theater</option>
+					<option value="Combat Flight Simulator: WWII Europe Series">Combat Flight Simulator: WWII Europe Series</option>
+					<option value="Crimson Skies">Crimson Skies</option>
+					<option value="CuSeeMe">CuSeeMe</option>
+					<option value="Dark Reign">Dark Reign</option>
+					<option value="Dark Reign 2">Dark Reign 2</option>
+					<option value="Delta Force 2">Delta Force 2</option>
+					<option value="Delta Three PC to Phone">Delta Three PC to Phone</option>
+					<option value="Descent 3">Descent 3</option>
+					<option value="Descent Freespace">Descent Freespace</option>
+					<option value="Diablo (1.07+)">Diablo (1.07+)</option>
+					<option value="Diablo I">Diablo I</option>
+					<option value="Diablo II">Diablo II</option>
+					<option value="DialPad.Com">DialPad.Com</option>
+					<option value="DirectX 7 Games">DirectX 7 Games</option>
+					<option value="DirectX 8 Games">DirectX 8 Games</option>
+					<option value="Domain Name Server (DNS)">Domain Name Server (DNS)</option>
+					<option value="Doom">Doom</option>
+					<option value="Dune 2000">Dune 2000</option>
+					<option value="Dwyco Video Conferencing">Dwyco Video Conferencing</option>
+					<option value="Elite Force">Elite Force</option>
+					<option value="Everquest">Everquest</option>
+					<option value="F-16">F-16</option>
+					<option value="F-22 Lightning 3">F-22 Lightning 3</option>
+					<option value="F-22 Raptor">F-22 Raptor</option>
+					<option value="F22 Raptor (Novalogic)">F22 Raptor (Novalogic)</option>
+					<option value="Falcon 4.0">Falcon 4.0</option>
+					<option value="Fighter Ace II">Fighter Ace II</option>
+					<option value="Flight Simulator 2000">Flight Simulator 2000</option>
+					<option value="Flight Simulator 98">Flight Simulator 98</option>
+					<option value="Freetel">Freetel</option>
+					<option value="FTP Server">FTP Server</option>
+					<option value="GNUtella">GNUtella</option>
+					<option value="Golf 1998 Edition">Golf 1998 Edition</option>
+					<option value="Golf 1999 Edition">Golf 1999 Edition</option>
+					<option value="Golf 2001 Edition">Golf 2001 Edition</option>
+					<option value="Go2Call">Go2Call</option>
+					<option value="Half Life">Half Life</option>
+					<option value="Half Life Server">Half Life Server</option>
+					<option value="Heretic II Server">Heretic II Server</option>
+					<option value="I76">I76</option>
+					<option value="ICUII Client">ICUII Client</option>
+					<option value="Ivisit">Ivisit</option>
+					<option value="IRC">IRC</option>
+					<option value="IStreamVideo2HP">IStreamVideo2HPz</option>
+					<option value="KaZaA">KaZaA</option>
+					<option value="Kohan Immortal Sovereigns">Kohan Immortal Sovereigns</option>
+					<option value="LapLink Gold">LapLink Gold</option>
+					<option value="Links 2001">Links 2001</option>
+					<option value="Lotus Notes Server">Lotus Notes Server</option>
+					<option value="Mail (POP3)">Mail (POP3)</option>
+					<option value="Mail (SMTP)">Mail (SMTP)</option>
+					<option value="MechCommander 2.0">MechCommander 2.0</option>
+					<option value="MechWarrior 3">MechWarrior 3</option>
+					<option value="MechWarrior 4">MechWarrior 4</option>
+					<option value="Media Player 7">Media Player 7</option>
+					<option value="Midtown Madness">Midtown Madness</option>
+					<option value="Midtown Madness 2">Midtown Madness 2</option>
+					<option value="Mig 29">Mig 29</option>
+					<option value="Monster Truck Madness">Monster Truck Madness</option>
+					<option value="Monster Truck Madness 2">Monster Truck Madness 2</option>
+					<option value="Motocross Madness">Motocross Madness</option>
+					<option value="Motocross Madness 2">Motocross Madness 2</option>
+					<option value="Motorhead Server">Motorhead Server</option>
+					<option value="MSN Gaming Zone">MSN Gaming Zone</option>
+					<option value="MSN Messenger">MSN Messenger</option>
+					<option value="Myth">Myth</option>
+					<option value="Myth II Server">Myth II Server</option>
+					<option value="Myth: The Fallen Lords">Myth: The Fallen Lords</option>
+					<option value="Need for Speed">Need for Speed</option>
+					<option value="NetMech">NetMech</option>
+					<option value="Netmeeting 3.0, Intel Video Phone">Netmeeting 2.0, 3.0, Intel Video Phone</option>
+					<option value="Network Time Protocol (NTP)">Network Time Protocol (NTP)</option>
+					<option value="News Server (NNTP)">News Server (NNTP)</option>
+					<option value="OKWeb">OKWeb</option>
+					<option value="OKWin">OKWin</option>
+					<option value="Outlaws">Outlaws</option>
+					<option value="Pal Talk">Pal Talk</option>
+					<option value="pcAnywhere v7.5">pcAnywhere v7.5</option>
+					<option value="PhoneFree">PhoneFree</option>
+					<option value="Polycom ViaVideo H.323">Polycom ViaVideo H.323</option>
+					<option value="Polycom ViaVideo H.324">Polycom ViaVideo H.324</option>
+					<option value="Quake">Quake</option>
+					<option value="Quake II (Client and Server)">Quake II (Client and Server)</option>
+					<option value="Quake III">Quake III</option>
+					<option value="RealAudio">RealAudio</option>
+					<option value="Real Player 8 Plus">Real Player 8 Plus</option>
+					<option value="Red Alert">Red Alert</option>
+					<option value="Rise of Rome">Rise of Rome</option>
+					<option value="Roger Wilco">Roger Wilco</option>
+					<option value="Rogue Spear">Rogue Spear</option>
+					<option value="Secure Shell Server (SSH)">Secure Shell Server (SSH)</option>
+					<option value="Secure Web Server (HTTPS)">Secure Web Server (HTTPS)</option>
+					<option value="ShoutCast">ShoutCast</option>
+					<option value="SNMP">SNMP</option>
+					<option value="SNMP Trap">SNMP Trap</option>
+					<option value="Speak Freely">Speak Freely</option>
+					<option value="StarCraft">StarCraft</option>
+					<option value="Starfleet Command">Starfleet Command</option>
+					<option value="StarLancer">StarLancer</option>
+					<option value="SWAT3">SWAT3</option>
+					<option value="Telnet Server">Telnet Server</option>
+					<option value="The 4th Coming">The 4th Coming</option>
+					<option value="Tiberian Sun: C&C">Tiberian Sun: C&C</option>
+					<option value="Tiberian Sun: C&C III">Tiberian Sun: C&C III"</option>
+					<option value="Total Annihilation">Total Annihilation</option>
+					<option value="Ultima">Ultima</option>
+					<option value="Unreal Tournament">Unreal Tournament</option>
+					<option value="Urban Assault">Urban Assault</option>
+					<option value="VoxPhone 3.0">VoxPhone 3.0</option>
+					<option value="Warbirds 2">Warbirds 2</option>
+					<option value="Web Server (HTTP)">Web Server (HTTP)</option>
+					<option value="WebPhone 3.0">WebPhone 3.0</option>
+					<option value="Westwood Online">Westwood Online</option>
+					<option value="Windows 2000 Terminal Server">Windows 2000 Terminal Server</option>
+					<option value="X Windows">X Windows</option>
+					<option value="Yahoo Pager">Yahoo Pager</option>
+					<option value="Yahoo Messenger Chat">Yahoo Messenger Chat</option>
+<!--
+					<script type="text/javascript">
+					dw('<option value="Active Worlds">'+fv3+'</option>');
+					dw('<option value="Age of Empires">'+fv4+'</option>');
+					dw('<option value="Age of Empires Expansion: The Rise of Rome">'+fv5+'</option>');
+					dw('<option value="Age of Empires II Expansion: The Conquerors">'+fv6+'</option>');
+					dw('<option value="Age of Empires II: The Age of Kings">'+fv7+'</option>');
+					dw('<option value="Age of Kings">'+fv8+'</option>');
+					dw('<option value="Age of Wonders">'+fv9+'</option>');
+					dw('<option value="Aliens vs. Predator">'+fv10+'</option>');
+					dw('<option value="Anarchy Online (BETA)">'+fv11+'</option>');
+					dw('<option value="AOL Instant Messenger">'+fv12+'</option>');
+					dw('<option value="Audiogalaxy Satellite">'+fv13+'</option>');
+					dw('<option value="Baldur\'s Gate">'+fv14+'</option>');
+					dw('<option value="BattleCom">'+fv15+'</option>');
+					dw('<option value="Battlefield Communicator">'+fv16+'</option>');
+					dw('<option value="Black and White">'+fv17+'</option>');
+					dw('<option value="Blizzard Battle.net">'+fv18+'</option>');
+					dw('<option value="Buddy Phone">'+fv19+'</option>');
+					dw('<option value="Bungie.net">'+fv20+'</option>');
+					dw('<option value="Camerades">'+fv21+'</option>');
+					dw('<option value="CART Precision Racing">'+fv22+'</option>');
+					dw('<option value="Close Combat for Windows">'+fv23+'</option>');
+					dw('<option value="Close Combat III: The Russian Front">'+fv24+'</option>');
+					dw('<option value="Close Combat: A Bridge Too Far">'+fv25+'</option>');
+					dw('<option value="Combat Flight Simulator 2: WWII Pacific Theater">'+fv26+'</option>');
+					dw('<option value="Combat Flight Simulator: WWII Europe Series">'+fv27+'</option>');
+					dw('<option value="Crimson Skies">'+fv28+'</option>');
+					dw('<option value="CuSeeMe">'+fv142+'</option>');
+					dw('<option value="Dark Reign">'+fv29+'</option>');
+					dw('<option value="Dark Reign 2">'+fv30+'</option>');
+					dw('<option value="Delta Force 2">'+fv31+'</option>');
+					dw('<option value="Delta Three PC to Phone">'+fv32+'</option>');
+					dw('<option value="Descent 3">'+fv33+'</option>');
+					dw('<option value="Descent Freespace">'+fv34+'</option>');
+					dw('<option value="Diablo (1.07+)">'+fv35+'</option>');
+					dw('<option value="Diablo I">'+fv36+'</option>');
+					dw('<option value="Diablo II">'+fv37+'</option>');
+					dw('<option value="DialPad.Com">'+fv38+'</option>');
+					dw('<option value="DirectX 7 Games">'+fv39+'</option>');
+					dw('<option value="DirectX 8 Games">'+fv40+'</option>');
+					dw('<option value="Domain Name Server (DNS)">'+fv41+'</option>');
+					dw('<option value="Doom">'+fv42+'</option>');
+					dw('<option value="Dune 2000">'+fv43+'</option>');
+					dw('<option value="Dwyco Video Conferencing">'+fv44+'</option>');
+					dw('<option value="Elite Force">'+fv45+'</option>');
+					dw('<option value="Everquest">'+fv46+'</option>');
+					dw('<option value="F-16">'+fv47+'</option>');
+					dw('<option value="F-22 Lightning 3">'+fv48+'</option>');
+					dw('<option value="F-22 Raptor">'+fv49+'</option>');
+					dw('<option value="F22 Raptor (Novalogic)">'+fv50+'</option>');
+					dw('<option value="Falcon 4.0">'+fv51+'</option>');
+					dw('<option value="Fighter Ace II">'+fv52+'</option>');
+					dw('<option value="Flight Simulator 2000">'+fv53+'</option>');
+					dw('<option value="Flight Simulator 98">'+fv54+'</option>');
+					dw('<option value="Freetel">'+fv55+'</option>');
+					dw('<option value="FTP Server">'+fv56+'</option>');
+					dw('<option value="GNUtella">'+fv57+'</option>');
+					dw('<option value="Golf 1998 Edition">'+fv58+'</option>');
+					dw('<option value="Golf 1999 Edition">'+fv59+'</option>');
+					dw('<option value="Golf 2001 Edition">'+fv60+'</option>');
+					dw('<option value="Go2Call">'+fv61+'</option>');
+					dw('<option value="Half Life">'+fv62+'</option>');
+					dw('<option value="Half Life Server">'+fv63+'</option>');
+					dw('<option value="Heretic II Server">'+fv64+'</option>');
+					dw('<option value="I76">'+fv65+'</option>');
+					dw('<option value="ICUII Client">'+fv143+'</option>');
+					dw('<option value="Ivisit">'+fv66+'</option>');
+					dw('<option value="IRC">'+fv67+'</option>');
+					dw('<option value="IStreamVideo2HP">'+fv68+'</option>');
+					dw('<option value="KaZaA">'+fv69+'</option>');
+					dw('<option value="Kohan Immortal Sovereigns">'+fv70+'</option>');
+					dw('<option value="LapLink Gold">'+fv71+'</option>');
+					dw('<option value="Links 2001">'+fv72+'</option>');
+					dw('<option value="Lotus Notes Server">'+fv73+'</option>');
+					dw('<option value="Mail (POP3)">'+fv74+'</option>');
+					dw('<option value="Mail (SMTP)">'+fv75+'</option>');
+					dw('<option value="MechCommander 2.0">'+fv76+'</option>');
+					dw('<option value="MechWarrior 3">'+fv77+'</option>');
+					dw('<option value="MechWarrior 4">'+fv78+'</option>');
+					dw('<option value="Media Player 7">'+fv79+'</option>');
+					dw('<option value="Midtown Madness">'+fv80+'</option>');
+					dw('<option value="Midtown Madness 2">'+fv81+'</option>');
+					dw('<option value="Mig 29">'+fv82+'</option>');
+					dw('<option value="Monster Truck Madness">'+fv83+'</option>');
+					dw('<option value="Monster Truck Madness 2">'+fv84+'</option>');
+					dw('<option value="Motocross Madness">'+fv85+'</option>');
+					dw('<option value="Motocross Madness 2">'+fv86+'</option>');
+					dw('<option value="Motorhead Server">'+fv87+'</option>');
+					dw('<option value="MSN Gaming Zone">'+fv88+'</option>');
+					dw('<option value="MSN Messenger">'+fv89+'</option>');
+					dw('<option value="Myth">'+fv90+'</option>');
+					dw('<option value="Myth II Server">'+fv91+'</option>');
+					dw('<option value="Myth: The Fallen Lords">'+fv92+'</option>');
+					dw('<option value="Need for Speed">'+fv93+'</option>');
+					dw('<option value="NetMech">'+fv94+'</option>');
+					dw('<option value="Netmeeting 3.0, Intel Video Phone">'+fv140+'</option>');
+					dw('<option value="Network Time Protocol (NTP)">'+fv95+'</option>');
+					dw('<option value="News Server (NNTP)">'+fv96+'</option>');
+					dw('<option value="OKWeb">'+fv97+'</option>');
+					dw('<option value="OKWin">'+fv98+'</option>');
+					dw('<option value="Outlaws">'+fv99+'</option>');
+					dw('<option value="Pal Talk">'+fv137+'</option>');
+					dw('<option value="pcAnywhere v7.5">'+fv100+'</option>');
+					dw('<option value="PhoneFree">'+fv101+'</option>');
+					dw('<option value="Polycom ViaVideo H.323">'+fv102+'</option>');
+					dw('<option value="Polycom ViaVideo H.324">'+fv103+'</option>');
+					dw('<option value="Quake">'+fv104+'</option>');
+					dw('<option value="Quake II (Client and Server)">'+fv105+'</option>');
+					dw('<option value="Quake III">'+fv106+'</option>');
+					dw('<option value="RealAudio">'+fv139+'</option>');
+					dw('<option value="Real Player 8 Plus">'+fv138+'</option>');
+					dw('<option value="Red Alert">'+fv107+'</option>');
+					dw('<option value="Rise of Rome">'+fv108+'</option>');
+					dw('<option value="Roger Wilco">'+fv109+'</option>');
+					dw('<option value="Rogue Spear">'+fv110+'</option>');
+					dw('<option value="Secure Shell Server (SSH)">'+fv111+'</option>');
+					dw('<option value="Secure Web Server (HTTPS)">'+fv112+'</option>');
+					dw('<option value="ShoutCast">'+fv113+'</option>');
+					dw('<option value="SNMP">'+fv114+'</option>');
+					dw('<option value="SNMP Trap">'+fv115+'</option>');
+					dw('<option value="Speak Freely">'+fv116+'</option>');
+					dw('<option value="StarCraft">'+fv117+'</option>');
+					dw('<option value="Starfleet Command">'+fv118+'</option>');
+					dw('<option value="StarLancer">'+fv119+'</option>');
+					dw('<option value="SWAT3">'+fv120+'</option>');
+					dw('<option value="Telnet Server">'+fv121+'</option>');
+					dw('<option value="The 4th Coming">'+fv122+'</option>');
+					dw('<option value="Tiberian Sun: C&C">'+fv123+'</option>');
+					dw('<option value="Tiberian Sun: C&C III">'+fv124+'</option>');
+					dw('<option value="Total Annihilation">'+fv125+'</option>');
+					dw('<option value="Ultima">'+fv126+'</option>');
+					dw('<option value="Unreal Tournament">'+fv127+'</option>');
+					dw('<option value="Urban Assault">'+fv128+'</option>');
+					dw('<option value="VoxPhone 3.0">'+fv129+'</option>');
+					dw('<option value="Warbirds 2">'+fv130+'</option>');
+					dw('<option value="Web Server (HTTP)">'+fv131+'</option>');
+					dw('<option value="WebPhone 3.0">'+fv132+'</option>');
+					dw('<option value="Westwood Online">'+fv141+'</option>');
+					dw('<option value="Windows 2000 Terminal Server">'+fv133+'</option>');
+					dw('<option value="X Windows">'+fv134+'</option>');
+					dw('<option value="Yahoo Pager">'+fv135+'</option>');
+					dw('<option value="Yahoo Messenger Chat">'+fv136+'</option>');
+					</script>
+-->
+					</select>
+				</span>&nbsp;&nbsp;
+				<a name="add_btn" class="nice radius small white button margin-rows" style="vertical-align:middle;max-width:100px;" onclick="AddVirtualServer(document.tF.virtual_server_list.value);" tid="113"><script>dwt('113');</script></a>&nbsp;&nbsp;
+				</p>
+                             <p class="drop-ip"><span><b><span tid="276"><script>dwt('276');</script></span>&nbsp;</b>
+ 				<span id="clr_vs_list" style="vertical-align:middle;">
+ 				<select style="color:#000000" size="1" name="clr_list">
+				<script>
+					count = 1
+					while(count <= 20){
+						dw('<option value='+count+'>'+count+'</option>')
+						count++
+					}
+				</script>
+ 				<option value="all"><script>dwt('376');</script></option>
+ 				</select>
+ 				</span>&nbsp;&nbsp;
+                                 <a href="#clear" class="nice radius small white button margin-rows" style="vertical-align:middle;max-width:100px;" tid="411" onClick="return ClearEntry(document.tF.clr_list.value)"><script>dwt('411');</script></a>&nbsp;&nbsp;
+                             </p>
+                             <p class="drop-ip">
+                                 <div id="div_tb">
+                                     <table id="tb_vs_list" class="minimal nofirst minimal_0" >
+                                         <thead>
+                                             <tr>
+                                                 <th>&nbsp;</th>
+                                                 <th><b><font tid="374"><script>dwt('374');</script></font></b>
+                                                 </th>
+                                                 <th><b><font tid="278"><script>dwt('278');</script></font></b>
+                                                 </th>
+                                                 <th><b><font tid="279"><script>dwt('279');</script></font></b>
+                                                 </th>
+                                                 <th><b><font tid="280"><script>dwt('280');</script></font></b>
+                                                 </th>
+                                                 <th><b><font tid="281"><script>dwt('281');</script></font></b>
+                                                 </th>
+                                                 <th><b><font tid="282"><script>dwt('282');</script></font></b>
+                                                 </th>
+                                             </tr>
+                                         </thead>
+                                         <tbody>
+ 					<script>
+					var strHtml;
+					count=1;
+					var token= new Array(21);
+					token[1]='';
+					token[2]='';
+					token[3]='';
+					token[4]='';
+					token[5]='';
+					token[6]='';
+					token[7]='';
+					token[8]='';
+					token[9]='';
+					token[10]='';
+					token[11]='';
+					token[12]='';
+					token[13]='';
+					token[14]='';
+					token[15]='';
+					token[16]='';
+					token[17]='';
+					token[18]='';
+					token[19]='';
+					token[20]='';
+					var token_des= new Array(21);
+					token_des[1]='';
+					token_des[2]='';
+					token_des[3]='';
+					token_des[4]='';
+					token_des[5]='';
+					token_des[6]='';
+					token_des[7]='';
+					token_des[8]='';
+					token_des[9]='';
+					token_des[10]='';
+					token_des[11]='';
+					token_des[12]='';
+					token_des[13]='';
+					token_des[14]='';
+					token_des[15]='';
+					token_des[16]='';
+					token_des[17]='';
+					token_des[18]='';
+					token_des[19]='';
+					token_des[20]='';
+					while(count<=20)
+					{
+						var temp=token[count];
+						if(temp=='') temp='-------';
+						t1=temp.indexOf('-');
+						t2=temp.indexOf('-',t1+1);
+						t3=temp.indexOf('-',t2+1);
+						t4=temp.indexOf('-',t3+1);
+						t5=temp.indexOf('-',t4+1);
+						t6=temp.indexOf('-',t5+1);
+						t7=temp.indexOf('-',t6+1);
+						var dhcp_start='192.168.2.2';
+						/*var dhcp_start='192.168.21.100'; */
+						t9=dhcp_start.indexOf('.');
+						t9=dhcp_start.indexOf('.',(t9+1));
+						t9=dhcp_start.indexOf('.',(t9+1));
+						strHtml='<tr><td class="drop-ip middle" align=center >'+count+'<input type="hidden" name="name_'+count+'"></td>'
+						+'<td class="drop-ip middle" align="center"><input type="checkbox" class="margin-rows" name="enable_'+count+'" id="enable_'+count+'" value="1" ';
+						document.write(strHtml);
+						if(temp.substring(0,t1)=='1')document.write('checked');
+						var temp_des=token_des[count];
+						var inbound_port=temp.substring(t2+1,t4)
+						if(t4-t2==2)
+							inbound_port=""
+						else if (temp.substring(t2+1,t3) == temp.substring(t3+1,t4))
+							inbound_port=temp.substring(t2+1,t3)
+						
+						strHtml=' ></td><td class="drop-ip middle" align="center">'+'<input type="text" class="input-text xsmall" name="description_'+count+'" id="description_'+count+'" size="10" maxlength="40" value="'+temp_des+'" ></td>'
+						+'<td class="drop-ip middle" align="center"><input type="text" class="input-text csmall" name="inbound_port_'+count+'" id="inbound_port_'+count+'" maxlength="40" value="'+inbound_port+'"> '
+						+'<input type=hidden name="inbound_port_low_'+count+'" >'
+						+'<input type=hidden name="inbound_port_high_'+count+'" >'
+						/*
+						+'- <input type="text" name="inbound_port_high_'+count+'" id="inbound_port_high_'+count
+						+'" size="3" maxlength="5" value="'+temp.substring(t3+1,t4)+'">'
+						*/
+						+'</td><td class="drop-ip middle" align="center">'
+						+'<select name="type_'+count+'" id="type_'+count
+						+'"><OPTION VALUE=1 ';
+						document.write(strHtml);
+						if(temp.substring(t4+1,t5)=='1') document.write('selected');
+						document.write(' >TCP<OPTION VALUE=2 ');
+						if(temp.substring(t4+1,t5)=='2') document.write('selected');
+						document.write(' >UDP<OPTION VALUE=3 ');
+						if(temp.substring(t4+1,t5)=='3') document.write('selected');
+
+						var private_port=temp.substring(t6+1)
+						if(private_port.length==1)
+							private_port=""
+						else if (temp.substring(t6+1,t7) == temp.substring(t7+1))
+							private_port=temp.substring(t6+1,t7)
+						strHtml=' >BOTH</select>'+'</td><td class="drop-ip middle" align="center"><span class="drop-ip">'
+						+dhcp_start.substring(0,t9)+'.<input type="text" class="input-text xsmall" name="private_ip_'+count
+						+'" id="private_ip_'+count+'" maxlength="3" value="'+temp.substring(t5+1,t6)
+						+'"></span></td>'+'<td class="drop-ip middle" align="center">'
+						+'<input type="text" class="input-text csmall" name="private_port_'+count+'" id="private_port_'+count
+						+'" maxlength="40" value="'+private_port+'"> '
+						+'<input type=hidden name="private_port_low_'+count+'" >'
+						+'<input type=hidden name="private_port_high_'+count+'" >'
+/*
+						+'- <input type="text" class="input-text xsmall" name="private_port_high_'+count+'" id="private_port_high_'+count
+						+'" size="3" maxlength="5" value="'+temp.substring(t7+1)+'">
+						*/
+						+'</td></tr>';
+						document.write(strHtml);
+						count++;
+					}//while
+					/*
+ 					for(i=0; i<20; i++){
+ 						document.write('<tr>');
+ 						document.write('<td class="drop-ip middle" align="center">'+(i+1)+'</td>');
+ 						document.write('<td class="drop-ip middle" align="center">');
+ 						document.write('<input type="checkbox" class="margin-rows" name="enable'+i+'" value="1" nocheck="0"></td>');
+ 						document.write('<td class="drop-ip middle">');
+ 						document.write('<input type="text" class="input-text xsmall" maxlength="40" name="service_name'+i+'"></td>');
+ 						document.write('<td class="drop-ip middle">');
+ 						document.write('<input type="text" class="input-text csmall" maxlength="40" name="wan_port'+i+'"></td>');
+ 						document.write('<td class="drop-ip middle" align="center">');
+ 						document.write('<select name="protocol'+i+'" class="input-text">');
+ 						document.write('<option value="6">TCP</option>');
+ 						document.write('<option value="17">UDP</option>');
+ 						document.write('<option value="255">TCP&UDP</option>');
+ 						document.write('</select></td>');
+ 						document.write('<td class="drop-ip middle">');
+ 						document.write('<nobr><span class="drop-ip">"192.168.XX"');
+ 						document.write('<input type="text" class="input-text xsmall" maxlength="3" name="lan_ip'+i+'"></span><nobr></td>');
+ 						document.write('<td class="drop-ip middle" align="center">');
+ 						document.write('<input type="text" class="input-text csmall" maxlength="40" name="lan_porti'+i+'"></td>');
+ 						document.write('</tr>');
+ 					}
+					*/
+ 					</script>
+ 						<!--
+ 						<tr>
+ 							<td class="drop-ip middle" align="center">1</td>
+ 							<td class="drop-ip middle" align="center">
+ 							<input type="checkbox" class="margin-rows" name="enable0" value="1" nocheck="0">
+ 							</td>
+ 							<td class="drop-ip middle" >
+ 							<input type="text" class="input-text xsmall" maxlength="40" name="service_name0">
+ 							</td>	
+ 							<td class="drop-ip middle" >
+ 							<input type="text" class="input-text csmall" maxlength="40" name="wan_port0">
+ 							</td>	
+ 							<td class="drop-ip middle" align="center">
+ 							<select name="protocol0" class="input-text">
+ 								<option value="6">TCP</option>
+ 								<option value="17">UDP</option>
+ 								<option value="255">TCP&UDP</option>
+ 							</select>
+ 							</td>
+ 							<td class="drop-ip middle">
+ 							<nobr><span class="drop-ip">"192.168.XX"
+ 							<input type="text" class="input-text xsmall" maxlength="3" name="lan_ip0"></span><nobr>
+ 							</td>
+ 							<td class="drop-ip middle" align="center">
+ 							<input type="text" class="input-text csmall" maxlength="40" name="lan_port0">
+ 							</td>	
+ 							
+ 						</tr>
+ 						-->
+                                             <tr>
+                                                 <td colspan="7"></td>
+                                             </tr>
+                                         </tbody>
+                                     </table>
+                                 </div>
+                                 <div id="div_catch"></div>
+                             </p>
+			<a href="#save" class="nice radius large green button" tid="49" onClick="return evaltF()" id="dnsapply"><script>dwt('49');</script></a>
+			<INPUT type=hidden value=fw_virtual_server name=page>
+			<INPUT type=hidden value=2 name=logout>
+			<input type=hidden name="h_remote_management" value="">
+			<INPUT type=hidden value=Apply name=action>
+			<INPUT type=hidden value=firewall name=pageaction>
+			<INPUT type=hidden name=fwi>
+			<INPUT type=hidden name=fwi_des>
+			<INPUT type=hidden name=lan_ip value="192.168.2.1">
+			<INPUT type=hidden value=fw_port.asp name=webpage>
+                 </form>
+             </div>
+<div class="sidebar four columns">
+<div>
+<h6 tid="htPortForward" class="tpad30"><script>dwt('htPortForward')</script></h6>
+<p><span tid="htPortForwardContent"><script>dwt('htPortForwardContent')</script></span><span class="nub"></span></p>
+</div>
+</div>
+         </div>
+     </div>
+<div id="p800" class="large reveal-modal">
+        <h1 tid="p800t001"><script>dwt('p800t001');</script>&hellip;</h1>
+        <p class="lead" tid="p800t002" id="submit_run"><script>dwt('p800t002');</script></p>
+        <p class="lead hide" tid="2053" id="submit_ok"><script>dwt('2053');</script></p>
+        <p class="lead hide" tid="422" id="submit_rsok"><script>dwt('422');</script></p>
+        <p class="lead hide" tid="2054" id="submit_fmwok"><script>dwt('2054');</script></p>
+	<div class="installation">
+		<span class="progress" id="p800Progress"></span>
+	</div>
+</div>
+<div id="p801" class="large reveal-modal">
+        <h1 tid="gtReconnectingHell"><script>dwt('gtReconnectingHell');</script></h1>
+        <p class="waiting"><img width="28" src="images/loading.gif"><span tid="p801t002"><script>dwt('p801t002');</script></span></p>
+</div>
+<div id="bg"></div>
+
+<!-- Dashboard Footer -->
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<!-- container -->
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>

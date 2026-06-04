@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+	<title tid="gtDashTitle">Belkin router dashboard</title>
+	<link rel="icon" href="images/favicon/favicon.ico">
+	<!-- For third-generation iPad with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+	<!-- For iPhone with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+	<!-- For first- and second-generation iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+	<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+	<link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+	<link rel="stylesheet" href="stylesheets/app.css">
+	<!--[if lt IE 9]>
+		<link rel="stylesheet" href="stylesheets/ie.css">
+	<![endif]-->
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<script>
+var ts = new Date().getTime();
+var originalSettings = ""; // This is populated by Ajax call that loads current settings.  Save this as a string because it's easier for the beforeunload check.
+var orig24 = {}, orig5 = {};
+var origCheckbox = {};
+$(document).ready(function(){
+	var index = "0";
+	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+
+	var f = document.p2500f001;
+	if (0 == 0)
+		f.hiddenssid.checked = true
+	else
+		f.hiddenssid.checked = false
+
+	if (0 == 0)
+		f.hiddenssid2.checked = true
+	else
+		f.hiddenssid2.checked = false
+/*
+	f.wl0_gmode_protection.selectedIndex = 1 - 1
+	f.wl0_gmode_protection2.selectedIndex = 1 - 1
+	f.wl0_qos.selectedIndex = 1
+	f.wl0_qos2.selectedIndex = 1
+*/
+	f.ssid.value = 'belkin.6d1'
+	f.ssid2.value = 'belkin.6d1.media'
+	show_ex_channel(0,0)
+	show_ex_channel(0,1)
+	show_ex_channel(1,0)
+	show_ex_channel(1,1)
+	if(0 == 2 && 0 > 4)
+		f.wl_ext_channel.selectedIndex=1
+	// Initial state
+	if (!$('#AdvOpt5').is(":hidden")) {
+		$('#expandoArrow5').rotate(90);
+	}
+	if (!$('#AdvOpt24').is(":hidden")) {
+		$('#expandoArrow24').rotate(90);
+	}
+$("#p2500aSave").click( function(e) {
+	e.preventDefault();
+	validateSSID();
+	validatePSK();
+
+	if($('#p2500e24SSID').is(":visible") || $('#p2500e5SSID').is(":visible") || $('#p2500e24PSK').is(":visible") || $('#p2500e5PSK').is(":visible"))
+		return false	
+//	if ($(".error").filter(":visible").length!=0)
+//		return false;
+
+	var net24 = readNetwork("#p2500f24");
+	var net5 = readNetwork("#p2500f5");
+		
+	// Show p2505 if the user turned off one or both wifi radios.
+	if (($("#p2500f24EnableVal").val() == "true" && enable2g == 0) || ($("#p2500f5EnableVal").val() == "true" && enable5g == 0)) {
+		showMsgMask("p2505")
+	} 
+	else {
+		evaltF();
+	}
+});
+
+	$('#p2505a003').click(function() {evaltF();});
+	$('#p2505a004').click(function() {
+		closeMsgMask("p2505")
+	});
+
+	initDataHeader();
+	/*
+	var isChanged = false;
+	var orig24 = {}, orig5 = {};
+	$(window).bind('beforeunload', function(){
+		// If the serialized settings are different, return the translated string for the browser to show.
+		isChanged = originalSettings != $("#p2500f001").serialize();
+		if (isChanged) {
+			// TODO: translate string
+			return langDictionary['gtSettingsNotSaved'];
+		} 
+		else {
+			return;
+		}
+	});
+	*/
+
+});
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var enable2g=0
+var enable5g=0
+var str24gpwd
+var str5gpwd
+var str24genc
+var tmpssid=1;
+function initDataHeader(){
+	var f = document.p2500f001
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);//ken
+	//2.4G default setting
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+		f.p2500f24Security.selectedIndex = 3
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+		f.p2500f24Security.selectedIndex = 2
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+		var wpaCipherSuite = 3
+		if (wpaCipherSuite == 3)
+			f.p2500f24Security.selectedIndex = 0 
+		else //else if (wpaCipherSuite == 4)
+			f.p2500f24Security.selectedIndex = 1	
+	}
+	$('#p2500f24PSK').val(str24gpwd);
+	
+	//5G default setting
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+		f.p2500f5Security.selectedIndex = 3
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+		f.p2500f5Security.selectedIndex = 2
+	}
+	else{
+		str5gpwd="66caye9w"
+		var wpaCipherSuite = 3
+		if (wpaCipherSuite == 3)
+			f.p2500f5Security.selectedIndex = 0 
+		else //else if (wpaCipherSuite == 4)
+			f.p2500f5Security.selectedIndex = 1	
+	}
+	$('#p2500f5PSK').val(str5gpwd);
+
+	InitWirelessOnffStatus("#p2500f24",enable2g);
+	InitWirelessOnffStatus("#p2500f5",enable5g);
+
+	var isSame = true;
+	if ($('#p2500f24SSID').val() != $('#p2500f5SSID').val())
+		isSame = false;
+	if ($('#p2500f24PSK').val() != $('#p2500f5PSK').val())
+		isSame = false;
+	if ($('#p2500f24Security').val() != $('#p2500f5Security').val())
+		isSame = false;
+	$('#p2500fSame').attr('checked', isSame);
+	originalSettings = $("#p2500f001").serialize();
+//	setPSKVisible("p2500f5Security");
+//	setPSKVisible("p2500f24Security");
+	updateMode("p2500f24Mode", 3);
+	updateMode("p2500f5Mode", 3);
+
+	$("#p2500f5SSID,#p2500f5PSK,#p2500f5Security").each(function(){
+		origCheckbox[this.id] = $(this).val();
+	});
+
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+}
+function show_ex_channel(change,type)
+{
+	var f = document.p2500f001;
+	if(type == '0')
+	{
+		var ex_cha = "1";
+		var st_cha = "auto";
+		var max_cha = "11";
+		var bandw = "0";
+		var region = "";
+		var wl_ext_channel = 'wl_ext_channel';
+	}
+	else if(type == '1')
+	{
+		var ex_cha = "36";
+		var st_cha = "auto";
+		var max_cha = "";
+		var bandw = "1";
+		var wl_ext_channel = 'wl_ext_channel_5g';
+	}
+	else
+	{
+		var ex_cha = "36";
+		var st_cha = "auto";
+		var max_cha = "";
+		var bandw = "1";
+		var wl_ext_channel = 'wl_ext_channel_5g_p';
+	}
+	var tmp = "";
+	if (type == '0')
+		tmp += '<label for="p2500f24Ext" tid="gtExtChan">' + translate('gtExtChan') + '</label>';
+	else
+		tmp += '<label for="p2500f5Ext" tid="gtExtChan">' + translate('gtExtChan') + '</label>';
+
+	if(change)
+	{
+		if(type == '0')
+		{
+			st_cha = f.chan.value;
+			bandw = f.wlanNChanWidth.value;
+		}
+		else if(type == '1')
+		{
+			st_cha = f.channel2.value;
+			bandw = f.wlanNChanWidth2.value;
+		}
+		else
+		{
+			st_cha = f.wl_channel_5g_phones.value;
+			bandw = f.bandwidth_5g_phones.value;
+		}
+	}
+	if(change == '1' && type == '1'){
+		if(bandw == '1'){	
+			//$('select[name="channel2"]').children('option[value="165"]').attr('disabled',true);
+			if(st_cha == 165){
+				st_cha="auto"		
+				f.channel2.selectedIndex = 0
+			}
+			$('select[name="channel2"]').find('option[value="165"]').remove();
+		}
+		else{		
+			//$('select[name="channel2"]').children('option[value="165"]').attr('disabled',false);
+			if(f.channel2.length < 10)
+				$('select[name="channel2"]').append($("<option></option>").attr("value","165").text("165"));
+		}
+	}
+	if(change && (st_cha == "0" || st_cha == "auto"|| bandw == "0"))
+	{
+		if(type == '0')
+			f.wl_ext_channel.disabled = true;
+		else if(type == '1')
+			f.wl_ext_channel_5g.disabled = true;
+		else
+			f.wl_ext_channel_5g_p.disabled = true;
+		return;
+	}
+	tmp += '<select name='+wl_ext_channel+'>';
+	if(bandw == "0" || st_cha == "0" || st_cha == "auto") //20MHz or stand channel change to auto
+	{
+		tmp += '<option value="'+ex_cha+'">'+ex_cha+'</option>';
+	}
+	else
+	{
+        	var low_cha = parseInt(st_cha, 10) - 4;
+	        var up_cha = parseInt(st_cha, 10) + 4;
+
+		if(type == '0')
+		{
+			if(parseInt(st_cha, 10) < 5)
+			{
+				tmp += '<option value="'+up_cha+'">'+up_cha+'</option>';
+			}
+			else if( parseInt(st_cha, 10) <= max_cha - 4 )
+			{
+				tmp += '<option value="'+low_cha+'">'+low_cha+'</option>';
+				tmp += '<option value="'+up_cha+'">'+up_cha+'</option>';
+			}
+			else
+			{
+				tmp += '<option value="'+low_cha+'">'+low_cha+'</option>';
+			}
+		}
+		else if(type == '1' || type == '2')
+		{
+    			if(parseInt(st_cha, 10) == 36 || parseInt(st_cha, 10) == 44 || parseInt(st_cha, 10) == 149 || parseInt(st_cha, 10) == 157 || parseInt(st_cha, 10) == 165)
+			{
+				tmp += '<option value="'+up_cha+'">'+up_cha+'</option>';
+			}
+			else
+			{
+				tmp += '<option value="'+low_cha+'">'+low_cha+'</option>';
+			}
+		}
+	}
+	tmp += "</select>";
+	if(type == '0')
+		document.getElementById('ex_channel').innerHTML = tmp;
+	else if(type == '1')
+		document.getElementById('ex_channel_5g').innerHTML = tmp;
+	else
+		document.getElementById('ex_channel_5g_phones').innerHTML = tmp;
+
+	if(bandw == "0" || st_cha == "0" || st_cha == "auto")
+	{
+		if(type == '0')
+			f.wl_ext_channel.disabled = true;
+		else if(type == '1')
+			f.wl_ext_channel_5g.disabled = true;
+		else
+			f.wl_ext_channel_5g_p.disabled = true ;
+		return;
+	}
+	if(!change)
+	{
+		if(st_cha == "0" ||st_cha == "auto" ||bandw == "0")
+		{
+			f.wl_ext_channel.disabled = true;
+			f.wl_ext_channel_5g.disabled = true;
+			f.wl_ext_channel_5g_p.disabled = true;
+		}
+		getSelIndex(f.wl_ext_channel, ex_cha);
+	}
+}
+function validStr(x) {
+	var y = /^ +/
+	if (y.test(x)) return false
+	var y = / +$/
+	if (y.test(x)) return false
+	return true
+}
+function evaltF() {
+	var f=document.p2500f001
+	if (isBlank(f.ssid.value)) {
+		alert(langDictionary[1201])
+		return false
+	}
+	else if(validVisibleStr(f.ssid.value)==false){
+		alert(langDictionary['msg_invalid_char_'])
+		return false
+	}
+	else if(validStr(f.ssid.value)==false){
+		alert(langDictionary['msg_invalid_char_'])
+		return false
+	}
+	if (isBlank(f.ssid2.value)) {
+		alert(langDictionary[1201])
+		return false
+	}
+	else if(validVisibleStr(f.ssid2.value)==false){
+		alert(langDictionary['msg_invalid_char_'])
+		return false
+	}
+	else if(validStr(f.ssid2.value)==false){
+		alert(langDictionary['msg_invalid_char_'])
+		return false
+	}
+	var wpsEnable=1
+	var iNICwpsEnable=0
+	if((f.hiddenssid.checked==false && wpsEnable == 1 )|| (f.hiddenssid2.checked==false && iNICwpsEnable == 1)){
+		if(!confirm(langDictionary["wlc26"])){
+			$('input[name="hiddenssid"]')[0].checked = true	
+			$('input[name="hiddenssid2"]')[0].checked = true
+			return false	
+		}
+	}
+	if(f.hiddenssid.checked==true)
+		f.wl0_hiddenssid.value=0
+	else
+		f.wl0_hiddenssid.value=1
+
+	if(f.hiddenssid2.checked==true)
+		f.wl0_hiddenssid2.value=0
+	else
+		f.wl0_hiddenssid2.value=1
+	if(f.wlanNChanWidth.value==0){
+		f.wl_bandwidth.value=0
+	}
+	else{
+		if(f.wl_ext_channel.selectedIndex==1){
+			f.wl_bandwidth.value=2
+		}
+		else if(f.chan.value < 5){
+			f.wl_bandwidth.value=2
+		}
+		else
+			f.wl_bandwidth.value=1
+	}
+	if(f.wlanNChanWidth2.value==0){
+		f.wl_bandwidth2.value=0
+	}
+	else{
+		if(f.channel2.value > f.wl_ext_channel_5g.value){
+			f.wl_bandwidth2.value=1
+		}
+		else{
+			f.wl_bandwidth2.value=2
+		}
+	}
+	if(f.p2500f24Security.value == "constNone")
+		f.method.value = 0
+	else if(f.p2500f24Security.value == "constWEP"){
+		if(f.p2500f24PSK.value.length == 26)
+			f.weplength.value = 2
+		else
+			f.weplength.value = 1
+		f.method.value = 1
+	}
+	else if(f.p2500f24Security.value == "constWPA2Personal")
+		f.method.value = 2
+	else if(f.p2500f24Security.value == "constWPAPersonalMixed")
+		f.method.value = 3
+	if(f.p2500f5Security.value == "constNone")
+		f.method2.value = 0
+	else if(f.p2500f5Security.value == "constWEP"){
+		if(f.p2500f5PSK.value.length == 26)
+			f.weplength2.value = 2
+		else
+			f.weplength2.value = 1
+		f.method2.value = 1
+	}
+	else if(f.p2500f5Security.value == "constWPA2Personal")
+		f.method2.value = 2
+	else if(f.p2500f5Security.value == "constWPAPersonalMixed")
+		f.method2.value = 3
+	$(window).unbind('beforeunload');
+	$.post("/goform/formWirelessSetting", $("#p2500f001").serialize());
+	SubmitDelay(15);
+	//return true
+}
+/*
+function setPSKVisible(secID) {
+	var PSKid = secID.indexOf("24")>=0?"#p2500f24PSK":"#p2500f5PSK";
+	if ($("#"+secID).val() == "constNone") {
+		$(PSKid).css("visibility", "hidden");
+	} else {
+		$(PSKid).css("visibility", "visible");
+	}	
+}
+*/
+function InitWirelessOnffStatus(idPrefix,state){
+	if (state) {
+		$(idPrefix + "EnableOff").show();
+		$(idPrefix + "EnableOn").hide();
+	}
+	$(idPrefix + "EnableVal").val(state == 1);
+}
+</script>
+</head>
+<body>
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+
+<div class="container top-pane hide-on-phones">
+<div class="row">
+<div class="twelve columns">
+<a href="000-dashboard.asp"><script>dwt('gtBackToDashboard')</script></a>
+<ul class="sub-nav">
+<li class="current"><a href="2500-Wireless.asp" id="navWireless" tid="gtWirelessSettings"><script>dwt('gtWirelessSettings')</script></a></li>
+<li><a href="wifi_wps.asp" id="navWPS" tid="gtWPS"><script>dwt('gtWPS')</script></a></li>
+<li><a href="wifi_guest.asp" id="navGuest" tid="gtGuestAccess"><script>dwt('gtGuestAccess')</script></a></li>
+<li><a href="wifi_apt.asp" id="navAP" tid="gtAccessPoint"><script>dwt('gtAccessPoint')</script></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="main container mobileNav show-on-phones">
+<div class="row">
+<div class="twelve columns">
+<a href="000-dashboard.asp" id="pUtilsaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard')</script></span></a>
+<h2 tid="gtWirelessSettings"><script>dwt('gtWirelessSettings')</script></h2>
+</div>
+</div>
+</div>
+
+<div class="main container" id="p2500">
+<div class="row page-title hide-on-phones">
+	<h3 tid="gtWirelessSettings"><script>dwt('gtWirelessSettings')</script></h3>
+</div>
+<div class="row">
+	<div class="eight columns">
+		<form name="p2500f001" id="p2500f001" class="nice">
+			<div class="row">
+				<div id="p2500f24G" class="six columns">
+					<h4 tid="gt24GHzNetwork"><script>dw(translate('gt5GHzNetwork').replace("5","2.4"))</script></h4>
+					<p id="p2500i002" class="hide-on-phones">
+						<span style="visibility: hidden">
+						<label><input type="checkbox" class="five-g"><span tid="p2500t002"><script>dwt('p2500t002')</script></span></label>
+						</span>
+					</p>
+					<p>
+						<label for="p2500f24SSID"><strong tid="gtNetworkName"><script>dwt('p400t004')</script></strong></label> 
+						<input type="text" class="large fluid input-text" id="p2500f24SSID" name="ssid" tid="Network24SSID" maxlength="31">
+						<small class="error" id="p2500e24SSID" style="display: none;"></small>
+					</p>
+					<p>
+						<label for="p2500f24PSK"><strong tid="gtPass"><script>dwt('p400t006')</script></strong></label>
+						<input type="text" class="large fluid input-text" id="p2500f24PSK" name="p2500f24PSK" tid="Network24Passkey" maxlength="63">
+						<small class="error" id="p2500e24PSK" style="display: none;"></small>
+					</p>
+					<p>
+						<label for="p2500f24Security" tid="gtSecurityType"><script>dwt('gtSecurityType')</script></label>
+						<select id="p2500f24Security" name="p2500f24Security">
+							<option value="constWPA2Personal" tid="gtWPA2">WPA2</option>
+							<option value="constWPAPersonalMixed" tid="gtWPA2WPA">WPA/WPA2</option>
+							<option value="constWEP" tid="gtWEP">WEP</option>
+							<option value="constNone" tid="gtOpenNoPass"><script>dwt('gtOpenNoPass')</script></option>
+						</select>
+					</p>
+					<p>
+						<a href="javascript:void(0);" id="Adv24_toggle"><img class="expando" id="expandoArrow24" src="images/expando.png" alt="Toggle Show/Hide"><span class="expando" tid="gtAdvOptions"><script>dwt('gtAdvOptions')</script></span></a>
+					</p>
+					<div id="AdvOpt24" style="display:none;">
+						<p>
+							<label for="p2500f24Enable" tid="p2500t001"><script>dwt('p2500t001')</script></label>
+							<input type="hidden" name="p2500f24EnableVal" id="p2500f24EnableVal" value="false">
+							<a class="wifiToggle" id="p2500f24Enable">
+								<span id="p2500f24EnableOff" style="display:none"><img src="images/btn-Blocked_x.png"><span tid="gtOff"><script>dwt('gtOff')</script></span></span>
+								<span id="p2500f24EnableOn"><img src="images/btn-Blocked.png"><span tid="gtOn"><script>dwt('gtOn')</script></span></span>
+							</a>
+						</p>
+						<p>
+							<label for="p2500f24Chan"><script>dwt('788')</script></label> 
+							<select id="p2500f24Chan" name="chan" onchange="show_ex_channel(1,0)">
+							<script>
+							regDomain = 1;
+							defaultChan = 0;
+							//if (defaultChan == 0) document.write('<option value="0" selected>'+chan_auto+'</option>')
+							if (defaultChan == 0) document.write('<option value="0" selected>'+translate('gtAuto')+'</option>')
+							else document.write('<option value="0">'+translate('gtAuto')+'</option>')
+							var domainMin = new Array("1","1","10","1","14","1","3","5","1");
+							var domainMax = new Array("11","11","11","13","14","14","9","13","14");
+							for (j=domainMin[regDomain]; j<=domainMax[regDomain]; j++)
+							{
+								if ( j==defaultChan) document.write('<option selected value="'+j+'">'+j+'</option>');
+								else document.write('<option value="'+j+'">'+j+'</option>');
+							}
+							</script>
+							</select>
+						</p>
+						<p>
+							<label for="p2500f24BW" tid="gtBandwidth"><script>dwt('gtBandwidth')</script></label>
+							<select id="p2500f24BW" name="wlanNChanWidth" onchange="show_ex_channel(1,0)">
+							<script>
+							var bandwidth=0
+							var bandwidthary = new Array("20 MHz","20/40 MHz");
+							for (i=0; i<2; i++)
+							{
+								if (i==bandwidth) document.write('<option selected value="'+i+'">'+bandwidthary[i]+'</option>');
+								else if (i==1 && bandwidth==2) document.write('<option selected value="'+i+'">'+bandwidthary[i]+'</option>');
+								else document.write('<option value="'+i+'">'+bandwidthary[i]+'</option>');
+							}
+							</script>
+							</select>
+						</p>
+						<p id="ex_channel">
+						</p>
+						<p>
+							<label for="p2500f24Mode" tid="gtWirelessMode"><script>dwt('gtWirelessMode')</script></label> 
+							<select id="p2500f24Mode" name="band">
+							<script>
+							if ( 0 == 1)
+								bandVal=0
+							else
+								bandVal = 3;
+							//bandVal = bandVal-1;
+							var bandTbl = new Array(translate('gtOff'),"802.11 b/g/n", "802.11 g/n", "802.11 n", "802.11 b/g", "802.11 g", "802.11 b");
+							var bandValTbl = new Array(translate('gtOff'),"3", "4", "2", "5", "1", "6");
+							for (i=1; i<=6; i++)
+							{
+								if (bandValTbl[i]==bandVal) document.write('<option selected value="'+bandValTbl[i]+'">'+bandTbl[i]+'</option>');
+								else document.write('<option value="'+bandValTbl[i]+'">'+bandTbl[i]+'</option>');
+							}
+							</script>
+							</select>
+							</p><p>
+								<small id="p2500f24ModeWarning" class="error withtop" tid="p2500t004" style="display:none">All devices will be limited to lower speeds on this mode.</small>
+							</p>
+						<p>
+							<label for="p2500f24Broadcast"><input id="p2500f24Broadcast" name="hiddenssid" type="checkbox"><span tid="gtBroadcastSSID"><script>dwt('gtBroadcastSSID')</script></span></label>
+						</p>
+					</div>
+				</div>
+				<hr class="show-on-phones">
+				<div id="p2500f5G" class="six columns">
+					<h4 tid="gt5GHzNetwork"><script>dwt('gt5GHzNetwork')</script></h4>
+					<p>
+						<label><input id="p2500fSame" type="checkbox" class="five-g"><span tid="p2500t002"><script>dwt('p2500t002')</script></span></label>
+					</p>						
+					<p>
+						<label for="p2500f5SSID"><strong tid="gtNetworkName"><script>dwt('p400t004')</script></strong></label>
+						<input type="text" class="large fluid input-text" id="p2500f5SSID" name="ssid2" tid="Network5SSID" maxlength="31">
+						<small class="error" id="p2500e5SSID" style="display: none;"></small>
+					</p>
+					<p>
+						<label for="p2500f5PSK"><strong tid="gtPass"><script>dwt('p400t006')</script></strong></label>
+						<input type="text" class="large fluid input-text" id="p2500f5PSK" name="p2500f5PSK" tid="Network5Passkey" maxlength="63">
+						<small class="error fluid" id="p2500e5PSK" style="display: none;">PSK error</small>
+					</p>
+					<p>
+						<label for="p2500f5Security" tid="gtSecurityType"><script>dwt('gtSecurityType')</script></label> 
+						<select id="p2500f5Security" name="p2500f5Security">
+							<option value="constWPA2Personal" tid="gtWPA2">WPA2</option>
+							<option value="constWPAPersonalMixed" tid="gtWPA2WPA">WPA/WPA2</option>
+							<option value="constWEP" tid="gtWEP">WEP</option>
+							<option value="constNone" tid="gtOpenNoPass"><script>dwt('gtOpenNoPass')</script></option>
+						</select>
+					</p>
+					<p>
+						<a class="visible-on-phones" href="javascript:void(0);" id="Adv5_toggle"><img class="expando" id="expandoArrow5" src="images/expando.png" alt="Expand"><span class="expando" tid="gtAdvOptions"><script>dwt('gtAdvOptions')</script></span></a>
+					</p>
+					<div id="AdvOpt5" style="display:none;">
+						<p>
+							<label for="p2500f5Enable" tid="p2500t003"><script>dwt('p2500t003')</script></label>
+							<input type="hidden" name="p2500f5EnableVal" id="p2500f5EnableVal" value="true">
+							<a class="wifiToggle" id="p2500f5Enable">
+								<span id="p2500f5EnableOff" style="display:none"><img src="images/btn-Blocked_x.png"><span tid="gtOff"><script>dwt('gtOff')</script></span></span>
+								<span id="p2500f5EnableOn"><img src="images/btn-Blocked.png"><span tid="gtOn"><script>dwt('gtOn')</script></span></span>
+							</a>
+						</p>
+						<p>
+							<label for="p2500f5Chan"><script>dwt('788')</script></label> 
+							<select id="p2500f5Chan" name="channel2" onchange="show_ex_channel(1,1)">
+							<script>
+							regDomain = 1;
+							defaultChan = 0;
+							if (defaultChan == 0) document.write('<option value="0" selected>'+translate('gtAuto')+'</option>')
+							else document.write('<option value="0">'+translate('gtAuto')+'</option>')
+							var Reg_to_Domain = new Array("1", "1", "2", "3", "4", "5", "6", "7", "8", "9", "10", "11","12","13","14","15","16","17","18","19","20","21","22");
+							var region_A = Reg_to_Domain[regDomain];
+							var achnn = new Array(
+								new Array("36", "40", "44", "48", "52", "56", "60", "64", "149", "153", "157", "161", "165"),
+								new Array("36", "40", "44", "48", "149", "153", "157", "161", "165"),
+								new Array(),
+								new Array("36", "40", "44", "48"),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array("149", "153", "157", "161", "165"),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array(),
+								new Array()
+							);
+							for (i=0;i< achnn[region_A].length;i++)
+							{
+								if ( achnn[region_A][i] == defaultChan)
+									document.write('<option selected value="'+achnn[region_A][i]+'">'+achnn[region_A][i]+'</option>');
+								else
+									document.write('<option value="'+achnn[region_A][i]+'">'+achnn[region_A][i]+'</option>');
+							}
+							</script>
+							</select>
+						</p>
+						<p>
+							<label for="p2500f5BW" tid="gtBandwidth"><script>dwt('gtBandwidth')</script></label>
+							<select id="p2500f5BW" name="wlanNChanWidth2" onchange="show_ex_channel(1,1)">
+							<script>
+							var bandwidth=2
+							var bandwidthary = new Array("20 MHz","20/40 MHz");
+							for (i=0; i<2; i++)
+							{
+								if (i==bandwidth)
+									document.write('<option selected value="'+i+'">'+bandwidthary[i]+'</option>');
+								else if (i==1 && bandwidth==2)
+									document.write('<option selected value="'+i+'">'+bandwidthary[i]+'</option>');
+								else
+									document.write('<option value="'+i+'">'+bandwidthary[i]+'</option>');
+							}
+							</script>
+							</select>
+						</p>
+						<p id="ex_channel_5g">
+						</p>
+						<p>
+							<label for="p2500f5Mode" tid="gtWirelessMode"><script>dwt('gtWirelessMode')</script></label> 
+							<select id="p2500f5Mode" name="band2">
+							<script>
+							if ( 0 == 1)
+								bandVal=0
+							else
+								bandVal = 3;
+							//bandVal = bandVal-1;
+							var bandTbl = new Array(translate('gtOff'),"802.11 a","802.11 n","802.11 a/n");
+
+							for (i=3; i<=3 , i>0; i--)
+							{
+								if (i==bandVal) document.write('<option selected value="'+i+'">'+bandTbl[i]+'</option>');
+								else document.write('<option value="'+i+'">'+bandTbl[i]+'</option>');
+							}
+							</script>
+							</select>
+							</p><p>
+								<small id="p2500f5ModeWarning" class="error withtop"  tid="p2500t004" style="display:none">All devices will be limited to lower speeds on this mode.</small>
+							</p>
+						<p>
+							<label for="p2500f5Broadcast"><input id="p2500f5Broadcast" name="hiddenssid2" type="checkbox"><span tid="gtBroadcastSSID"><script>dwt('gtBroadcastSSID')</script></span></label> 
+							
+						</p>
+					</div>
+				</div>
+			</div>
+			<a class="nice radius large green button" id="p2500aSave"><span tid="gtSave"><script>dwt('gtSave')</script></span></a>
+			<input type="hidden" name="wl0_hiddenssid" >
+			<input type="hidden" name="wl0_hiddenssid2" >
+			<input type="hidden" name="wl_bandwidth" >
+			<input type="hidden" name="wl_bandwidth2" >
+			<input type="hidden" name="method" >
+			<input type="hidden" name="method2" >
+			<input type="hidden" name="weplength" >
+			<input type="hidden" name="weplength2" >
+		</form>
+	</div>
+	<div class="four columns sidebar2">
+		<div>
+			<h6 tid="htWirelessDB" id="htWirelessDB"><script>dwt('htWirelessDB')</script></h6>
+			<p id="htWirelessContentDB">
+				<span tid="htWirelessContentDB"><script>dwt('htWirelessContentDB')</script></span><span class="nub"></span>
+			</p>
+			<h6 tid="htWirelessSecType"><script>dwt('htWirelessSecType')</script></h6>
+			<p>
+				<span tid="htWirelessSecTypeContent"><script>dwt('htWirelessSecTypeContent')</script></span><span class="nub"></span>
+			</p>
+			<h6 tid="htWirelessRadio"><script>dwt('htWirelessRadio')</script></h6>
+			<p>
+				<span tid="htWirelessRadioContent"><script>dwt('htWirelessRadioContent')</script></span><span class="nub"></span>
+			</p>
+		</div>
+	</div>
+</div>
+</div>
+<div id="p2505" class="large reveal-modal">
+	<!-- ODM TODO: Only one of the messages below should be shown. -->
+	<!-- Show this if you're turning off ONE radio -->
+	<h1 tid="p2505t051">You are about to turn off one of your Wi-Fi radios.</h1>
+	<!-- Show this if you're turning off BOTH radios -->
+	<h1 tid="p2505t052" style="display:none">You are about to turn off your Wi-Fi radios.</h1>
+	<!-- Show this if you're turning off the ONLY radio, in the single band router -->
+	<h1 tid="p2505t053" style="display:none">You are about to turn off your Wi-Fi radio.</h1>
+	<p class="lead">
+		<!-- ODM TODO: Only one of the messages below should be shown. -->
+		<!-- Use p2505t054 for SKUs with ethernet ports when turning off ONE radio -->
+		<span tid="p2505t054" style="display:none">You can still connect to the router on the other radio, or with an Ethernet cable in a LAN port.</span>
+		<!-- Use p2505t055 for SKUs with ethernet ports when turning off BOTH radios -->
+		<span tid="p2505t055" style="display:none">Once both radios are off you can connect to the router via Ethernet cable.</span>
+		<!-- Use p2505t056 for single band SKUs with ethernet ports when turning off the ONLY radio -->
+		<span tid="p2505t056" style="display:none">Once the radio is off you can connect to the router via Ethernet cable.</span>
+		<!-- Use p2505t057 for SKUs with no ethernet ports, such as the plugin routers, when turning off ONE radio -->
+		<span tid="p2505t057" >You can still connect to the router on the other radio.</span>
+		<!-- NOTE: You don't need a message for turning off all the radios on a router with no ethernet, since there would now be no way to connect to the device! -->
+	</p>	
+	<br>
+	<a href="javascript:void(0);" class="nice radius button green large" tid="p2505t003" id="p2505a003"><script>dwt('p2505t003')</script></a>
+	<a href="javascript:void(0);" class="nice radius button white large" tid="gtCancel" id="p2505a004"><script>dwt('gtCancel')</script></a>
+</div>
+<!--
+<div id="p2505" class="large reveal-modal">
+	<h1 tid="p2505t001"><script>dwt('p2505t001')</script></h1>
+	<p class="lead"><span tid="p2505t002"><script>dwt('p2505t002')</script></span></p>
+	<br>
+	<a href="javascript:void(0);" class="nice radius button green large" tid="p2505t003" id="p2505a003"><script>dwt('p2505t003')</script></a>
+	<a href="javascript:void(0);" class="nice radius button white large" tid="gtCancel" id="p2505a004"><script>dwt('gtCancel')</script></a>
+</div>
+-->
+<div id="p2510" class="large reveal-modal">
+	<h1 tid="p2510t001">Your suggested change will cause a network disconnection</h1>
+	<p class="lead"><span tid="p2510t002">The Wireless Mode you selected requires <strong tid="gtNewWifiSecurity">WPA/WPA2</strong> security. Your router will automatically make that change, but it will disconnect all devices from your network. You will have to manually reconnect each device, selecting <strong tid="gtNewWifiSecurity">WPA/WPA2</strong> security in each device's wireless connection settings. Do you want to make this change to Wireless Mode?</span></p>
+	<br>
+    <a href="javascript:void(0);" class="nice radius button green large" tid="p2510t003" id="p2510a003">Change the mode</a>
+    <a href="javascript:void(0);" class="nice radius button white large" tid="gtCancel" id="p2510a004">Cancel</a>
+</div>
+<div id="p800" class="large reveal-modal">
+        <h1 tid="p800t001"><script>dwt('p800t001');</script>&hellip;</h1>
+        <p class="lead" tid="p800t002" id="submit_run"><script>dwt('p800t002');</script></p>
+        <p class="lead hide" tid="2053" id="submit_ok"><script>dwt('2053');</script></p>
+        <p class="lead hide" tid="422" id="submit_rsok"><script>dwt('422');</script></p>
+        <p class="lead hide" tid="2054" id="submit_fmwok"><script>dwt('2054');</script></p>
+	<div class="installation">
+		<span class="progress" id="p800Progress"></span>
+	</div>
+</div>
+<div id="p801" class="large reveal-modal">
+        <h1 tid="gtReconnectingHell"><script>dwt('gtReconnectingHell');</script></h1>
+        <p class="waiting"><img width="28" src="images/loading.gif"><span tid="p801t002"><script>dwt('p801t002');</script></span></p>
+</div>
+<div id="bg"></div>
+
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<script type="text/javascript">
+if (2 == 3)
+	$("#wifi_guest").hide()
+
+</script>
+<script src="javascripts/WirelessSettings.js"></script>
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>

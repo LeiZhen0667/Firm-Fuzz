@@ -1,0 +1,399 @@
+<html><head><meta name="color-scheme" content="light dark"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">//  Created by Belkin International, Software Engineering on 09/05/13. 
+//  Copyright (c) 2012-2013 Belkin International, Inc. and/or its affiliates. All rights reserved. //
+/*
+    Belkin International, Inc. retains all right, title and interest (including all
+    intellectual property rights) in and to this computer program, which is
+    protected by applicable intellectual property laws.  Unless you have obtained
+    a separate written license from Belkin International, Inc., you are not authorized
+    to utilize all or a part of this computer program for any purpose (including
+    reproduction, distribution, modification, and compilation into object code),
+    and you must immediately destroy or return to Belkin International, Inc. all copies
+    of this computer program.  If you are licensed by Belkin International, Inc., your
+    rights to utilize this computer program are limited by the terms of that license.  
+
+    To obtain a license, please contact Belkin International, Inc.
+ 
+    This computer program contains trade secrets owned by Belkin International, Inc.
+    and, unless unauthorized by Belkin International, Inc. in writing, you agree to
+    maintain the confidentiality of this computer program and related information
+    and to not disclose this computer program and related information to any
+    other person or entity.
+
+ 
+    THIS COMPUTER PROGRAM IS PROVIDED AS IS WITHOUT ANY WARRANTIES, AND BELKIN INTERNATIONAL, INC.
+    EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE WARRANTIES OF 
+    MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. */
+	function addSetToggleClickHandler(devName,devMAC) {
+		var devIDs = ["#" + devName + "_Toggle", "#" + devName + "_BlockedImg", "#" + devName + "_BlockedText", "#" + devName + "_UnblockedImg", "#" + devName + "_UnblockedText"];
+		$(devIDs[0]).click(function(e) {
+			e.preventDefault();
+			if ($(devIDs[1]).is(":hidden")) {
+				$(devIDs[1]).show();
+				$(devIDs[2]).css('visibility', 'visible');
+				$(devIDs[3]).hide();
+				$(devIDs[4]).css('visibility', 'hidden');
+			} else {
+				$(devIDs[1]).hide();
+				$(devIDs[2]).css('visibility', 'hidden');
+				$(devIDs[3]).show();
+				$(devIDs[4]).css('visibility', 'visible');
+			}
+			$.post("/goform/formParConSave", {
+				work:"2",
+				mac:devMAC,
+				block:($("#"+devName+"_BlockedImg").is(":hidden")?0:1),
+			}, function(data){});
+		});
+	}
+
+		// Add function: Upon save, show a little message
+	
+	function addSaveHandler(devName,devMAC) {
+		var devIDs = ["#" + devName + "_save", "#" + devName + "_details", "#" + devName + "Name", "#" + devName + "NameInput", "#" + devName + "_caret", "#" + devName + "_DetailsToggle", "#" + devName + "_msgSaved"];
+		$(devIDs[0]).click(function(e) {
+			if($(devIDs[0]).hasClass("disabled"))
+				return
+			if($("#"+devName+"_SNFrom").get(0).selectedIndex &gt; $("#"+devName+"_SNTo").get(0).selectedIndex){
+				$("#"+devName+"_SNTo").get(0).selectedIndex = $("#"+devName+"_SNFrom").get(0).selectedIndex
+			}	
+			if($("#"+devName+"_WEFrom").get(0).selectedIndex &gt; $("#"+devName+"_WETo").get(0).selectedIndex){
+				$("#"+devName+"_WETo").get(0).selectedIndex = $("#"+devName+"_WEFrom").get(0).selectedIndex
+			}	
+			if ($(devIDs[3]).val() == "")
+				$(devIDs[3]).val("Unnamed Device")
+			$(devIDs[2]).html($(devIDs[3]).val().replace(/ /g,"&amp;nbsp;"))
+			$("#" + devName + "_footer").html($(devIDs[3]).val().replace(/ /g,"&amp;nbsp;")+" "+langDictionary['gtSoloSaved'])
+			$("#"+devName+"_ToggleSched").is(":checked")?$("#" + devName + "_clockIcon").css({"visibility":"visible","display":"block"}):$("#" + devName + "_clockIcon").css({"visibility":"hidden","display":"none"})
+			
+			$(devIDs[2]).show();
+			$(devIDs[3]).hide();
+			
+			$(devIDs[4]).rotate({animateTo:180, duration:600});
+
+			// Show a little message to say changes were saved
+			$(devIDs[1]).slideUp("slow", function () {
+			  $(devIDs[6]).slideDown("slow", function () {
+				$(devIDs[6]).animate({opacity: 1}, 3000, function () {
+					$(devIDs[6]).slideUp("slow");
+				});
+			  });
+			});
+			
+			// disable the button until something else changes
+			$(devIDs[0]).addClass("disabled");
+			//if ($("#"+devName+"NameInput").val() == "")
+			//	$("#"+devName+"NameInput").val("Unnamed Device")
+			$.post("/goform/formParConSave", {
+				work:"1",
+				mac:devMAC,
+				name:$("#"+devName+"NameInput").val().replace(/[ "]/g,"_"),
+				schedule:($("#"+devName+"_ToggleSched").is(":checked")?1:0),
+				from:$("#"+devName+"_SNFrom").get(0).selectedIndex,
+				to:(($("#"+devName+"_SNTo").get(0).selectedIndex)+1)%24,
+				from1:$("#"+devName+"_WEFrom").get(0).selectedIndex,
+				to1:(($("#"+devName+"_WETo").get(0).selectedIndex)+1)%24
+			}, function(data){});
+		});
+	}
+	
+	function addFormChangeHandler(devName) {
+		var devIDs = ["#" + devName + "_save", "#" + devName + "_name", "#" + devName + "NameInput", "#" + devName + "_SNFrom", "#" + devName + "_SNTo", "#" + devName + "_WEFrom", "#" + devName + "_WETo"];
+		$(devIDs[2]).change(function(e) {
+			// Enable the save button when something changes.
+			$(devIDs[0]).removeClass("disabled");
+		});
+		$(devIDs[3]).change(function(e) {
+			$(devIDs[4]).get(0).selectedIndex = $(devIDs[3]).get(0).selectedIndex
+			// Enable the save button when something changes.
+			$(devIDs[0]).removeClass("disabled");
+		});
+		$(devIDs[5]).change(function(e) {
+			$(devIDs[6]).get(0).selectedIndex = $(devIDs[5]).get(0).selectedIndex
+			// Enable the save button when something changes.
+			$(devIDs[0]).removeClass("disabled");
+		});
+		$(devIDs[4]).change(function(e) {
+			// Enable the save button when something changes.
+			$(devIDs[0]).removeClass("disabled");
+		});
+		$(devIDs[6]).change(function(e) {
+			// Enable the save button when something changes.
+			$(devIDs[0]).removeClass("disabled");
+		});
+	}
+	
+	function addSetToggleSchedHandler(devName) {
+		var devIDs = ["#" + devName + "_ToggleSched", "#" + devName + "_details&gt;table", "#" + devName + "_details&gt;input", "#" + devName + "_save"];
+		$(devIDs[0]).click(function(e) {
+			if (this.checked) {
+				$(devIDs[1]).removeClass("PICInactive");
+			} else {
+				$(devIDs[1]).addClass("PICInactive");
+			}
+			// Enable the save button when something changes.
+			$(devIDs[3]).removeClass("disabled");
+		});
+	}
+	
+	function addShowDetailsHandler(devName) {
+		var devIDs = ["#" + devName + "_DetailsShow", "#" + devName + "_details", "#" + devName + "Name", "#" + devName + "NameInput", "#" + devName + "_caret", "#" + devName + "_DetailsToggle"];
+		$(devIDs[0]).click(function(e) {
+			e.preventDefault();
+			if ($(devIDs[1]).is(":hidden")) {
+				$(devIDs[2]).hide();
+				$(devIDs[3]).show();
+				$(devIDs[1]).slideDown();
+				
+				$(devIDs[4]).rotate({animateTo:0, duration:600});
+			}
+		});
+		$(devIDs[5]).click(function(e) {
+			e.preventDefault();
+			if ($(devIDs[1]).is(":hidden")) {
+				$(devIDs[2]).hide();
+				$(devIDs[3]).show();
+				$(devIDs[1]).slideDown();
+				
+				$(devIDs[4]).rotate({animateTo:0, duration:600});
+			} else {
+				$(devIDs[2]).show();
+				$(devIDs[3]).hide();
+				$(devIDs[1]).slideUp();
+				
+				$(devIDs[4]).rotate({animateTo:180, duration:600});
+			}
+		});
+	}	
+
+
+function addDevice(devName, devUserName, devMAC, block, timer, SNFrom, SNTo, WEFrom, WETo) {
+	document.write("						&lt;li class=\"PICEntry\"&gt;&lt;form name=\"" + devName + "\" id=\"" + devName + "\"  style=\"display:none\"&gt;" +
+"							&lt;a id=\"" + devName + "_Toggle\" class=\"PICBlockToggle\" href=\"javascript:void(0);\"&gt;" +
+"								&lt;div style=\"display:inline-block\"&gt;" +
+"									&lt;!-- One of these should be visibility:hidden --&gt;" +
+"									&lt;!-- visibility:hidden is important so that spacing is maintained for translations and all other devices --&gt;" +
+"									&lt;span id=\"" + devName + "_UnblockedText\" class=\"PICBlockLabel\" tid=\"PIC-unblocked\"&gt;&lt;script&gt;dwt('PIC_unblocked')&lt;/script&gt;&lt;/span&gt;" +
+"									&lt;br/&gt;" +
+"									&lt;span id=\"" + devName + "_BlockedText\" style=\"visibility:hidden\" class=\"PICBlockLabel\" tid=\"PIC-blocked\"&gt;&lt;script&gt;dwt('PIC_blocked')&lt;/script&gt;&lt;/span&gt;" +
+"								&lt;/div&gt;" +
+"								&lt;!-- Make one more hidden string to make sure the items are spaced properly when translations are longer than \"blocked\" --&gt;" +
+"								&lt;span class=\"PICBlockLabel\" style=\"position:relative; visibility: hidden;\" tid=\"PIC-unblocked\"&gt;unblocked&lt;/span&gt;" +
+"								&lt;br/&gt;" +
+"								&lt;!-- One of these should be display:none --&gt;" +
+"								&lt;img id=\"" + devName + "_BlockedImg\" style=\"display:none\" class=\"PICBlockToggleImg\" src=\"../images/btn-Blocked_x.png\" alt=\"Blocked\"&gt;" +
+"								&lt;img id=\"" + devName + "_UnblockedImg\" class=\"PICBlockToggleImg\" src=\"../images/btn-Unblocked.png\" alt=\"Unblocked\"&gt;" +
+"							&lt;/a&gt;" +
+"							&lt;div class=\"PICName radius6\"&gt;" +
+"								&lt;div class=\"PICNameDetail\"&gt;" +
+"									&lt;!-- Clock is only shown if the timer is active --&gt;" +
+"									&lt;img id=\"" + devName+ "_clockIcon\" src=\"../images/Icon_clock.png\"" + (timer==true?" ":" style=\"visibility:hidden\"") + "class=\"PICStatusIcon\" alt=\"Clock\" /&gt;" +
+"									&lt;a class=\"PICDevToggle\" href=\"javascript:void(0);\" id=\"" + devName + "_DetailsToggle\" style=\"display:block;\"&gt;" +
+"										&lt;img src=\"../images/btn-Caret2.png\" class=\"PICCaret\" id=\"" + devName + "_caret\" alt=\"Caret\" /&gt;								" +
+"									&lt;/a&gt;" +
+"									&lt;!-- Either the " + devName + "Name or " + devName + "NameInput should be display:none --&gt;" +
+"									&lt;input style=\"display:none\" type=\"text\" id=\"" + devName + "NameInput\" value=\"" + devUserName.replace(/_/g," ") + "\"&gt;&lt;/input&gt;" +
+"									&lt;span class=\"PICDevName\" id=\"" + devName + "Name\"&gt;" + devUserName.replace(/_/g,"&amp;nbsp;") + "&lt;/span&gt;" +
+"									&lt;br /&gt;&lt;span id=\"" + devName + "_MAC\"&gt;"+MACtransform(devMAC)+"&lt;/span&gt;" +
+"								&lt;/div&gt;" +
+"								&lt;div style='clear: both;'&gt;&lt;/div&gt;" +
+"								&lt;!-- Begin details of this device, to be shown if this item was clicked --&gt;" +
+"								&lt;div class=\"PICDetails\" id=\"" + devName + "_details\" style=\"display:none\"&gt;" +
+"									&lt;label for=\"" + devName + "_ToggleSched\"&gt;" +
+"										&lt;!-- The checkbox is initially checked if the schedules are active.  By default, a device is unchecked. --&gt;" +
+"										&lt;input type=\"checkbox\" name=\"" + devName + "_ToggleSched\" id=\"" + devName + "_ToggleSched\" " + (timer==true?"checked=\"checked\"":" ") + "&gt;&lt;span class=\"PICAllowSched lspace5\" tid=\"PIC_S1t0006\"&gt;&lt;script&gt;dwt('PIC_S1t0006')&lt;/script&gt;&lt;/span&gt; " +
+"									&lt;/label&gt;" +
+"									&lt;table class=\"PICSel\"&gt;" +
+"										&lt;tr&gt;" +
+"											&lt;th colspan=\"2\"&gt;" +
+"												&lt;h6 class=\"PICHeader\"&gt;&lt;span tid=\"PIC_S2t003\"&gt;&lt;script&gt;dwt('PIC_S2t003')&lt;/script&gt;&lt;/span&gt; &lt;span class=\"info\" tid=\"PIC_S2t005\"&gt;&lt;script&gt;dwt('PIC_S2t005')&lt;/script&gt;&lt;/span&gt;:&lt;/h6&gt;" +
+"											&lt;/th&gt;" +
+"										&lt;/tr&gt;" +
+"										&lt;tr&gt;" +
+"											&lt;td class=\"right-align\"&gt;" +
+"												&lt;span class=\"PICSelHeader\" tid=\"gtFrom\"&gt;&lt;script&gt;dwt('gtFrom')&lt;/script&gt;&lt;/span&gt;			" +
+"											&lt;/td&gt;" +
+"											&lt;td&gt;" +
+"												&lt;select name=\"" + devName + "_SNFrom\" id=\"" + devName + "_SNFrom\"&gt;" +
+"													&lt;!-- 24 items: Midnight to 11:00 pm, Midnight default --&gt;" +
+"													&lt;option selected tid=\"gtmidnight\"&gt;Midnight&lt;/option&gt;" +
+"													&lt;option tid=\"gt1am\"&gt;1:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt2am\"&gt;2:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt3am\"&gt;3:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt4am\"&gt;4:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt5am\"&gt;5:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt6am\"&gt;6:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt7am\"&gt;7:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt8am\"&gt;8:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt9am\"&gt;9:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt10am\"&gt;10:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt11am\"&gt;11:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gtNoon\"&gt;Noon&lt;/option&gt;" +
+"													&lt;option tid=\"gt1pm\"&gt;1:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt2pm\"&gt;2:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt3pm\"&gt;3:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt4pm\"&gt;4:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt5pm\"&gt;5:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt6pm\"&gt;6:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt7pm\"&gt;7:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt8pm\"&gt;8:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt9pm\"&gt;9:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt10pm\"&gt;10:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt11pm\"&gt;11:00 pm&lt;/option&gt;" +
+"												&lt;/select&gt;" +
+"											&lt;/td&gt;" +
+"										&lt;/tr&gt;" +
+"										&lt;tr&gt;" +
+"											&lt;td class=\"right-align\"&gt;" +
+"												&lt;span class=\"PICSelHeader\" tid=\"gtTo\"&gt;&lt;script&gt;dwt('gtTo')&lt;/script&gt;&lt;/span&gt;			" +
+"											&lt;/td&gt;" +
+"											&lt;td&gt;" +
+"												&lt;select name=\"" + devName + "_SNTo\" id=\"" + devName + "_SNTo\"&gt;" +
+"													&lt;!-- 24 items: Start at [From + 1h] --&gt;" +
+"													&lt;!-- ODM todo: Update this whenever FROM changes --&gt;" +
+"													&lt;option tid=\"gt1amNextDay\"&gt;1:00 am next day&lt;/option&gt;" +
+"													&lt;option tid=\"gt2am\"&gt;2:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt3am\"&gt;3:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt4am\"&gt;4:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt5am\"&gt;5:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt6am\"&gt;6:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt7am\"&gt;7:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt8am\"&gt;8:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt9am\"&gt;9:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt10am\"&gt;10:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt11am\"&gt;11:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gtNoon\"&gt;Noon&lt;/option&gt;" +
+"													&lt;option tid=\"gt1pm\"&gt;1:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt2pm\"&gt;2:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt3pm\"&gt;3:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt4pm\"&gt;4:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt5pm\"&gt;5:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt6pm\"&gt;6:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt7pm\"&gt;7:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt8pm\"&gt;8:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt9pm\"&gt;9:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt10pm\"&gt;10:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt11pm\"&gt;11:00 pm&lt;/option&gt;" +
+"													&lt;option selected tid=\"gtmidnight\"&gt;Midnight&lt;/option&gt;" +
+"												&lt;/select&gt;" +
+"											&lt;/td&gt;" +
+"										&lt;/tr&gt;" +
+"									&lt;/table&gt;" +
+"									&lt;table class=\"PICSel spacer7\"&gt;" +
+"										&lt;tr&gt;" +
+"											&lt;th colspan=\"2\"&gt;" +
+"												&lt;h6 class=\"PICHeader\"&gt;&lt;span tid=\"PIC_S2t004\"&gt;&lt;script&gt;dwt('PIC_S2t004')&lt;/script&gt;&lt;/span&gt; &lt;span class=\"info\" tid=\"PIC_S2t006\"&gt;&lt;script&gt;dwt('PIC_S2t006')&lt;/script&gt;&lt;/span&gt;:&lt;/h6&gt;" +
+"											&lt;/th&gt;" +
+"										&lt;/tr&gt;&lt;tr&gt;" +
+"											&lt;td class=\"right-align\"&gt;" +
+"												&lt;span class=\"PICSelHeader\" tid=\"gtFrom\"&gt;&lt;script&gt;dwt('gtFrom')&lt;/script&gt;&lt;/span&gt;			" +
+"											&lt;/td&gt;" +
+"											&lt;td&gt;" +
+"												&lt;select name=\"" + devName + "_WEFrom\" id=\"" + devName + "_WEFrom\"&gt;" +
+"													&lt;!-- 24 items: Midnight to 11:00 pm, Midnight default --&gt;" +
+"													&lt;option selected tid=\"gtmidnight\"&gt;Midnight&lt;/option&gt;" +
+"													&lt;option tid=\"gt1am\"&gt;1:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt2am\"&gt;2:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt3am\"&gt;3:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt4am\"&gt;4:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt5am\"&gt;5:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt6am\"&gt;6:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt7am\"&gt;7:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt8am\"&gt;8:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt9am\"&gt;9:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt10am\"&gt;10:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt11am\"&gt;11:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gtNoon\"&gt;Noon&lt;/option&gt;" +
+"													&lt;option tid=\"gt1pm\"&gt;1:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt2pm\"&gt;2:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt3pm\"&gt;3:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt4pm\"&gt;4:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt5pm\"&gt;5:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt6pm\"&gt;6:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt7pm\"&gt;7:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt8pm\"&gt;8:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt9pm\"&gt;9:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt10pm\"&gt;10:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt11pm\"&gt;11:00 pm&lt;/option&gt;" +
+"												&lt;/select&gt;" +
+"											&lt;/td&gt;" +
+"										&lt;/tr&gt;" +
+"										&lt;tr&gt;" +
+"											&lt;td class=\"right-align\"&gt;" +
+"												&lt;span class=\"PICSelHeader\" tid=\"gtTo\"&gt;&lt;script&gt;dwt('gtTo')&lt;/script&gt;&lt;/span&gt;			" +
+"											&lt;/td&gt;" +
+"											&lt;td&gt;" +
+"												&lt;select name=\"" + devName + "_WETo\" id=\"" + devName + "_WETo\"&gt;" +
+"													&lt;!-- 24 items: Start at [From + 1h] --&gt;" +
+"													&lt;option tid=\"gt1amNextDay\"&gt;1:00 am next day&lt;/option&gt;" +
+"													&lt;option tid=\"gt2am\"&gt;2:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt3am\"&gt;3:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt4am\"&gt;4:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt5am\"&gt;5:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt6am\"&gt;6:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt7am\"&gt;7:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt8am\"&gt;8:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt9am\"&gt;9:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt10am\"&gt;10:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gt11am\"&gt;11:00 am&lt;/option&gt;" +
+"													&lt;option tid=\"gtNoon\"&gt;Noon&lt;/option&gt;" +
+"													&lt;option tid=\"gt1pm\"&gt;1:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt2pm\"&gt;2:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt3pm\"&gt;3:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt4pm\"&gt;4:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt5pm\"&gt;5:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt6pm\"&gt;6:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt7pm\"&gt;7:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt8pm\"&gt;8:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt9pm\"&gt;9:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt10pm\"&gt;10:00 pm&lt;/option&gt;" +
+"													&lt;option tid=\"gt11pm\"&gt;11:00 pm&lt;/option&gt;" +
+"													&lt;option selected tid=\"gtmidnight\"&gt;Midnight&lt;/option&gt;" +
+"												&lt;/select&gt;" +
+"											&lt;/td&gt;" +
+"										&lt;/tr&gt;" +
+"									&lt;/table&gt;" +
+"									&lt;div&gt;&lt;p class=\"PICOtherTimes\" tid=\"gtPICOtherTimes\"&gt;&lt;script&gt;dwt('gtPICOtherTimes')&lt;/script&gt;&lt;/p&gt;" +
+" 			&lt;!-- ODM TODO: Disable the Save btn until something changes in the device --&gt;" +
+"									&lt;a id=\"" + devName + "_save\" class=\"PICSave button nice radius large green disabled\" tid=\"gtSave\"&gt;&lt;script&gt;dwt('gtSave')&lt;/script&gt;&lt;/a&gt;&lt;/div&gt;" +
+"								&lt;/div&gt;" +
+"								&lt;!-- End details --&gt;" +
+"							&lt;/div&gt;" +
+"							&lt;div id=\"" + devName + "_msgSaved\" class=\"PICName radius6 PICMsg\" style=\"display:none\"&gt;" +
+"								&lt;span tid=\"gtDevSaved\" id=\""+devName+"_footer\"&gt;" + devUserName.replace(/_/g,"&amp;nbsp;") + " Saved&lt;/span&gt;" +
+"							&lt;/div&gt;" +
+"							&lt;/form&gt;" +
+"						&lt;/li&gt;");
+	$("#"+devName+"_SNFrom").get(0).selectedIndex = SNFrom;	
+	$("#"+devName+"_SNTo").get(0).selectedIndex = (SNTo+23)%24;	
+	$("#"+devName+"_WEFrom").get(0).selectedIndex = WEFrom;	
+	$("#"+devName+"_WETo").get(0).selectedIndex = (WETo+23)%24;	
+	var devIDs = ["#" + devName + "_Toggle", "#" + devName + "_BlockedImg", "#" + devName + "_BlockedText", "#" + devName + "_UnblockedImg", "#" + devName + "_UnblockedText"];
+	if (block == 1 || AllBlock == 1) {
+		$(devIDs[1]).show();
+		$(devIDs[2]).css('visibility', 'visible');
+		$(devIDs[3]).hide();
+		$(devIDs[4]).css('visibility', 'hidden');
+	} else {
+		$(devIDs[1]).hide();
+		$(devIDs[2]).css('visibility', 'hidden');
+		$(devIDs[3]).show();
+		$(devIDs[4]).css('visibility', 'visible');
+	}
+	if (timer == 1) {
+		$("#" + devName + "_details&gt;table").removeClass("PICInactive");
+	} else {
+		$("#" + devName + "_details&gt;table").addClass("PICInactive");
+	}
+	// Add the click handlers too.
+	addShowDetailsHandler(devName);
+	addSetToggleSchedHandler(devName);
+	addSetToggleClickHandler(devName,devMAC);
+	addSaveHandler(devName,devMAC);
+	addFormChangeHandler(devName);
+	$(document).ready(function() {
+		// Set device initial state
+		var devIDs = ["#" + devName + "_details", "#" + devName + "_caret", "#" + devName + "_ToggleSched"];
+		$(devIDs[1]).rotate(180);
+	});
+}
+</pre></body></html>

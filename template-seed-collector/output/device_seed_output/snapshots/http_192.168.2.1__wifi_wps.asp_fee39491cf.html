@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	  <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+<meta charset="utf-8" />
+<!-- Set the viewport width to device width for mobile -->
+<meta name="viewport" content="width=device-width" />
+<title tid="gtDashTitle">Belkin router dashboard</title>
+<link rel="icon" href="images/favicon/favicon.ico">
+<!-- For third-generation iPad with high-resolution Retina display: -->
+<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+<!-- For iPhone with high-resolution Retina display: -->
+<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+<!-- For first- and second-generation iPad: -->
+<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+<link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+<link rel="stylesheet" href="stylesheets/app.css">
+<!--[if lt IE 9]>
+<link rel="stylesheet" href="stylesheets/ie.css">
+<![endif]-->
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<script type="text/javascript">
+function popup_pbc()
+{
+pbcwin=window.open("chkpbc.asp","pbc","toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,width=450,height=200,resizable=0");
+pbcwin.focus();
+}
+function popup_pin()
+{
+enrolle	=window.open("pinok.asp","pbc","toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,width=450,height=200,resizable=0");
+enrolle.focus();
+}
+function checksum()
+{
+var cf = document.tF;
+var pin=cf.wps_enrolee_pin.value;
+var accum= 0;
+accum += 3 * (parseInt(pin.substring(0,1)));
+accum += 1 * (parseInt(pin.substring(1,2)));
+accum += 3 * (parseInt(pin.substring(2,3)));
+accum += 1 * (parseInt(pin.substring(3,4)));
+accum += 3 * (parseInt(pin.substring(4,5)));
+accum += 1 * (parseInt(pin.substring(5,6)));
+accum += 3 * (parseInt(pin.substring(6,7)));
+accum += 1 * (parseInt(pin.substring(7,8)));
+if(0 == (accum%10))
+return true;
+else
+return false;
+}
+function checkData()
+{
+var cf = document.tF;
+var pin = cf.wps_enrolee_pin.value;
+var my4RE = /[0-9]{4}/;
+var my8RE = /[0-9]{8}/;
+if ((pin.length == 4) && (my4RE.test(pin) == true))
+return true
+if (!((pin.length == 8) && (my8RE.test(pin) == true)))
+{
+window.open("errpin1.asp","pbc","toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,width=450,height=200,resizable=0");
+return false;
+}
+if(pin.length == 8 && checksum() == false)
+{
+window.open("errpin2.asp","pbc","toolbar=no,location=no,directories=no,status=no,menubar=no,scrollbars=yes,width=450,height=200,resizable=0");
+return false;
+}
+return true;
+}
+function changToDoValue(buttonType)
+{
+if(buttonType == 1) {
+if (document.tF.wls_wps_enabled_s.selectedIndex == 1) {
+	if (document.tF.gradio[0].checked == true){
+		document.tF.wls_wps_enabled.value = 1
+		if(encrypt == 1){
+			if(!confirm(wlc32))	
+				return false
+		}
+		else if(hiddenSSID == 1){
+			if(!confirm(wlc31))	
+				return false
+		}
+	}
+	else{
+		document.tF.wls_wps_enabled.value = 2
+		if(iNICencrypt == 1){
+			if(!confirm(wlc32))	
+				return false
+		}
+		else if(iNIChiddenSSID == 1){
+			if(!confirm(wlc31))	
+				return false
+		}
+	}
+}
+else {
+	document.tF.wls_wps_enabled.value = 0
+	if (document.tF.gradio[0].checked == true)
+		document.tF.selected_band.value = 0
+	else
+		document.tF.selected_band.value = 1
+}
+document.tF.h_wps_action.value ="1";
+document.tF.next_file.value = "save_ok.html";
+document.tF.todo.value = "reboot";
+$.post("/goform/formWlanSetupWPS", $("#p600403").serialize());
+//document.tF.submit();
+SubmitDelay(15);
+return true;
+}
+if( buttonType == 2) {
+pincheck(document.tF.wps_enrolee_pin)
+if ((wpsEnable == 1) || (iNICwpsEnable == 1)) {
+if(checkData() == false)
+return false;
+document.tF.h_wps_action.value ="2";
+document.tF.todo.value = "wps_action";
+popup_pin();
+document.tF.submit();
+return true;
+}
+}
+if( buttonType == 3) //generate pin
+{
+document.tF.h_wps_action.value ="3";
+document.tF.todo.value = "wps_action";
+document.tF.submit();
+return true;
+}
+if( buttonType == 4) //restore pin
+{
+document.tF.h_wps_action.value ="4";
+document.tF.todo.value = "wps_action";
+document.tF.submit();
+return true;
+}
+if (buttonType == 5) {
+if ((wpsEnable == 1) || (iNICwpsEnable == 1)) {
+document.tF.h_wps_action.value = 5
+document.tF.todo.value = "wps_action"
+popup_pbc()
+document.tF.submit()
+return true
+}
+}
+}
+function pincheck(x) {
+x.value = x.value.replace(/\D/g,"")
+}
+var ts = new Date().getTime();
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var str24gpwd
+var str5gpwd
+var str24genc
+var tmpssid=1;
+function initDataHeader(){
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str5gpwd="66caye9w"
+	}
+
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+}
+</script>
+</head>
+<body style="min-width:600px">
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+
+<div class="container top-pane hide-on-phones">
+<div class="row">
+<div class="twelve columns">
+<a href="000-dashboard.asp" tid="gtBackToDashboard"><script>dwt('gtBackToDashboard')</script></a>
+<ul class="sub-nav">
+<li><a href="2500-Wireless.asp" id="navWireless" tid="gtWirelessSettings"><script>dwt('gtWirelessSettings')</script></a></li>
+<li class="current"><a href="wifi_wps.asp" id="navWPS" tid="gtWPS"><script>dwt('gtWPS')</script></a></li>
+<li><a href="wifi_guest.asp" id="navGuest" tid="gtGuestAccess"><script>dwt('gtGuestAccess')</script></a></li>
+<li><a href="wifi_apt.asp" id="navAP" tid="gtAccessPoint"><script>dwt('gtAccessPoint')</script></a></li>
+</ul>
+</div>
+</div>
+</div>
+
+<div class="main container mobileNav show-on-phones">
+<div class="row">
+<div class="twelve columns">
+<a href="000-dashboard.asp" id="pUtilsaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard')</script></span></a>
+<h2 tid="gtWPS"><script>dwt('gtWPS')</script></h2>
+</div>
+</div>
+</div>
+
+<div class="main container" id="p1000">
+<div class="row">
+<div class="eight columns">
+<div class="spacer11 tpad30 hide-on-phones">
+<h3 class="hide-on-phones"><span tid="gtWPS"><script>dwt('gtWPS')</script></span></h3>
+</div>
+<form name="tF" action="/goform/formWlanSetupWPS" method="post" id="p600403">
+<p><input type="radio" name="gradio" onclick="if (wpsEnable == 1 && hiddenSSID == 0 && encrypt != 1) document.tF.wls_wps_enabled_s.selectedIndex = 1; else document.tF.wls_wps_enabled_s.selectedIndex = 0; checkwpsui()" /> 2.4GHz <input type="radio" name="gradio" onclick="if (iNICwpsEnable == 1 && iNIChiddenSSID == 0 && iNICencrypt != 1) document.tF.wls_wps_enabled_s.selectedIndex = 1; else document.tF.wls_wps_enabled_s.selectedIndex = 0; checkwpsui()" /> 5GHz</p>
+<table class="normal">
+<tr>
+<td>
+<table width="550" class="normal">
+<tr>
+<td width="280" class="body"><b><script>dwt('wps1');</script></b>
+<br>
+<br>
+</td>
+<td colspan="2">
+<select name="wls_wps_enabled_s" class="selectList" id="wls_wps_enabled_s">
+<option value="0"><script>dwt('375');</script></option>
+<option value="1"><script>dwt('374');</script></option>
+</select>
+</td>
+</tr>
+<tr id="wpshwenable">
+<td width="180" class="body"><b><script>dwt('1393');</script></b></td>
+<td colspan="2">
+<select name="WPSHWEnable">
+<option value="0"><script>dwt('375');</script></option>
+<option value="1"><script>dwt('374');</script></option>
+</select>
+</td>
+</tr>
+<tr>
+<td colspan="3" class="body"><br><p><script>dwt('1320');</script></p></td>
+</tr>
+<tr>
+<td colspan="3" align="right"> <a tid="gtSave" class="button nice radius large green" id="btnapply" onclick="changToDoValue(1)"><script>dwt('gtSave')</script></a>
+<br>
+<input type="hidden" name="wls_wps_enabled" />
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr id="test">
+<td>
+<div id="PIN_set" style="display:block">
+<table border="0" cellspacing="0" cellpadding="0" width="100%" class="normal">
+<tr>
+<td>
+<hr noshade size="1" color="#006699">
+</td>
+</tr>
+<tr>
+<td>
+<table width="550" class="normal">
+<tr>
+<td colspan="3" class="body"><b>1)<script>dwt('1321');</script></b>
+<br>
+<br>
+</td>
+</tr>
+<tr>
+<td colspan="3" class="body"><font><script>dwt('1322');</script></font>
+<br>
+<br>
+</td>
+</tr>
+<tr>
+<td class="body"><font><script>dwt('1323');</script></font>
+<br>
+<br>
+</td>
+<td class="body">
+<input type="text" name="wps_enrolee_pin" onchange="pincheck(this)" style="text-align:center" />
+<br>
+<br>
+</td>
+<td align="right"> <a href="#enroll" class="nice radius xsmall white button" onclick="changToDoValue(2)" id="itsbutton1"><script>dwt('1324');</script></a></td>
+</tr>
+<tr>
+<td colspan="3" class="body"><script>dwt('1325');</script><br><br></td>
+</tr>
+<tr>
+<td class="body"><b><script>dwt('1326');</script>: </b></td>
+<td class="body"><a href="#generate" class="nice radius xsmall white button" onClick="changToDoValue(3)" id="btngenerate"><script>dwt('1327');</script></a></td>
+<td class="body"><a href="#restore" class="nice radius xsmall white button" onClick="changToDoValue(4)" id="btnrestore"><script>dwt('1328');</script></a></td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</div>
+<div id="PBC_set" style="display:block">
+<table border="0" cellspacing="0" cellpadding="0" width="100%" class="normal">
+<tr>
+<td>
+<table width="550" class="normal">
+<tr>
+<td colspan="3">
+<hr noshade size="1" color="#006699">
+</td>
+</tr>
+<tr>
+<td colspan="3" class="body"><b>2)<script>dwt('1329');</script></b>
+<br>
+<br>
+</td>
+</tr>
+<tr>
+<td colspan="3" class="body"><font><script>dwt('1330');</script></font>
+<br>
+<br>
+</td>
+</tr>
+<tr>
+<td colspan="3" align="right"> <a href="#pbc" class="nice radius xsmall white button" id="btn_pbc" onclick="changToDoValue(5)" id="btndefpin"><script>dwt('1331');</script></a>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</div>
+<div id="manual_set">
+<table width="550" border="0" cellspacing="0" cellpadding="1" class="normal">
+<tr>
+<td>
+<hr noshade size="1" color="#006699">
+</td>
+</tr>
+<tr>
+<td class="body"><b>3)<script>dwt('1332');</script></b>
+<br>
+<br>
+</td>
+</tr>
+<tr>
+<td class="body"><font><script>dwt('1333');</script></font>
+<br>
+<br>
+</td>
+</tr>
+<tr>
+<td class="body" id="u_wl_info">
+<table width="550" border="0" cellspacing="0" cellpadding="1" class="normal">
+<tbody>
+<tr><td colspan="2" class="body">
+<font id="u_wl_info_til">2.4GHz</font>
+</td></tr>
+<tr>
+<td width="150" class="body"><b>
+<font><script>dwt('1335');</script></font>:
+</b></td>
+<td width="400" class="body">
+<font id="u_wps_ssid">belkin.6d1</font>
+</td>
+</tr>
+<tr>
+<td width="150" class="body"><nobr><b>
+<font><script>dwt('1334');</script></font>:
+</b></nobr></td>
+<td width="400" class="body">
+<font id="U_wps_conf"><script>dwt('1392');</script></font>
+</td>
+</tr>
+<tr id="tr_wps_type">
+<td width="150" class="body"><nobr><b>
+<font><script>dwt('1336');</script></font>:
+</b></nobr></td>
+<td width="400" class="body">
+<font id="u_wps_type"><script>dwt('1296');</script></font>
+</td>
+</tr>
+<tr id="tr_wps_encry">
+<td width="150" class="body"><nobr><b>
+<font><script>dwt('1337');</script></font>:
+</b></nobr></td>
+<td width="400" class="body">
+<font id="u_wps_encry">TKIP+AES</font>
+</td>
+</tr>
+<tr id="tr_wps_key">
+<td width="150" class="body"><nobr><b>
+<font><script>dwt('1338');</script></font>:
+</b></nobr></td>
+<td width="400" class="body">
+<font id="u_wps_key">66caye9w</font>
+</td>
+</tr>
+<tr id="tr_wps_note" style="display:none">
+<td colspan="2" class="body"><nobr>
+&nbsp;<a href="wifi_e.asp">
+<b><font color="0066ff" id="1397"></font>
+</b></a></nobr></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+<tr>
+<td class="body">&nbsp;</td>
+</tr>
+<tr>
+<td class="body" id="u_wl_info1">
+<table width="550" border="0" cellspacing="0" cellpadding="1" class="normal">
+<tbody>
+<tr><td colspan="2" class="body">
+<font id="u_wl_info_ti1l">5GHz</font>
+</td></tr>
+<tr>
+<td width="150" class="body"><b>
+<font><script>dwt('1335');</script></font>:
+</b></td>
+<td width="400" class="body">
+<font id="u_wps_ssid">belkin.6d1.media</font>
+</td>
+</tr>
+<tr>
+<td width="150" class="body"><nobr><b>
+<font><script>dwt('1334');</script></font>:
+</b></nobr></td>
+<td width="400" class="body">
+<font id="U_wps_conf1"><script>dwt('1392');</script></font>
+</td>
+</tr>
+<tr id="tr_wps_type1">
+<td width="150" class="body"><nobr><b>
+<font><script>dwt('1336');</script></font>:
+</b></nobr></td>
+<td width="400" class="body">
+<font id="u_wps_type1"><script>dwt('1296');</script></font>
+</td>
+</tr>
+<tr id="tr_wps_encry1">
+<td width="150" class="body"><nobr><b>
+<font><script>dwt('1337');</script></font>:
+</b></nobr></td>
+<td width="400" class="body">
+<font id="u_wps_encry1">TKIP+AES</font>
+</td>
+</tr>
+<tr id="tr_wps_key1">
+<td width="150" class="body"><nobr><b>
+<font><script>dwt('1338');</script></font>:
+</b></nobr></td>
+<td width="400" class="body">
+<font id="u_wps_key1">66caye9w</font>
+</td>
+</tr>
+<tr id="tr_wps_note1" style="display:none">
+<td colspan="2" class="body"><nobr>
+&nbsp;<a href="wifi_e.asp">
+<b><font color="0066ff" id="1397"></font>
+</b></a></nobr></td>
+</tr>
+</tbody>
+</table>
+</td>
+</tr>
+</table>
+</div>
+</td>
+</tr>
+</table>
+<input type="hidden" name="selected_band" />
+<input type="hidden" name="h_wps_action" />
+<input type="hidden" name="next_file" />
+<input type="hidden" name="todo" />
+<input type="hidden" name="webpage" value="wifi_wps.asp" />
+</form>
+</div>
+<div class="sidebar four columns">
+<div>
+<h6 tid="htWifiWPS" class="tpad30"><script>dwt('htWifiWPS')</script></h6>
+<p><span tid="htWifiWPSContent"><script>dwt('htWifiWPSContent')</script></span><span class="nub"></span></p>
+</div>
+</div>
+</div>
+</div>
+
+<div id="p800" class="large reveal-modal">
+        <h1 tid="p800t001"><script>dwt('p800t001');</script>&hellip;</h1>
+        <p class="lead" tid="p800t002" id="submit_run"><script>dwt('p800t002');</script></p>
+        <p class="lead hide" tid="2053" id="submit_ok"><script>dwt('2053');</script></p>
+        <p class="lead hide" tid="422" id="submit_rsok"><script>dwt('422');</script></p>
+        <p class="lead hide" tid="2054" id="submit_fmwok"><script>dwt('2054');</script></p>
+        <div class="installation">
+                <span class="progress" id="p800Progress"></span>
+        </div>
+</div>
+<div id="p801" class="large reveal-modal">
+        <h1 tid="gtReconnectingHell"><script>dwt('gtReconnectingHell');</script></h1>
+        <p class="waiting"><img width="28" src="images/loading.gif"><span tid="p801t002"><script>dwt('p801t002');</script></span></p>
+</div>
+<div id="bg"></div>
+<!-- Dashboard Footer -->
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<!-- container -->
+<script type="text/javascript">
+var wpsEnable=1
+var hiddenSSID=0
+var iNICwpsEnable=0
+var iNIChiddenSSID=0
+var encrypt = 2
+var wpaCipherSuite = 3
+var iNICencrypt = 2
+var iNICwpaCipherSuite = 3
+$(document).ready(function(){
+var index = "0";
+$('#dff015').get(0).selectedIndex = index;
+$('#dff015').find('option[value="ko"]').remove();
+if (wpsEnable == 1 && hiddenSSID == 0 && encrypt > 1 && wpaCipherSuite > 2) {
+document.tF.gradio[0].checked = true
+document.tF.wls_wps_enabled_s.selectedIndex = 1 
+}
+else if (wpsEnable == 1 && hiddenSSID == 0 && encrypt == 0) {
+document.tF.gradio[0].checked = true
+document.tF.wls_wps_enabled_s.selectedIndex = 1 
+}
+else if (iNICwpsEnable == 1 && iNIChiddenSSID == 0 && iNICencrypt > 1 && iNICwpaCipherSuite > 2) {
+document.tF.gradio[1].checked = true
+document.tF.wls_wps_enabled_s.selectedIndex = 1 
+}
+else if (iNICwpsEnable == 1 && iNIChiddenSSID == 0 && iNICencrypt == 0) {
+document.tF.gradio[1].checked = true
+document.tF.wls_wps_enabled_s.selectedIndex = 1 
+}
+else {
+document.tF.gradio[0].checked = true
+document.tF.wls_wps_enabled_s.selectedIndex = 0
+}
+document.tF.WPSHWEnable.selectedIndex=1
+initDataHeader();
+if(encrypt == 0){
+$('#tr_wps_key').hide()
+$('#tr_wps_encry').hide()
+$('#u_wps_type').html('<a href="wifi_sc.asp">'+langDictionary[1334]+'</a>')
+} 
+else if(encrypt == 1){
+var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+if (0 == 2)
+	$('#u_wps_key').html(wepValueAll[4])
+else
+	$('#u_wps_key').html(wepValueAll[0])
+$('#u_wps_encry').html('NULL')
+$('#u_wps_type').html('WEP')
+} 
+if(iNICencrypt == 0){
+$('#tr_wps_key1').hide()
+$('#tr_wps_encry1').hide()
+$('#u_wps_type1').html('<a href="wifi_sc.asp">'+langDictionary[1334]+'</a>')
+} 
+else if(iNICencrypt == 1){
+var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+if (0 == 2)
+	$('#u_wps_key1').html(wepValueAll[4])
+else
+	$('#u_wps_key1').html(wepValueAll[0])
+$('#u_wps_encry1').html('NULL')
+$('#u_wps_type1').html('WEP')
+} 
+});
+function checkwpsui() {
+	if ($("#wls_wps_enabled_s").val() == 1) {
+		$("#wpshwenable").show();
+		$("#test").show();
+	}
+	else {
+		$("#wpshwenable").hide();
+		$("#test").hide();
+	}
+}
+$(function() {
+	if (2 == 3)
+		$("#wifi_guest").hide()
+	checkwpsui()
+	$("#wls_wps_enabled_s").change(function() {
+		checkwpsui()
+	});
+});
+</script>
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>

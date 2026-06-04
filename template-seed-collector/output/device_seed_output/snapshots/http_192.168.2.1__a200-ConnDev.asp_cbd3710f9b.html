@@ -1,0 +1,777 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	  <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+	<title tid="gtDashTitle">Belkin router dashboard</title>
+	<link rel="icon" href="images/favicon/favicon.ico">
+	<!-- For third-generation iPad with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+	<!-- For iPhone with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+	<!-- For first- and second-generation iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+	<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+	<link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+	<link rel="stylesheet" href="stylesheets/app.css">
+	<!--[if lt IE 9]>
+		<link rel="stylesheet" href="stylesheets/ie.css">
+	<![endif]-->
+</head>
+<body>
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<script src="javascripts/jquery.color-2.1.2.min.js"></script>
+<script>
+var ts = new Date().getTime();
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var str24gpwd
+var str5gpwd
+var str24genc
+var tmpssid=1;
+var parNum="0"
+var ParTbl = new Array(
+new Array())
+var deviTbl=new Array();
+var dhcp_start='192.168.2.2';
+var t1;
+t1=dhcp_start.indexOf('.');
+t1=dhcp_start.indexOf('.',(t1+1));
+t1=dhcp_start.indexOf('.',(t1+1));
+var IPA=dhcp_start.substring(0,t1+1)
+function initDataHeader(){
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);//ken
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str5gpwd="66caye9w"
+	}
+
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+} 
+function addDevice(devName, devUserName, devMAC, devip, reserve, deviicon){
+	IPB=devip.substring(t1+1)
+	document.write("	<li class=\"ConnDevEntry\"><form class=\"nice\" id=\""+devName+"\" name=\""+devName+"\" style=\"display:none\">" +
+"					<div class=\"ConnDevName radius6\">" +
+"						<div class=\"ConnDevNameDetail\">" +
+"							<span alt=\"Desktop\" class=\"ConnDevIcon "+deviicon+"\" id=\""+devName+"_Icon\"></span>" +
+"							<a style=\"xdisplay:inline-block;\" id=\""+devName+"_DetailsToggle\" href=\"javascript:void(0);\" class=\"ConnDevToggle\">" +
+"								<img alt=\"Caret\" id=\""+devName+"_caret\" class=\"PICCaret\" src=\"../images/btn-Caret2.png\" style=\";\">" +
+"							</a>" +
+"							<h2 class=\"ConnDevSaved\" tid=\"gtSaved\" id=\""+devName+"_Saved\">"+langDictionary['gtSoloSaved']+"</h2>" +
+"							<input type=\"text\" value=\""+devUserName.replace(/_/g," ")+"\" id=\""+devName+"NameInput\" name=\""+devName+"NameInput\" maxlength=63  class=\"input-text autosizeNormal\" style=\"display:none;\">" +
+"							<span id=\""+devName+"Name\" class=\"ConnDevNameTxt\">"+devUserName.replace(/_/g,"&nbsp;")+"</span>" +
+"							<br><span id=\""+devName+"_Line2\">"+IPA+"<b>"+IPB+"</b></span> <img id=\""+devName+"_locked\" src=\"../images/icon-Lock.png\" class=\"lockIcon\" style=\"display:none;\">" +
+"							</div>" +
+"						<div style=\"clear: both;\"></div>" +
+"<small class=\"error withtop ConnDevSaveMe\" id=\"" + devName + "_SaveMe\" tid=\"pa200t005\" style=\"display:none\">Click \"Save\" to reserve IP address {{REPLACE WITH RESERVED ADDRESS}}</small>" +
+"<small class=\"error withtop ConnDevSaveMe\" id=\"" + devName + "_ReconnectMe\" tid=\"pa200t006\" style=\"display:none\">Your new reserved IP address {{REPLACE WITH RESERVED ADDRESS}} won't take effect until you disconnect {{REPLACE WITH DEVICE NAME}} from your router and reconnect it. Until then, the IP address will remain {{REPLACE WITH CURRENT ADDRESS}}.</small>" +
+"<small class=\"error withtop ConnDevSaveMe\" id=\"" + devName + "_SaveMeUnreserve\" tid=\"pa200t007\" style=\"display:none\">Click \"Save\" to clear your IP address reservation</small>" +
+"						<div style=\"display:none\" id=\""+devName+"_details\" class=\"ConnDevDetails\">" +
+"							<div class=\"Details\">" +
+"								<div class=\"AddressDetails\">" +
+"									<span tid=\"gtIPAddress\" class=\"label\">" +langDictionary['gtIPAddress']+"</span>" +
+"									<span id=\""+devName+"_IP_Fixed\">"+IPA+"</span><span id=\""+devName+"_IP_Reserve\" class=\"IPReserve\" style=\"display:none;\">"+IPB+"</span> &nbsp;" +
+"									<div id=\""+devName+"_IP_ReserveForm\" style=\"display:inline-block\"><input id=\""+devName+"_IP_ReserveInput\" name=\""+devName+"_IP_ReserveInput\" type=\"text\" class=\"input-text autosizeNormal\" value=\""+IPB+"\" size=\"3\" maxlength=\"3\"></div>" +
+"									<a class=\"tiny white button radius nice\" id=\""+devName+"_ReserveToggle\" tid=\"gtReserve\">"+langDictionary['gtReserve']+"</a>&nbsp;" +
+"									<span class=\"more show-on-desktops\"><span class=\"desc\" tid=\"a200t003\">"+langDictionary['a200t003']+"</span></span>" +
+"<small id=\"" + devName + "ResError\" class=\"error withtop\" tid=\"pa200t008\" style=\"display:none\"></small>" +
+"<small class=\"error withtop\" id=\"" + devName + "_ReconnectMeDetails\" tid=\"pa200t006\" style=\"display:none\">Your new reserved IP address {{REPLACE WITH RESERVED ADDRESS}} won't take effect until you disconnect {{REPLACE WITH DEVICE NAME}} from your router and reconnect it.  Until then, the IP address will remain {{REPLACE WITH CURRENT ADDRESS}}.</small>" +
+"									<br/>" +
+"									<span tid=\"gtMACAddress\" class=\"label\">"+langDictionary['gtMACAddress']+"</span> <span id=\""+devName+"_MAC\">"+MACtransform(devMAC)+"</span>" +
+"								</div>" +
+"							</div>" +
+"							<a tid=\"gtSave\" class=\"ConnDevSave button nice radius large green disabled\" id=\""+devName+"_save\">"+langDictionary['gtSave']+"</a>" +
+"						</div>" +
+"					</div>" +
+"<input type=\"hidden\" id=\"" + devName + "_ori_name\" name=\"" + devName + "_ori_name\" value=\"" + devUserName.replace(/_/g," ") + "\" />" +
+"<input type=\"hidden\" id=\"" + devName + "_ori_mac\" name=\"" + devName + "_ori_mac\" value=\"" + devMAC + "\" />" +
+"<input type=\"hidden\" id=\"" + devName + "_ori_ip\" name=\"" + devName + "_ori_ip\" value=\"" + devip + "\" />" +
+"<input type=\"hidden\" id=\"" + devName + "_ori_reserve\" name=\"" + devName + "_ori_reserve\" value=\"" + reserve + "\" />" +
+"				</form></li>" +
+"		");
+	var devIDs = ["#" + devName + "_ReserveToggle", "#" + devName + "_IP_Reserve", "#" + devName + "_IP_ReserveInput", "#" + devName + "_save"];
+	if (reserve == "1") {
+		$(devIDs[1]).show();
+		$(devIDs[2]).hide();
+		$(devIDs[0]).text(langDictionary['gtUnreserve']);
+	} else {
+		$(devIDs[2]).show();
+		$(devIDs[1]).hide();
+		$(devIDs[0]).text(langDictionary['gtReserve']);
+	}
+}
+var devi_info=
+{
+"devices": []
+}
+
+
+function TblPreSort() {
+	for (i=0; i<parNum; i++){
+		ParTbl[i][12] = 0
+		ParTbl[i][13] = "generic"
+		ParTbl[i][14] = langDictionary['gtUnknownManu']
+	}
+	var ConDevMAC = new Array("ffffffffffff");
+	var on=1
+	var off=1
+	var j=0,k=0;
+	while (devi_info.devices[j] != undefined){
+		if(devi_info.devices[j].model != undefined){
+			var tmpcount=0
+			if(devi_info.devices[j].model.deviceType != undefined){
+				var MAC = devi_info.devices[j].knownMACAddresses[0].replace(/:/ig,"");
+				deviTbl[k] = new Array(3)
+				deviTbl[k][0]=MAC
+				deviTbl[k][1]=devi_info.devices[j].model.deviceType
+				tmpcount++
+			}
+			if(devi_info.devices[j].model.manufacturer != undefined){
+				deviTbl[k][2]=devi_info.devices[j].model.manufacturer
+				tmpcount++
+			}
+			else{
+				deviTbl[k][2]=langDictionary['gtUnknownManu']
+			}
+			if(tmpcount != 0)
+				k++
+		}
+		j++
+	}
+
+	for (i=parNum-1; i>=0; i--) {
+		for (j=0; j<ConDevMAC.length; j++) {
+			if (ParTbl[i][1].toUpperCase() == ConDevMAC[j].toUpperCase()){
+				ParTbl[i][12] = 1
+				ParTbl[i][0] = "On"+on
+				on++
+			}
+		}
+		if(ParTbl[i][12] == 0){
+			ParTbl[i][0] = "Off"+off
+			off++
+		}
+		for(j=0 ;j<deviTbl.length;j++ ){
+			if(ParTbl[i][1].toUpperCase() == deviTbl[j][0].toUpperCase()){
+				switch (deviTbl[j][1]){
+					case "Computer":
+						ParTbl[i][13] = "laptop"
+						break;
+					case "Camera":
+						ParTbl[i][13] = "netcam"
+						break;
+					case "GameConsole":
+						ParTbl[i][13] = "game"
+						break;
+					case "Infrastructure":
+						ParTbl[i][13] = "generic"
+						break;
+					case "Phone":
+						ParTbl[i][13] = "phone"
+						break;
+					case "Printer":
+						ParTbl[i][13] = "printer"
+						break;
+					case "MediaPlayer":
+						ParTbl[i][13] = "settop"
+						break;
+					case "Mobile":
+						ParTbl[i][13] = "phone"
+						break;
+					case "Storage":
+						ParTbl[i][13] = "generic"
+						break;
+					case "Tablet":
+						ParTbl[i][13] = "tablet"
+						break;
+					case "WeMo":
+						ParTbl[i][13] = "wemo"
+						break;
+					case "WeMoCoffee":
+						ParTbl[i][13] = "wemo"
+						break;
+					case "WeMoCrockpot":
+						ParTbl[i][13] = "wemo"
+						break;
+					case "WeMoInsight":
+						ParTbl[i][13] = "wemo"
+						break;
+					case "WeMoIron":
+						ParTbl[i][13] = "wemo"
+						break;
+					case "WeMoLightSwitch":
+						ParTbl[i][13] = "wemo"
+						break;
+					case "WeMoNetCam":
+						ParTbl[i][13] = "netcam"
+						break;
+					case "WeMoPetfeeder":
+						ParTbl[i][13] = "wemo"
+						break;
+					case "WeMoSensor":
+						ParTbl[i][13] = "wemo"
+						break;
+					case "WeMoSocket":
+						ParTbl[i][13] = "wemo"
+						break;
+					ParTbl[i][13] = "generic"
+				}
+				if(deviTbl[j][2] != "")
+					ParTbl[i][14] = deviTbl[j][2] 
+			}
+		}
+	}
+}
+function MACtransform(Mac){
+	var x=new Array();
+	x[0]=Mac.substring(0,2);
+	x[1]=Mac.substring(2,4);
+	x[2]=Mac.substring(4,6);
+	x[3]=Mac.substring(6,8);
+	x[4]=Mac.substring(8,10);
+	x[5]=Mac.substring(10,12);
+	var Mac1 = x[0] + ":" + x[1] + ":" + x[2] + ":" + x[3] + ":" + x[4] + ":" + x[5];
+	Mac1= Mac1.toUpperCase()
+
+	return Mac1
+}
+</script>
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+<div class="container top-pane hide-on-phones">
+ 	<div class="row">
+ 		<div class="twelve columns">
+ 			<a href="000-dashboard.asp"><script>dwt('gtBackToDashboard')</script></a>
+ 			<ul class="sub-nav">
+       			<!-- Current N600 nav bar looks like this in the Parental Control group -->
+ 				<li><a href="lan_main.asp" tid="gtLocalNetworkSettings"><script>dwt('gtLocalSettings')</script></a></li>
+ 				<li class="current"><a href="a200-ConnDev.asp" tid="gtConnDev"><script>dwt('gtConnDev')</script></a></li>
+ 			</ul>
+ 		</div>
+ 	</div>
+</div>
+<!-- / Top Pane -->
+<!-- Template for every page: back to dashboard link, followed by name of page -->
+<div class="main container mobileNav show-on-phones">
+	<div class="row">
+		<div class="twelve columns">
+			<a href="000-dashboard.asp" id="pLANaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard')</script></span></a>
+			<h2 tid="gtConnDev"><script>dwt('gtConnDev')</script></h2>
+		</div>
+	</div>
+</div>
+<div class="main container" id="pa200">
+	<div class="row">
+		<div class="eight columns">
+			<div class="spacer11 tpad30">
+				<h3 tid="gtConnDev" class="hide-on-phones"><script>dwt('gtConnDev')</script></h3>
+				<h3 class="PICListHeader" id="pa200t001" tid="PIC-S1t010"><script>dwt('PIC_S1t010')</script></h3>
+				<img class="PICLoading" id="PICLoadingImg" src="../images/loading.gif">
+				<div class="row">
+					<div class="twelve columns">
+						<ul class="PICOnNet">
+							<script>
+							TblPreSort();
+							for(i=parNum ; i>=0 ; i-- ){
+								if(ParTbl[i][12] == 1)
+									addDevice(ParTbl[i][0], ParTbl[i][2].replace(/_/g," "), ParTbl[i][1], ParTbl[i][3], ParTbl[i][4],ParTbl[i][13])
+							}
+							</script>
+						</ul>
+					</div>
+				</div>
+				<div class="row" id="recent" style="display:none">
+					<div class="twelve columns">
+						<h5 class="PICListHeader" id="pa200t002" tid="pa200t002"><script>dwt('a200t002')</script></h5>
+						<ul id="PICOffNet" class="PICOffNet scrollableNoBorder">
+							<script>
+							PICOffNet = 0
+							for(i=parNum ; i>=0 ; i-- ){
+								if(ParTbl[i][12] == 0) {
+									addDevice(ParTbl[i][0], ParTbl[i][2].replace(/_/g," "), ParTbl[i][1], ParTbl[i][3], ParTbl[i][4], ParTbl[i][13])
+									PICOffNet = PICOffNet + 1
+								}
+							}
+							if (PICOffNet <= 3)
+								$("#PICOffNet").removeClass("scrollableNoBorder");
+							</script>
+						</ul>
+					</div>
+				</div>
+			</div>
+			<a style="display:none" id="pa200a005" tid="gtRefresh" href="javascript:location.reload(true);" class="button nice radius green"><script>dwt('gtRefresh')</script></a>
+		</div>
+		<!-- Content Sidebar -->
+		<div class="sidebar four columns">
+			<div>
+				<h6 tid="htConnDev" class="tpad30"><script>dwt('htConnDev')</script></h6>
+				<p><span tid="htConnDevContent"><script>dwt('htConnDevContent')</script></span><span class="nub"></span></p>
+			</div>
+		</div>
+		<!-- / #sidebar -->
+	</div>  
+  </div>
+  <script>
+$(document).ready( function() {
+	var index = "0";
+	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+	// Fake the loading of devices to show how it should look
+	// Show what we we've seen at least every 5 seconds.
+	setTimeout(function() {
+			//$('#On1').slideDown();
+			for(i=0 ; i<=parNum ; i++ )
+				$('#On'+(i+1)).slideDown();
+		}, 800);
+	setTimeout(function() {
+			//$('#On2').slideDown();
+			//$('#On3').slideDown();	
+		}, 10000);
+		
+	// All finished.  Show all of the off-network devices and hide the loading anim.
+	setTimeout(function() {
+			$('#PICLoadingImg').slideUp("slow");
+			for (i=parNum; i>=0; i--) {
+				if (ParTbl[i][12] == 0) {
+					$('#recent').slideDown();
+					break;
+				}
+			}
+			$('#pa200t001').slideUp();
+			$('#pa200a005').fadeIn();
+			for(i=0 ; i<=parNum ; i++ )
+				$('#Off'+(i+1)).slideDown();
+		}, 1600);
+
+	///////
+	// This would all be MUCH better served with a DATA MODEL pattern, but 
+	//  this is just a quick way to show what things are supposed to look like.
+	////////
+	var oldVal = {};
+	function addShowDetailsHandler(devName) {
+		var devIDs = ["#" + devName + "_DetailsShow", "#" + devName + "_details", "#" + devName + "Name", "#" + devName + "NameInput", "#" + devName + "_caret", "#" + devName + "_DetailsToggle", "#" + devName + "_Line2", "#" + devName + "_IP_ReserveInput", "#" + devName + "_save", "#" + devName + "_locked", "#" + devName + "_SaveMe", "#" + devName + "_ReconnectMe", "#" + devName + "_SaveMeUnreserve", "#" + devName + "_ReconnectMeDetails"];
+		if ($("#" + devName + "_ReserveToggle").html() == langDictionary['gtUnreserve'])
+			$(devIDs[9]).show();
+		$(devIDs[5]).click(function(e) {
+			e.preventDefault();
+			if ($(devIDs[1]).is(":hidden")) {
+				$(devIDs[2]).hide();
+				$(devIDs[3]).show();
+				$(devIDs[1]).slideDown();
+				oldVal[devName] = {"IP":$(devIDs[6]).html()};
+				for(i=0 ; i<ParTbl.length ; i++){
+					if(devName == ParTbl[i][0]){
+						if(ParTbl[i][14] == undefined)
+							ParTbl[i][14] = langDictionary['gtUnknownManu'] 
+						$(devIDs[6]).html(ParTbl[i][14]);
+					}
+				}
+				$(devIDs[9]).hide();
+				$(devIDs[10]).slideUp();
+				$(devIDs[11]).slideUp();
+				$(devIDs[12]).slideUp();
+				if ($(devIDs[8]).hasClass("disabled") && $("#" + devName + "_ori_reserve").val() == 1 && $("#" + devName + "_ori_ip").val() != ($("#" + devName + "_IP_Fixed").html() + $("#" + devName + "_IP_Reserve").html())) {
+					$(devIDs[13]).html("Your new reserved IP address " + $("#" + devName + "_IP_Fixed").html() + $("#" + devName + "_IP_Reserve").html() + " won't take effect until you disconnect " + $(devIDs[2]).html() + " from your router and reconnect it. Until then, the IP address will remain " + $("#" + devName + "_ori_ip").val() + ".");
+					$(devIDs[13]).slideDown();
+				}
+				else
+					$(devIDs[13]).slideUp();
+				$(devIDs[4]).rotate({animateTo:0, duration:600});
+			} else {
+				$(devIDs[2]).show();
+				$(devIDs[3]).hide();
+				$(devIDs[1]).slideUp();
+				$(devIDs[6]).html(oldVal[devName]["IP"]);
+				if ($("#" + devName + "_ReserveToggle").html() == langDictionary['gtUnreserve'])
+					$(devIDs[9]).show();
+				if ($("#" + devName + "_ori_reserve").val() == 0 && $("#" + devName + "_ReserveToggle").html() == langDictionary['gtUnreserve']) {
+					$(devIDs[10]).html("Click \"Save\" to reserve IP address" + $("#" + devName + "_IP_Fixed").html() + $("#" + devName + "_IP_Reserve").html());
+					$(devIDs[10]).slideDown();
+				}
+				else if ($(devIDs[8]).hasClass("disabled") && $("#" + devName + "_ori_reserve").val() == 1 && $("#" + devName + "_ori_ip").val() != ($("#" + devName + "_IP_Fixed").html() + $("#" + devName + "_IP_Reserve").html())) {
+					$(devIDs[11]).html("Your new reserved IP address " + $("#" + devName + "_IP_Fixed").html() + $("#" + devName + "_IP_Reserve").html() + " won't take effect until you disconnect " + $(devIDs[2]).html() + " from your router and reconnect it. Until then, the IP address will remain " + $("#" + devName + "_ori_ip").val() + ".");
+					$(devIDs[11]).slideDown();
+				}
+				else if ($("#" + devName + "_ori_reserve").val() == 1 && $("#" + devName + "_ReserveToggle").html() == langDictionary['gtReserve'])
+					$(devIDs[12]).slideDown();
+				$(devIDs[13]).slideUp();
+				$(devIDs[4]).rotate({animateTo:180, duration:600});
+			}
+			$(devIDs[3]).bind("change keyup input", function () {$(devIDs[8]).removeClass("disabled");});
+		});
+	}
+	
+	function addReserveButttonHandler(devName) {
+		var devIDs = ["#" + devName + "_ReserveToggle", "#" + devName + "_IP_Reserve", "#" + devName + "_IP_ReserveInput", "#" + devName + "_save"];
+		$(devIDs[0]).click(function(e) {
+			e.preventDefault();
+			var isValid = true;
+			var EHostname = "";
+			for(i=0 ; i<ParTbl.length ;i++){
+				if($("#"+devName+"_IP_ReserveInput").val() == $("#"+ParTbl[i][0]+"_IP_ReserveInput").val() && devName != ParTbl[i][0] && ParTbl[i][4] == 1){
+					isValid = false
+					EHostname = ParTbl[i][2]
+				}
+			}
+			if (isValid) {
+				if ($(devIDs[1]).is(":hidden")) {
+					// Reserve the IP
+					$(devIDs[1]).show();
+					$(devIDs[2]).hide();
+					$(devIDs[1]).html($(devIDs[2]).val());
+					$(devIDs[0]).text(langDictionary['gtUnreserve']);
+				} else {
+					// Unreserve the IP
+					$(devIDs[2]).show();
+					$(devIDs[1]).hide();
+					$(devIDs[0]).text(langDictionary['gtReserve']);
+				}
+				$(devIDs[3]).removeClass("disabled");
+				$("#"+devName+"ResError").hide();
+			} else {
+				//ResErrorMsg="That IP address is already in use by {{REPLACE WITH CONFLICTING DEVICE NAME}}. Please try another address."
+				//$("#"+devName+"ResError").html(ResErrorMsg.replace("{{REPLACE WITH CONFLICTING DEVICE NAME}}", EHostname));
+				$("#"+devName+"ResError").html(langDictionary['403']);
+				$("#"+devName+"ResError").show();
+				$(devIDs[3]).addClass("disabled");
+			}
+		});	
+	}
+	
+	function addSaveButtonHandler(devName,devMAC) {
+		var devIDs = ["#" + devName + "_save", "#" + devName + "_DetailsToggle", "#" + devName + " .ConnDevName", "#" + devName + "_Saved", "#" + devName + "_caret", "#" + devName + "_IP_ReserveInput", "#" + devName + "_locked", "#" + devName + "_Icon"];
+		$(devIDs[0]).click( function() {
+			if($(devIDs[0]).hasClass("disabled"))
+				return	
+			var isValid = true;
+			var EHostname = "";
+			for(i=0 ; i<ParTbl.length ;i++){
+				if($("#"+devName+"_IP_ReserveInput").val() == $("#"+ParTbl[i][0]+"_IP_ReserveInput").val() && devName != ParTbl[i][0]  && ParTbl[i][4] == 1){
+					isValid = false
+					EHostname = ParTbl[i][2]
+				}
+			}
+			if (isValid) {
+				if ($("#" + devName + "_ReserveToggle").html() == langDictionary['gtReserve'])
+					$("#" + devName + "_ori_reserve").val(0)
+				else if ($("#" + devName + "_ReserveToggle").html() == langDictionary['gtUnreserve'])
+					$("#" + devName + "_ori_reserve").val(1)
+				if ($("#"+devName+"NameInput").val() == "")
+					$("#"+devName+"NameInput").val("Unnamed Device")
+				$("#"+devName+"Name").html($("#"+devName+"NameInput").val().replace(/ /g,"&nbsp;"))
+				$("#"+devName+"ResError").hide();
+				$(devIDs[0]).addClass("disabled");
+				$(devIDs[1]).click();
+				$(devIDs[2]).animate({backgroundColor: '#73D44C'}).delay(3000).animate({backgroundColor: '#F3F2EF'}, 3000);
+				$(devIDs[3]).fadeIn().delay(3000).fadeOut(3000);
+				if ($(devIDs[5]).is(":hidden")) {
+					$(devIDs[6]).fadeIn();
+				} else {
+					$(devIDs[6]).fadeOut();
+				}
+				$(devIDs[4]).fadeTo(600, 0).delay(3000).fadeTo(3000, 1);
+				$(devIDs[7]).addClass("checkmark").delay(4200).fadeOut(200).queue( function(next) {$(this).removeClass("checkmark"); next()}).fadeIn(600);
+				originalSettings = getDeviceState();  // Reset this so that beforeunload popup is not triggered any more.
+				$("#"+devName+"_Line2").html(IPA+"<b>"+$("#"+devName+"_IP_ReserveInput").val()+"</b>")
+				$.post("/goform/formParConSave", {
+					work:"10",
+					mac:devMAC,
+					name:$("#"+devName+"NameInput").val().replace(/[ "]/g,"_"),
+					ip:IPA+$("#"+devName+"_IP_ReserveInput").val(),
+					reserve:($("#"+devName+"_IP_Reserve").is(":hidden")?0:1)
+				}, function(data){});
+				for(i=0 ; i<ParTbl.length ;i++){
+					if(devName == ParTbl[i][0]  ){
+						ParTbl[i][4] = $("#"+devName+"_IP_Reserve").is(":hidden")?0:1
+					}
+				}
+			} else {
+				//ResErrorMsg=langDictionary['pa200t008']
+				//$("#"+devName+"ResError").html(ResErrorMsg.replace("{{REPLACE WITH CONFLICTING DEVICE NAME}}", EHostname));
+				$("#"+devName+"ResError").html(langDictionary['403']);
+				$("#"+devName+"ResError").show();
+				$(devIDs[3]).addClass("disabled");
+			}
+		});
+	};
+	
+	
+	function addHandlers(devName,devMAC) {
+		addShowDetailsHandler(devName);
+		addReserveButttonHandler(devName);
+		addSaveButtonHandler(devName,devMAC);
+		$("#" + devName + "_caret").rotate(180);
+	}
+
+	for(i=0 ; i<parNum ; i++){	
+		addHandlers(ParTbl[i][0],ParTbl[i][1]);
+	}
+	
+	// ODM TODO: remember the state of the devices.  If any of them have been modified, show the "beforeunload" msg box.
+	function getDeviceState() {
+		var state = "";
+		return $("form[name]").serialize();
+	}
+	var originalSettings=getDeviceState();
+	$(window).bind('beforeunload', function(){
+		isChanged = originalSettings != getDeviceState();
+		if (isChanged) {
+			return langDictionary['a200t010'];
+		} else {
+			return;
+		}
+	});
+	// Don't forget! Save values in originalSettings after validation to prevent this msg from showing up after save.
+	initDataHeader();
+});
+  </script>
+
+<div id="bg"></div>
+
+<!-- Dashboard Footer -->
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<!-- container -->
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>
+<!--#include virtual="dashincludes/_footer.htm" -->

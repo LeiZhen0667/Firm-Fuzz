@@ -1,0 +1,1499 @@
+[
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/000-dashboard.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/000-dashboard.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/000-dashboard.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/000-dashboard.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/000-dashboard.asp",
+    "form_id": "puserpswd",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/000-dashboard.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/000-dashboard.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/2500-Wireless.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/2500-Wireless.asp",
+    "form_id": "p2500f001",
+    "seed_values": {
+      "ssid": "",
+      "p2500f24PSK": "",
+      "p2500f24EnableVal": "false",
+      "hiddenssid": "",
+      "ssid2": "",
+      "p2500f5PSK": "",
+      "p2500f5EnableVal": "true",
+      "hiddenssid2": "",
+      "wl0_hiddenssid": "",
+      "wl0_hiddenssid2": "",
+      "wl_bandwidth": "",
+      "wl_bandwidth2": "",
+      "method": "",
+      "method2": "",
+      "weplength": "",
+      "weplength2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/2500-Wireless.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/2500-Wireless.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/2500-Wireless.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/2500-Wireless.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/2500-Wireless.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/PIC-S1.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/PIC-S1.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/PIC-S1.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/PIC-S1.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/PIC-S1.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/qos_bw.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/qos_bw.asp",
+    "form_id": "p600505",
+    "seed_values": {
+      "qos_enable": "0",
+      "down_speed_box": "",
+      "up_speed_box": "",
+      "h_qos_enable": "disable",
+      "qos_method": "1",
+      "qos_configured": "0",
+      "qos_speed_test_status": "0",
+      "qos_ping_time": "",
+      "qos_upload_speed": "",
+      "qos_download_speed": "",
+      "wan_port_speed": "100",
+      "qos_record_date": "",
+      "qos_ready_flag": "0",
+      "todo": "save",
+      "this_file": "mf_is_qos.html",
+      "next_file": "mf_is_qos.html",
+      "message": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/qos_bw.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/qos_bw.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/qos_bw.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/qos_bw.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/qos_bw.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/a200-ConnDev.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/a200-ConnDev.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/a200-ConnDev.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/a200-ConnDev.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/a200-ConnDev.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_parent.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_parent.asp",
+    "form_id": "pe100a001",
+    "seed_values": {
+      "webfilter": "3",
+      "webpage": "fw_parent.asp"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_parent.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_parent.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_parent.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_parent.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_parent.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formGuestWifi",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wifi_guest.asp",
+    "form_id": "p600404",
+    "seed_values": {
+      "guest_en": "0",
+      "guest_mode": "0",
+      "guest_ssid": "",
+      "ui_psk": "",
+      "guest_encrypt": "",
+      "guest_enabled": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/wifi_guest.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/wifi_guest.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wifi_guest.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/wifi_guest.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/wifi_guest.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/opt_sw.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/opt_sw.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/opt_sw.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/opt_sw.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/opt_sw.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/lan_main.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/lan_main.asp",
+    "form_id": "p600101",
+    "seed_values": {
+      "dhcp_enable": "0",
+      "dhcp_startip": "",
+      "dhcp_endip": "",
+      "domain_name": "",
+      "dhcp": "",
+      "ip": "",
+      "mask": "",
+      "lan_proto": "",
+      "dhcp_lease": "",
+      "dhcpRangeStart": "",
+      "dhcpRangeEnd": "",
+      "m_wan_domain": "Belkin",
+      "DomainName": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/lan_main.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/lan_main.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/lan_main.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/lan_main.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/lan_main.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/2700-ISP.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/2700-ISP.asp",
+    "form_id": "p2700f001",
+    "seed_values": {
+      "m_wan_hostname": "",
+      "pppoe_username": "",
+      "pppoe_passwd": "",
+      "pppoe_servicename": "",
+      "p2700fPPPoEDHCP": "",
+      "ip_mode": "",
+      "pppoe_ipaddr": "",
+      "pppoe_mtu": "",
+      "p2700fPPPoETimeout": "",
+      "pppoe_idletime_min": "",
+      "pppoe_demand": "",
+      "username": "",
+      "password": "",
+      "serverip": "",
+      "m_wan_ipaddr": "",
+      "m_wan_netmask": "",
+      "m_wan_gateway": "",
+      "m_wan_staticdns1": "",
+      "m_wan_staticdns2": "",
+      "fromBBS": "1",
+      "fromISP": "1"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/2700-ISP.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/2700-ISP.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/2700-ISP.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/2700-ISP.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/2700-ISP.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/dns.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/dns.asp",
+    "form_id": "p600207",
+    "seed_values": {
+      "dns_mode": "",
+      "m_wan_dns0": "",
+      "m_wan_dns1": "",
+      "GWmode": "1",
+      "m_autodns": "1"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/dns.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/dns.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/dns.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/dns.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/dns.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/wan_mac.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wan_mac.asp",
+    "form_id": "p600208",
+    "seed_values": {
+      "uMAC": "",
+      "et1macaddr": "",
+      "et1macaddr_copy": "",
+      "GWmode": "1"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/wan_mac.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/wan_mac.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wan_mac.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/wan_mac.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/wan_mac.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formIPv6BridgeEnable",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/ipv6_con.asp",
+    "form_id": "main_div",
+    "seed_values": {
+      "webpage": "ipv6_con.asp"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/ipv6_con.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/ipv6_con.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/ipv6_con.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/ipv6_con.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/ipv6_con.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formWlanSetupWPS",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wifi_wps.asp",
+    "form_id": "p600403",
+    "seed_values": {
+      "gradio": "",
+      "wls_wps_enabled": "",
+      "wps_enrolee_pin": "",
+      "selected_band": "",
+      "h_wps_action": "",
+      "next_file": "",
+      "todo": "",
+      "webpage": "wifi_wps.asp"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/wifi_wps.asp",
+    "method": "GET",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wifi_wps.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wifi_wps.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/wifi_wps.asp",
+    "method": "GET",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wifi_wps.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formAccessPointMode",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wifi_apt.asp",
+    "form_id": "main_div",
+    "seed_values": {
+      "wifi_ap_en": "2",
+      "webpage": "wifi_apt.asp",
+      "ip": "",
+      "mask": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/wifi_apt.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/wifi_apt.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/wifi_apt.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/wifi_apt.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/wifi_apt.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/setup.cgi",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/qos_stats.asp",
+    "form_id": "qos_form",
+    "seed_values": {
+      "c1": "#F26",
+      "c2": "#FA0",
+      "c3": "#0C0",
+      "c4": "#07F",
+      "c5": "#000",
+      "w": "1.5",
+      "f": "0",
+      "message": "",
+      "this_file": "qos_stats.html",
+      "next_file": "qos_stats.html"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/qos_stats.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/qos_stats.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/qos_stats.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/qos_stats.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/qos_stats.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetFirewall",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_main.asp",
+    "form_id": "tF",
+    "seed_values": {
+      "dos_enable": "0",
+      "webpage": "fw_main.asp"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_main.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_main.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_main.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_main.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_main.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_port.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_port.asp",
+    "form_id": "p600602",
+    "seed_values": {
+      "page": "fw_virtual_server",
+      "logout": "2",
+      "h_remote_management": "",
+      "action": "Apply",
+      "pageaction": "firewall",
+      "fwi": "",
+      "fwi_des": "",
+      "lan_ip": "192.168.2.1",
+      "webpage": "fw_port.asp"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_port.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_port.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_port.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_port.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_port.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_mac.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_mac.asp",
+    "form_id": "p6006031",
+    "seed_values": {
+      "enabled": "",
+      "cusmod": "0",
+      "addFilterMac": "Add",
+      "adminmac0": "",
+      "adminmac1": "",
+      "adminmac2": "",
+      "adminmac3": "",
+      "adminmac4": "",
+      "adminmac5": "",
+      "filter_macmode": "",
+      "filter_maclist": "",
+      "mac": "",
+      "admin_mac_addr": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formFilter",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_mac.asp",
+    "form_id": "p6006034",
+    "seed_values": {
+      "submitMAC": "",
+      "applyAllFilterMac": "1",
+      "isApply": "1"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formFilter",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_mac.asp",
+    "form_id": "p6006033",
+    "seed_values": {
+      "addFilterMac": "Enable",
+      "enabled": "",
+      "admin_mac_addr": "",
+      "submit-url": "/fw_mac.asp"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formFilter",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_mac.asp",
+    "form_id": "p6006032",
+    "seed_values": {
+      "deleteSelFilterMac": "Del",
+      "Delindex": "",
+      "submit-url": "/fw_mac.asp"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_mac.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_mac.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_mac.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_mac.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_mac.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_dmz.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_dmz.asp",
+    "form_id": "p600604",
+    "seed_values": {
+      "fw_dmz_enabled": "",
+      "ip": "",
+      "dmz_ipaddr": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_dmz.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_dmz.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_dmz.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_dmz.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_dmz.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/ddns.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/ddns.asp",
+    "form_id": "p600605",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/ddns.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/ddns.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/ddns.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/ddns.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/ddns.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_ping.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_ping.asp",
+    "form_id": "p600606",
+    "seed_values": {
+      "ping": "",
+      "pingenable": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_ping.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_ping.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/fw_ping.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/fw_ping.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/fw_ping.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSysLog",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/log.asp",
+    "form_id": "p600607",
+    "seed_values": {
+      "send": "",
+      "reset": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/log.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/log.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/log.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/log.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/log.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_sys_r.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_sys_r.asp",
+    "form_id": "600701",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_sys_r.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/tl_sys_r.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_sys_r.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_sys_r.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/tl_sys_r.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSaveUserConfig",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_save_restore.asp",
+    "form_id": "p600703",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSaveConfigSec",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_save_restore.asp",
+    "form_id": "p600704",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_save_restore.asp",
+    "method": "GET",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_save_restore.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_save_restore.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_save_restore.asp",
+    "method": "GET",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_save_restore.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formUpload",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/2300-FWUpdate.asp",
+    "form_id": "p2300a003",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/2300-FWUpdate.asp",
+    "method": "GET",
+    "risky": true,
+    "source_page": "http://192.168.2.1/2300-FWUpdate.asp",
+    "form_id": "checkFWform",
+    "seed_values": {
+      "action": "install_FW"
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/2300-FWUpdate.asp",
+    "method": "GET",
+    "risky": true,
+    "source_page": "http://192.168.2.1/2300-FWUpdate.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/2300-FWUpdate.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/2300-FWUpdate.asp",
+    "method": "GET",
+    "risky": true,
+    "source_page": "http://192.168.2.1/2300-FWUpdate.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_sys.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_sys.asp",
+    "form_id": "p600706",
+    "seed_values": {
+      "http_user": "user",
+      "sysPasswd2": "",
+      "login_timeout": "10",
+      "ntp_timezone": "",
+      "ntp_timezone_sel": "",
+      "remote_config_ip": "",
+      "ntp_dst_enabled": "1",
+      "upnp_enable": "0",
+      "fw_auto_detect": "0",
+      "ECO_led_enable": "0",
+      "ECO_wlan_enable": "0",
+      "year": "0",
+      "mon": "0",
+      "day": "0",
+      "hour": "0",
+      "min": "0",
+      "sec": "0",
+      "timeout": "",
+      "b1": "",
+      "rm_en": "0",
+      "checkremote": "",
+      "rm_ip": "",
+      "remotePort": "",
+      "upnp_en": "0",
+      "ecodis_conf": "22-23",
+      "eco_dis": "",
+      "eco_day1": "",
+      "eco_day2": "",
+      "eco_day3": "",
+      "eco_day4": "",
+      "eco_day5": "",
+      "eco_day6": "",
+      "eco_day7": "",
+      "eco_day": "",
+      "eco_dim_value": "",
+      "eco_dis_value": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_sys.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/tl_sys.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_sys.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_sys.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/tl_sys.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_health.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_health.asp",
+    "form_id": "p600707",
+    "seed_values": {
+      "health_enable": "0",
+      "health_day1": "",
+      "health_day2": "",
+      "health_day3": "",
+      "health_day4": "",
+      "health_day5": "",
+      "health_day6": "",
+      "health_day7": "",
+      "enable": "",
+      "day": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_health.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/tl_health.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/tl_health.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/tl_health.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/tl_health.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/h500-Reg.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/h500-Reg.asp",
+    "form_id": "RegForm",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/h500-Reg.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/h500-Reg.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/h500-Reg.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/h500-Reg.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/h500-Reg.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/000-dashboard.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/000-dashboard.asp",
+    "form_id": "dff014",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/goform/formSetLanguage",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/000-dashboard.asp",
+    "form_id": "dashboard_ChLang",
+    "seed_values": {
+      "langtype": "",
+      "webpage": ""
+    }
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/000-dashboard.asp",
+    "method": "POST",
+    "risky": true,
+    "source_page": "http://192.168.2.1/000-dashboard.asp",
+    "form_id": "puserpswd",
+    "seed_values": {}
+  },
+  {
+    "kind": "form_template",
+    "target": "http://192.168.2.1/000-dashboard.asp",
+    "method": "GET",
+    "risky": false,
+    "source_page": "http://192.168.2.1/000-dashboard.asp",
+    "form_id": "UserPasswordSetup",
+    "seed_values": {
+      "newpass": "",
+      "newpass2": ""
+    }
+  }
+]

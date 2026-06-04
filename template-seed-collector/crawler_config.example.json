@@ -1,0 +1,9 @@
+{
+  "base_url": "http://192.168.2.1/",
+  "proxy_url": "http://127.0.0.1:8080",
+  "output_dir": "./device_seed_output",
+  "max_pages": 80,
+  "timeout": 10,
+  "user_agent": "Mozilla/5.0 (X11; Linux x86_64) BurpSeedCrawler/1.0 Chrome/104 Safari/537.36",
+  "use_selenium": true
+}

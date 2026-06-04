@@ -1,0 +1,1438 @@
+<html><head><meta name="color-scheme" content="light dark"></head><body><pre style="word-wrap: break-word; white-space: pre-wrap;">$.ajaxSetup({cache:false});
+//  Created by Belkin International, Software Engineering on 09/05/13. 
+//  Copyright (c) 2012-2013 Belkin International, Inc. and/or its affiliates. All rights reserved. //
+/*
+    Belkin International, Inc. retains all right, title and interest (including all
+    intellectual property rights) in and to this computer program, which is
+    protected by applicable intellectual property laws.  Unless you have obtained
+    a separate written license from Belkin International, Inc., you are not authorized
+    to utilize all or a part of this computer program for any purpose (including
+    reproduction, distribution, modification, and compilation into object code),
+    and you must immediately destroy or return to Belkin International, Inc. all copies
+    of this computer program.  If you are licensed by Belkin International, Inc., your
+    rights to utilize this computer program are limited by the terms of that license.  
+
+    To obtain a license, please contact Belkin International, Inc.
+ 
+    This computer program contains trade secrets owned by Belkin International, Inc.
+    and, unless unauthorized by Belkin International, Inc. in writing, you agree to
+    maintain the confidentiality of this computer program and related information
+    and to not disclose this computer program and related information to any
+    other person or entity.
+
+ 
+    THIS COMPUTER PROGRAM IS PROVIDED AS IS WITHOUT ANY WARRANTIES, AND BELKIN INTERNATIONAL, INC.
+    EXPRESSLY DISCLAIMS ALL WARRANTIES, EXPRESS OR IMPLIED, INCLUDING THE WARRANTIES OF 
+    MERCHANTIBILITY, FITNESS FOR A PARTICULAR PURPOSE, TITLE, AND NON-INFRINGEMENT. */
+	
+$(document).ready(function() {
+  /* Use this js doc for all application specific JS */
+
+	// Check the platform
+	var isIOS=navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)/i);
+	var isAndroid=navigator.userAgent.match(/(android)/i);
+	var isWindows=navigator.platform.match(/(win)/i);
+	var isOSX=navigator.platform.match(/(mac)/i);
+	
+	if (isIOS) {
+		$("body").addClass("ios");
+	}
+	if (isAndroid) {
+		$("body").addClass("android");
+	}
+	if (isWindows) {
+		$("body").addClass("win");
+	}
+	if (isOSX) {
+		$("body").addClass("osx");
+	}
+	function pad(num, size) {
+		var s = "000000000" + num;
+		return s.substr(s.length-size);
+	}
+	
+	// ODM TODO: Remove this from final implementation
+	window.QueryString = function () {
+	  // This function is anonymous, is executed immediately and 
+	  // the return value is assigned to QueryString!
+	  var query_string = {};
+	  var query = window.location.search.substring(1);
+	  var vars = query.split("&amp;");
+	  for (var i=0;i&lt;vars.length;i++) {
+		var pair = vars[i].split("=");
+			// If first entry with this name
+		if (typeof query_string[pair[0]] === "undefined") {
+		  query_string[pair[0]] = pair[1];
+			// If second entry with this name
+		} else if (typeof query_string[pair[0]] === "string") {
+		  var arr = [ query_string[pair[0]], pair[1] ];
+		  query_string[pair[0]] = arr;
+			// If third or later entry with this name
+		} else {
+		  query_string[pair[0]].push(pair[1]);
+		}
+	  } 
+		return query_string;
+	} ();
+	
+	// ODM TODO: Remove this from final implementation.  It allows URL to show/hide elements on the page, and is useful for testing.
+	if (typeof QueryString["show"] === "string") {
+		var id = "#" + QueryString["show"];
+		$(id).show();
+		//alert(id);
+	} else if (QueryString["show"] != undefined) {
+		for (var i = 0; i &lt; QueryString["show"].length; i++)
+		{
+			var id = "#" + QueryString["show"][i];
+			$(id).show();
+			//alert(id);
+		}
+	}
+	if (typeof QueryString["hide"] === "string") {
+		var id = "#" + QueryString["hide"];
+		$(id).hide();
+		//alert(id);
+	} else if (QueryString["hide"] != undefined) {
+		for (var i = 0; i &lt; QueryString["hide"].length; i++)
+		{
+			var id = "#" + QueryString["hide"][i];
+			$(id).hide();
+			//alert(id);
+		}
+	}
+	
+	// Code to "re-tid" a page
+	//$("*[tid^='Support5t']").each(function (index) {
+	//	$(this).attr("tid", "Support5t" + pad(index+1, 3));
+	//});
+	
+  // Jquery.placeholder.min.js
+  /*! http://mths.be/placeholder v1.8.7 by @mathias */
+  (function(f,h,c){var a='placeholder' in h.createElement('input'),d='placeholder' in h.createElement('textarea'),i=c.fn,j;if(a&amp;&amp;d){j=i.placeholder=function(){return this};j.input=j.textarea=true}else{j=i.placeholder=function(){return this.filter((a?'textarea':':input')+'[placeholder]').not('.placeholder').bind('focus.placeholder',b).bind('blur.placeholder',e).trigger('blur.placeholder').end()};j.input=a;j.textarea=d;c(function(){c(h).delegate('form','submit.placeholder',function(){var k=c('.placeholder',this).each(b);setTimeout(function(){k.each(e)},10)})});c(f).bind('unload.placeholder',function(){c('.placeholder').val('')})}function g(l){var k={},m=/^jQuery\d+$/;c.each(l.attributes,function(o,n){if(n.specified&amp;&amp;!m.test(n.name)){k[n.name]=n.value}});return k}function b(){var k=c(this);if(k.val()===k.attr('placeholder')&amp;&amp;k.hasClass('placeholder')){if(k.data('placeholder-password')){k.hide().next().show().focus().attr('id',k.removeAttr('id').data('placeholder-id'))}else{k.val('').removeClass('placeholder')}}}function e(){var o,n=c(this),k=n,m=this.id;if(n.val()===''){if(n.is(':password')){if(!n.data('placeholder-textinput')){try{o=n.clone().attr({type:'text'})}catch(l){o=c('&lt;input&gt;').attr(c.extend(g(this),{type:'text'}))}o.removeAttr('name').data('placeholder-password',true).data('placeholder-id',m).bind('focus.placeholder',b);n.data('placeholder-textinput',o).data('placeholder-id',m).before(o)}n=n.removeAttr('id').hide().prev().attr('id',m).show()}n.addClass('placeholder').val(n.attr('placeholder'))}else{n.removeClass('placeholder')}}}(this,document,jQuery));
+  
+  // PLACEHOLDER FOR FORMS
+	$('input, textarea').placeholder();
+	
+	/*
+	* jQuery Reveal Plugin 1.1
+	* www.ZURB.com
+	* Copyright 2010, ZURB
+	* Free to use under the MIT license.
+	* http://www.opensource.org/licenses/mit-license.php
+	*/
+	/*globals jQuery */
+
+	(function ($) {
+	  var modalQueued = false;
+	  
+	  $('a[data-reveal-id]').live('click', function (event) {
+					event.preventDefault();
+					var modalLocation = $(this).attr('data-reveal-id');
+					$('#' + modalLocation).reveal($(this).data());
+	  });
+
+	  $.fn.reveal = function (options) {
+					var defaults = {
+					  animation: 'fadeAndPop', // fade, fadeAndPop, none
+					  animationSpeed: 300, // how fast animtions are
+					  closeOnBackgroundClick: false, // if you click background will modal close?
+					  closeOnESC: false, // if you press ESC will modal close?
+					  dismissModalClass: 'close-reveal-modal', // the class of a button or element that will close an open modal
+					  open: $.noop,
+					  opened: $.noop,
+					  close: $.noop,
+					  closed: $.noop
+					};
+					options = $.extend({}, defaults, options);
+
+					return this.each(function () {
+					  var modal = $(this),
+									topMeasure = parseInt(modal.css('top'), 10),
+									topOffset = modal.height() + topMeasure,
+									locked = false,
+									modalBg = $('.reveal-modal-bg'),
+									closeButton;
+
+					  if (modalBg.length === 0) {
+									modalBg = $('&lt;div class="reveal-modal-bg" /&gt;').insertAfter(modal);
+									modalBg.fadeTo('fast', 0.8);
+					  }
+					  
+					  function unlockModal() {
+									locked = false;
+					  }
+
+					  function lockModal() {
+									locked = true;
+					  }
+					  
+					  function closeOpenModals(modal) {
+									
+									var openModals = $(".reveal-modal.open");
+									if (openModals.length === 1) {
+									  modalQueued = true;
+									  $(".reveal-modal.open").trigger("reveal:close");
+									}
+					  }
+
+					  function openAnimation() {
+									if (!locked) {
+									  lockModal();
+									  closeOpenModals(modal);
+									  modal.addClass("open");
+									  if (options.animation === "fadeAndPop") {
+													modal.css({'top': $(document).scrollTop() - topOffset, 'opacity': 0, 'visibility': 'visible'});
+													modalBg.fadeIn(options.animationSpeed / 2);
+													modal.delay(options.animationSpeed / 2).animate({
+													  "top": $(document).scrollTop() + topMeasure + 'px',
+													  "opacity": 1
+													}, options.animationSpeed, function () {
+													  modal.trigger('reveal:opened');
+													});
+
+									  }
+									  if (options.animation === "fade") {
+													modal.css({'opacity': 0, 'visibility': 'visible', 'top': $(document).scrollTop() + topMeasure});
+													modalBg.fadeIn(options.animationSpeed / 2);
+													modal.delay(options.animationSpeed / 2).animate({
+													  "opacity": 1
+													}, options.animationSpeed, function () {
+													  modal.trigger('reveal:opened');
+													});
+
+									  }
+									  if (options.animation === "none") {
+													modal.css({'visibility': 'visible', 'top': $(document).scrollTop() + topMeasure});
+													modalBg.css({"display": "block"});
+													modal.trigger('reveal:opened');
+									  }
+									}
+					  }
+					  modal.bind('reveal:open.reveal', openAnimation);
+
+					  function closeAnimation() {
+									if (!locked) {
+									  lockModal();
+									  modal.removeClass("open");
+									  if (options.animation === "fadeAndPop") {
+													modal.animate({
+													  "top": $(document).scrollTop() - topOffset + 'px',
+													  "opacity": 0
+													}, options.animationSpeed / 2, function () {
+													  modal.css({'top': topMeasure, 'opacity': 1, 'visibility': 'hidden'});
+													});
+													if (!modalQueued) {
+													  modalBg.delay(options.animationSpeed).fadeOut(options.animationSpeed, function () {
+																	modal.trigger('reveal:closed');
+													  });
+													} else {
+													  modal.trigger('reveal:closed');
+													}
+													modalQueued = false;
+									  }
+									  if (options.animation === "fade") {
+													modal.animate({
+													  "opacity" : 0
+													}, options.animationSpeed, function () {
+													  modal.css({'opacity': 1, 'visibility': 'hidden', 'top': topMeasure});
+													});
+													if (!modalQueued) {
+													  modalBg.delay(options.animationSpeed).fadeOut(options.animationSpeed, function () {
+																	modal.trigger('reveal:closed');
+													  });
+													} else {
+													  modal.trigger('reveal:closed');
+													}
+									  }
+									  if (options.animation === "none") {
+													modal.css({'visibility': 'hidden', 'top': topMeasure});
+													if (!modalQueued) {
+													  modalBg.css({'display': 'none'});
+													}
+													modal.trigger('reveal:closed');
+									  }
+									}
+					  }
+
+					  function destroy() {
+									modal.unbind('.reveal');
+									modalBg.unbind('.reveal');
+									$('.' + options.dismissModalClass).unbind('.reveal');
+									$('body').unbind('.reveal');
+					  }
+
+					  modal.bind('reveal:close.reveal', closeAnimation);
+					  modal.bind('reveal:opened.reveal reveal:closed.reveal', unlockModal);
+					  modal.bind('reveal:closed.reveal', destroy);
+					  
+					  modal.bind('reveal:open.reveal', options.open);
+					  modal.bind('reveal:opened.reveal', options.opened);
+					  modal.bind('reveal:close.reveal', options.close);
+					  modal.bind('reveal:closed.reveal', options.closed);
+					  
+					  modal.trigger('reveal:open');
+
+					  closeButton = $('.' + options.dismissModalClass).bind('click.reveal', function () {
+									modal.trigger('reveal:close');
+					  });
+
+					  if (options.closeOnBackgroundClick) {
+									modalBg.css({"cursor": "pointer"});
+									modalBg.bind('click.reveal', function () {
+									  modal.trigger('reveal:close');
+									});
+					  }
+
+					  if (options.closeOnESC) {
+									$('body').bind('keyup.reveal', function (event) {
+													if (event.which === 27) { // 27 is the keycode for the Escape key
+													  modal.trigger('reveal:close');
+													}
+									  });
+									}
+					});
+					  
+	  };
+	} (jQuery));
+
+});
+
+//welly add
+var  retryPPPoE = 0;
+function dw(s) { document.write(s); }
+function WaltzJump(tragetpage){
+	window.top.location.assign(tragetpage)
+}
+
+function sleep( seconds ) {
+
+}
+
+function isFrom(where){
+	var url = window.location.toString();
+	if(url.indexOf("?") != -1){
+		var str = url.split("?")[1];
+		if(str == where)
+			return 1;
+		else
+			return 0;
+	}
+}
+
+function isFromPage(page){
+	var url = window.location.toString();
+	if(url.indexOf("-") != -1){
+		var str = url.split("-")[1];
+		if(str.split("?") != -1){
+			var str1 = str.split("?")[0];
+			if(str1 == page)
+				return 1;
+			else
+				return 0;
+		}
+	}
+}
+
+function isFromDB(){
+	var url = window.location.toString();
+	if(url.indexOf("?") != -1){
+		var str = url.split("?")[1];
+		if(str == "DB")
+			return 1;
+		else
+			return 0;
+	}
+}
+function isSecTry(){
+	var url = window.location.toString();
+	if(url.indexOf("?") != -1){
+		var str = url.split("?")[1];
+		if(str == "sec")
+			return 1;
+		return 0;
+	}
+}
+var lastMask_id=0;
+function showMsgMask(page) {
+	if(lastMask_id == page)
+		return;
+	jq_page = "#"+page;
+	$(document).scrollTop(0);
+	$(jq_page).reveal({
+		animation: 'fade',
+		animationspeed: 100
+	});
+	lastMask_id = page;
+}
+
+function showMsgMask_old(page){
+	if(lastMask_id == page)
+		return;
+    jq_page = "#"+page;
+	$(document).scrollTop(0);
+	$(jq_page).css("visibility", "visible");
+	$("#bg").css("display", "block");
+	lastMask_id = page;
+}
+function closeMsgMask(page) {
+	jq_page = "#"+page;
+
+	$(document).scrollTop(0);
+	$(jq_page).trigger('reveal:close')
+	if (lastMask_id == "passwordChallenge" || lastMask_id == "p1201" || lastMask_id == "p2410" || lastMask_id == "p2705" || lastMask_id == "p2505")
+		lastMask_id = 0
+}
+
+//Watch for internet connection IP-&gt;DNS-&gt;PING
+var ChkIPOK = 0;
+var ChkDNSOK = 0;
+var ChkPINGOK = 0;
+
+var StillChkConnectTypeStop ;
+var ChkIPStop;
+var ChkDNSStop;
+var ChkPINGStop;
+var DetecPPPoEStopIP;
+var DetecPPPoEStopDNS;
+var DetecPPPoEStopPING;
+var ISP_2700;
+
+function ChkIP(){
+	$.get("getIPorNot.asp", function(data) {
+		//window.clearInterval(ChkIPStop);
+		if(data==1){
+			ChkIPOK = 1;
+			window.clearInterval(ChkIPStop);
+			closeMsgMask("p202A");
+			showMsgMask("p202C");
+			window.clearInterval(DetecPPPoEStopIP);
+			window.clearInterval(DetecPPPoEStopDNS);
+			window.clearInterval(DetecPPPoEStopPING);
+			//ChkDNS();
+			setTimeout("ChkDNS()",3000); //spec need to show at least 3 sec
+			//ChkDNSStop = self.setInterval("ChkDNS()", 1500);
+		}
+		else if(ChkConnectTimer == 11){
+			window.clearInterval(ChkIPStop);
+			closeMsgMask("p202A");
+			showMsgMask("p202B");
+			DetecPPPoE();
+			DetecPPPoEStopIP = self.setInterval("DetecPPPoE()", 10000);
+		}
+		else if(ChkConnectTimer == 6){
+			ChkConnectTimer++;
+			showMsgMask("p202A");
+		}
+		else
+			ChkConnectTimer++;
+	});
+}
+var ChkDNSFail = 0;
+function ChkDNS(){
+	$.get("getDNSorNot.asp", function(data) {
+		window.clearInterval(ChkDNSStop);
+		if(data==1){
+			window.clearInterval(ChkDNSStop);
+			ChkDNSOK = 1;
+			//ChkPINGStop = self.setInterval("ChkPING()", 1500);
+			ChkPING();
+		}
+		else if(ChkDNSFail==3){
+			ChkDNSOK = 0;
+			showMsgMask("p202B");
+			DetecPPPoE();
+			DetecPPPoEStopDNS = self.setInterval("DetecPPPoE()", 10000);
+		}
+		else{
+			ChkDNSFail++;
+			ChkDNSStop = self.setInterval("ChkDNS()", 1000);
+		}
+	});
+}
+function JumpTo300(){
+	window.location = "300-CheckingFirmware.asp";
+}
+var retryPING = 0;
+function ChkPING(){
+	window.clearInterval(ChkPINGStop);
+	$.get("BelkinAPI/GetPrePINGorNot.asp", function(data) {
+		//window.clearInterval(ChkPINGStop);
+		if(data==1){
+			ConTypeOK = 1;
+			ChkPINGOK = 1;
+			ChkConnectTimer = 0;
+			if(ISP_2700 == "p2700"){
+				window.location = "2700-ISP.asp?S";
+				//$('#p2702').hide()
+			}
+			else
+				self.setInterval("JumpTo300()", 3000);
+			//window.clearInterval(StillChkConnectTypeStop);
+			//window.location = "300-CheckingFirmware.asp";
+		}
+		else if(retryPING==3){
+			ChkPINGOK = 0;
+			showMsgMask("p202B");
+			DetecPPPoE();
+			DetecPPPoEStopPING = self.setInterval("DetecPPPoE()", 10000);
+		}
+		else{
+			retryPING++;
+			ChkPINGStop = self.setInterval("ChkPING()", 1500);
+		}
+	})
+	//.done(function() { alert("second success"); })
+	.fail(function() {
+			//alert("error");
+			ChkPINGStop = self.setInterval("ChkPING()", 1500);
+	})
+	;
+}
+
+
+function DetecPPPoE(){
+	window.clearInterval(ChkIPStop);
+	window.clearInterval(ChkDNSStop);
+	window.clearInterval(ChkPINGStop);
+		$.get("getDetectPPPoE.asp", function(data) {
+			if(data==1){
+				isPPPoE= 1;
+				retryPPPoE =0;
+				window.clearInterval(DetecPPPoEStopIP);
+				window.clearInterval(DetecPPPoEStopDNS);
+				window.clearInterval(DetecPPPoEStopPING);
+				window.clearInterval(ChkConnectTypeStop); //detect PPPoe close the route detect routing
+				if(ISP_2700 == "p2700")
+					window.location = "2210-PPPoECredentials.asp";
+				else
+					window.location = "210-PPPoECredentials.asp";
+				//WaltzJump("210-PPPoECredentials.asp");
+			}
+			else if(data==2){//failed
+				retryPPPoE++;
+				if(retryPPPoE==8){
+					window.clearInterval(DetecPPPoEStopIP);
+					window.clearInterval(DetecPPPoEStopDNS);
+					window.clearInterval(DetecPPPoEStopPING);
+					if(ChkIPOK!=1){
+						$.get("getIsFirstReboot.asp", function(data) {
+							if(data==1){
+								DoSUB1("A");
+							}
+							else{
+								if(ISP_2700 == "p2700"){
+									window.location = "2700-ISP.asp";
+									//Auto detect fail return to 2700
+									//closeMsgMask(lastMask_id);
+									//showMsgMask("p2710");
+									//window.location = "FWGUI_ISP5.asp";
+								}
+								else
+									window.location = "700-SelectConnection.asp";
+							}
+						});
+					}
+					if(ChkIPOK &amp;&amp; ChkDNSOK!=1){
+						//alert(ChkIPOK+" "+ChkDNSOK+" "+ChkPINGOK);
+						if(ISP_2700 == "p2700")
+							window.location = "FWGUI_ISP1.asp";
+						else
+							window.location = "ISP1.asp";
+					}
+					else if(ChkIPOK &amp;&amp; ChkDNSOK &amp;&amp; ChkPINGOK!=1){
+						/*$.get("getIsPPTPRegionCode.asp", function(data) {
+							if(data==1){
+								//go to D route
+								window.location = "220-PPTPCredentials.asp";
+							}
+							else{
+								//window.location = "ISP2.asp";
+								WaltzJump("ISP2.asp");
+							}
+						});*/
+						retryPPPoE=7;
+						$.get("BelkinAPI/chkVPNOpen.asp", function(data) {//1--&gt;open ;0--&gt;close vpn
+							if(ISP_2700 == "p2700"){
+								if(data==1)//region code //pptp	
+									window.location = "2220-PPTP_L2TPCredentials.asp";
+								else
+									window.location = "FWGUI_ISP2.asp";
+							}
+							else{
+								if(data==1)//region code //pptp	
+									window.location = "220-PPTP_L2TPCredentials.asp";
+								else
+									window.location = "ISP2.asp";
+							}
+						});
+					}
+				}
+			}
+		});
+	//});
+	//showMsgMask("p202B");
+}
+var OKcounter=0;
+function ChkConnectTypeLoop(){
+	//ChkIP();
+	ChkIPStop = self.setInterval("ChkIP()", 5000);
+}
+var ChkConnectTimer = 0;
+var ChkConnectTypeStop;
+function ChkConnectType(){
+	window.clearInterval(ChkConnectTypeStop);
+	ChkConnectTimer++;
+	if(ChkConnectTimer==10)
+		showMsgMask("p202A");
+	else if(ChkConnectTimer==1)
+		showMsgMask("p202");
+	ChkConnectTypeLoop();
+}
+var PhysicOK = 0;
+var retryPhysic = 0;
+var ChkPhysicLineStop;
+var Do_A_RouteStop;
+function CleanTemp(){
+	$.get("getDeleteTmp.asp", function(data) {});
+}
+
+function Do_A_Route(){
+	$.get("BelkinAPI/GetPrePINGorNot.asp", function(data) {
+		window.clearInterval(Do_A_RouteStop);
+		if(data==1){
+			//$.post("/goform/formBBSWlSetting", $("#p100setOP").serialize());
+			if(ISP_2700 == "p2700"){
+				window.location = "2700-ISP.asp?S";
+				//$('#p2702').hide()
+			}
+			else
+				window.location = "300-CheckingFirmware.asp";
+		}else{
+			//ChkPhysicLine();
+			showMsgMask("p200");
+			CleanTemp();
+			ChkPhysicLineStop = self.setInterval("ChkPhysicLine()",3000);
+			//ChkConnectTypeStop = self.setInterval("ChkConnectType()", 3000);
+		}
+	});
+}
+function ChkPhysicLine(){
+	//showMsgMask("p200");
+	$.get("getPhysicLink.asp", function(data) {
+		if(data=="1"){
+			PhysicOK = 1;
+			retryPhysic = 0;
+			window.clearInterval(ChkPhysicLineStop);
+			ChkConnectType();//detect connect type
+		}
+		else{
+			if(ISP_2700 == "p2700")
+				WaltzJump("2950-CheckWires.asp");
+			else
+				WaltzJump("950-CheckWires.asp");
+		}
+	});
+	/*retryPhysic ++;
+	if(retryPhysic==1){	//goto Sub2
+		//window.location = "950-CheckWires.htm";
+		WaltzJump("950-CheckWires.asp");
+	}
+	return;
+	*/
+}
+//-----sub3 part//
+var sub3_appeartimeout = 0;
+function SUB3_ChkAppear1(){
+	//no wired condition
+}
+
+function SUB3_ChkAppear2(){
+	$.get("testalive.html", function(data) {
+		sub3_appeartimeout = 0;
+		window.location = "450-YourNewNetwork.asp"
+	});
+	sub3_appeartimeout++;
+	if(sub3_appeartimeout == 21){ //60sec
+		$(document).scrollTop(0);
+		showMsgMask("p804");
+	}
+	if(sub3_appeartimeout == 41){ //120sec
+		$('#p804').trigger('reveal:close');
+		$(".reveal-modal-bg").css("display","none");
+		$('#p400').hide();
+		$('#Support5').hide();
+		$('#Support4').show();
+	}
+}
+
+function SUB3_ChkAppear3(){
+	$.get("testalive.html", function(data) {
+			sub3_appeartimeout = 0;
+			window.location = "450-YourNewNetwork.asp"
+	});
+	sub3_appeartimeout ++;
+	if(sub3_appeartimeout == 21){ //60sec
+		$(document).scrollTop(0);
+		showMsgMask("p804");
+	}
+	if(sub3_appeartimeout == 41){ //120sec
+		$('#p804').trigger('reveal:close');
+		$(".reveal-modal-bg").css("display","none");
+		$('#p400').hide();
+		$('#Support4').hide();
+		$('#Support5').show();
+	}
+}
+
+var SUB3_ChkAppear1Stop;
+var SUB3_ChkAppear2Stop;
+var SUB3_ChkAppear3Stop;
+
+function SUB3_Progress(){
+	if( SettingChanged==1 &amp;&amp; SSIDChanged==1){
+		showMsgMask("p803");
+		//window.clearInterval(SUB3_ProgressStop);
+		SUB3_ChkAppear3Stop = self.setInterval("SUB3_ChkAppear3()",3000);
+	}
+	else{
+		showMsgMask("p802");
+		//window.clearInterval(SUB3_ProgressStop);
+		SUB3_ChkAppear2Stop = self.setInterval("SUB3_ChkAppear2()",3000);
+	}
+}
+
+function DoSUB1(routing){
+	if(ISP_2700 == "p2700")
+		window.location = "2900-RestartModem.asp"+"?"+routing;
+	else
+		window.location = "900-RestartModem.asp"+"?"+routing;
+}
+
+var rebootTime = 40000;
+//var rebootTime = 3000; //just test
+var SettingChanged;
+var SSIDChanged;
+var SUB3_ProgressStop;
+var SUB3_ProgressFirstStop;
+var ts = new Date().getTime();
+function DoSUB3(isChanged,isSSIDChanged){
+	SettingChanged = isChanged;
+	SSIDChanged = isSSIDChanged;
+	showMsgMask("p800");
+	$("#p800Progress").animate({width: '100%'}, rebootTime,function(){
+		//SUB3_ProgressStop = self.setInterval("SUB3_Progress()",3000);
+		SUB3_Progress();
+	});
+}
+//======================================F routing process
+var DoFroutingStop;
+var isFirstFrouting = 1;
+function DoFrouting(){
+	showMsgMask("p342");
+	DoFroutingStop = self.setInterval("ChkAppear_F()", 3000);
+}
+var retryTimer_F = 0;
+function ChkAppear_F(){
+	$.get("testalive.html", function(data) {
+		retryTimer_F = 0;
+		if(isFrom("DB_SP_MSG"))
+			WaltzJump("000-dashboard.asp?updated");
+		else if(isFrom("FW_SP_MSG"))
+			WaltzJump("2300-FWUpdate.asp?updated");
+		else if(isFromPage("FWUpdate.asp"))
+			WaltzJump("2300-FWUpdate.asp?updated");
+		else
+			WaltzJump("400-ChangeSSID.asp?updated");
+	});
+	retryTimer_F++;
+	if(retryTimer_F == 63 ){
+		window.clearInterval(DoFroutingStop);
+		if(isFirstFrouting){
+			isFirstFrouting = 0;
+			retryTimer_F = 0;
+			DoFrouting();
+		}
+		else{
+			$('#p344').trigger('reveal:close');
+			$(".reveal-modal-bg").css("display","none");
+			$(document).scrollTop(0);
+			$('#Support6').show();
+			$('#antip320').hide();
+			//$('#antip344').hide();
+			return;
+		}
+	}
+	else if(retryTimer_F == 41){
+		//$('#p343').trigger('reveal:close');
+		showMsgMask("p344");
+	}
+
+	else if(retryTimer_F == 21){
+		//$('#p342').trigger('reveal:close');
+		showMsgMask("p343");
+	}
+}
+//======================================E routing process
+var DoEroutingStop;
+function DoErouting(){
+	window.clearInterval(DoEroutingStop);
+	showMsgMask("p701");
+	ChkIPStop_E = self.setInterval("ChkIP_E()", 4000);
+}
+var retryIP_E = 0;
+function ChkIP_E(){
+	$.get("getIPorNot.asp", function(data) {
+		if(data==1){
+			retryIP_E = 0;
+			window.clearInterval(ChkIPStop_E);
+			//ChkDNS_E();
+			ChkDNSStop_E = self.setInterval("ChkDNS_E()", 1000);
+		}
+	});
+	retryIP_E++;
+	if(retryIP_E == 5){
+		window.clearInterval(ChkIPStop_E);
+		$.get("getIsFirstReboot.asp", function(data) {
+			if(data==1){
+				//window.location = "900-RestartModem.asp";
+				DoSUB1("E");
+			}
+			else{
+				if(ISP_2700 == "p2700")
+					window.location = "FWGUI_ISP5.asp";
+				else
+					window.location = "ISP5.asp";
+			}
+		});
+	}
+}
+var retryDNS_E = 0;
+function ChkDNS_E(){
+	$.get("getDNSorNot.asp", function(data) {
+		if(data==1){
+			retryDNS_E = 0;
+			window.clearInterval(ChkDNSStop_E);
+			ChkPING_E();
+			//ChkPINGStop_E = self.setInterval("ChkPING_E()", 1000);
+		}
+		//else
+		//	ChkDNS_E();
+	});
+	retryDNS_E++;
+	if(retryDNS_E == 5){
+		if(ISP_2700 == "p2700")
+			window.location = "FWGUI_ISP1.asp?E";
+		else
+			window.location = "ISP1.asp?E";
+	}
+}
+var retryPING_E = 0;
+function ChkPING_E(){
+	$.get("getPINGorNot.asp", function(data) {
+		if(data==1){
+			retryPING_E = 0;
+			//window.clearInterval(ChkPINGStop_E);
+			if(ISP_2700 == "p2700"){
+				window.location = "2700-ISP.asp?S";
+			}
+			else 
+				window.location = "300-CheckingFirmware.asp";
+		}
+		else
+			ChkPING_E();
+	});
+	retryPING_E++;
+	if(retryPING_E== 5){
+		if(ISP_2700 == "p2700")
+			window.location = "FWGUI_ISP2.asp?E";
+		else 
+			window.location = "ISP2.asp?E";
+	}
+}
+//================================end E routing===========
+//================================Marco add
+function HTMLEnCode(str)
+{
+      var s = "";
+      if (str.length    ==    0)    return    "";
+      s = str.replace(/&amp;/g,    "&amp;gt;");
+      s = s.replace(/&lt;/g,        "&amp;lt;");
+      s = s.replace(/&gt;/g,        "&amp;gt;");
+      s = s.replace(/    /g,        "&amp;nbsp;");
+      s = s.replace(/\'/g,      "'");
+      s = s.replace(/\"/g,      "&amp;quot;");
+      s = s.replace(/\n/g,      "&lt;br&gt;");
+      return    s;
+}
+var s5gpwd 
+var s24gpwd
+var lan_mac
+var login_flag=0
+function ChkinitConnectType() {
+	$.get("getPhysicLink.asp", function(data) {
+		if (data == 1) {
+			$.get("getWanConnect.asp", function(data) {
+				if (data == 1) {
+					$("#gtonffline").removeClass("offline").removeClass("offline2").addClass("online")
+					$("#WanStatusline").html(langDictionary["gtOnline"])
+					$("#gtonffline2").removeClass("offline").removeClass("offline2").addClass("online")
+					$("#p1010").hide();
+					$("#p1020").hide();
+					$("#footer_connect").show();
+					$("#footer_disconnect").hide();
+				}
+				else {
+					$("#gtonffline").removeClass("online").addClass("offline2").removeClass("offline")
+					$("#WanStatusline").html(langDictionary["gtOffline"])
+					$("#gtonffline2").removeClass("online").addClass("offline2").removeClass("offline")
+					$("#p1020").show();
+					$("#p1010").hide();
+					$("#footer_connect").hide();
+					$("#footer_disconnect").show();
+				}
+			});
+		}
+		else {
+			$("#gtonffline").removeClass("online").addClass("offline").removeClass("offline2")
+			$("#WanStatusline").html(langDictionary["gtDisconnected"])
+			$("#gtonffline2").removeClass("online").addClass("offline").removeClass("offline2")
+			$("#p1010").show();
+			$("#p1020").hide();
+			$("#footer_connect").hide();
+			$("#footer_disconnect").show();
+		}
+	});
+	$.get("getLoginStatus.asp", function(data) {
+		if (data == 0) {
+			$("#dhLockToggle2").removeClass("unlocked").addClass("locked");
+			$("#dhLockToggle2").html(langDictionary["gtLocked"])
+			$("#dhLockToggle").removeClass("unlocked").addClass("locked");
+		//	$("#dhLockToggle").html(langDictionary["gtLocked"])
+			str24gpwd=TexttoEncry(str24gpwd)
+			str5gpwd=TexttoEncry(str5gpwd)
+			$("#DB_clientlist").hide();
+			login_flag=0
+			var url = window.location.toString();
+			if(url.search("000-dashboard")==-1)
+				document.location.replace("000-dashboard.asp");
+		}
+		else {
+			$("#dhLockToggle2").removeClass("locked").addClass("unlocked");
+			$("#dhLockToggle2").html(langDictionary["gtUnlocked"]);
+			$("#dhLockToggle").removeClass("locked").addClass("unlocked");
+		//	$("#dhLockToggle").html(langDictionary["gtUnlocked"]);
+			$("#DB_clientlist").hide();
+			login_flag=1
+		}
+		$('#Lockstatus2').show();
+		$('#Lockstatus').show();
+		$(s24gpwd).html(HTMLEnCode(str24gpwd));
+		$(s5gpwd).html(HTMLEnCode(str5gpwd));
+		$("#sencrypt").html(str24genc);
+	});
+}
+function TexttoEncry(password){
+	var newpassword;
+	if(password == undefined || password == "")
+		newpassword = "â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢"
+	else{
+		newpassword = password.substring(0,1);
+		newpassword += "â€¢â€¢â€¢â€¢â€¢â€¢â€¢";
+	}
+	return newpassword
+}
+$('#dhLockToggle2,#dhLockToggle').click(function(){
+	$.get("getLoginStatus.asp" , function(data) {
+		if(data == 0){
+			showMsgMask("passwordChallenge");
+			$("#p1210Password").focus();
+		}
+		else{
+			$.get("getLockPassword.asp", function (data1) {
+				if(data1 == 1){
+					$.post("/goform/formLoginLock")
+					setTimeout(function(){
+						$("#dhLockToggle").removeClass("unlocked").addClass("locked");
+					//	$("#dhLockToggle").html(langDictionary["gtLocked"])
+						$("#dhLockToggle2").removeClass("unlocked").addClass("locked");
+						$("#dhLockToggle2").html(langDictionary["gtLocked"])
+						document.location.replace("000-dashboard.asp");
+					}, 1000);
+				}
+				else{
+					showMsgMask("p1201");
+					$("#p1201Password").focus();
+				}
+			});
+		}
+	});
+})
+$('#p2710a003').click(function(){
+	closeMsgMask("p2710");
+})
+/*
+$("#dhPrint").click(function(){
+	$.get("getLoginStatus.asp", function(data) {
+		if(data == 0){
+			showMsgMask("passwordChallenge");
+			$("#p1210Password").focus();
+		}
+		else{
+			window.print();
+		}
+	});
+})
+*/
+function NewPWD() {
+	$("#p1201t003").hide();
+	if($("#p1201Password").val() == "" ){
+		$("#p1201t003").show();
+	}
+	else{
+		$("#p1201Password2").val(base64encode($("#p1201Password").val()))
+		$.post("/goform/formWebPasswordSetup", $("#UserPasswordSetup").serialize());
+		setTimeout(function(){
+			closeMsgMask("p1201");
+			document.location.replace("000-dashboard.asp");
+		}, 1000);
+		//location.reload();
+	}
+}
+$("#p1201a004").click(function() {
+	NewPWD();
+});
+$("#p1201Password").keypress(function(event) {
+	if (event.which == 13) {
+		event.preventDefault();
+		NewPWD();
+	}
+});
+$("#p1201a005").click(function(){
+	closeMsgMask("p1201");
+	$("#p1201Password").val("");
+})
+var ChkRebootTypeStop;
+var StopBGfunction;
+function SubmitDelay(time){
+	$.get("getLoginStatus.asp", function(data) {
+		if(data == 0){
+			document.location.replace("000-dashboard.asp?LockUrl=loginlock");
+			return	;
+		}
+		else{
+			showMsgMask("p800");
+			window.clearInterval(StopBGfunction);
+			$("#p800Progress").animate({width: '100%'}, time*1000,function(){
+				ChkRebootTypeStop = self.setInterval("SubmitDelay2(2000)", 1000);
+			});
+		}
+	});
+}
+function SubmitDelay2(time){
+	showMsgMask("p801");
+	window.clearInterval(ChkRebootTypeStop);
+	ChkRebootTypeStop = self.setInterval("ChkRebootType()", time);
+}
+
+function ChkRebootType(){
+	//closeMsgMask("p800");
+	//showMsgMask("p801");
+	$.get("testalive.html", function() {
+			location.reload();
+			//closeMsgMask("p801");
+			window.clearInterval(ChkRebootTypeStop);
+	});
+}
+/*
+$("#dhToggleBand").click(function(){
+	if (tmpssid == 0){
+		$("#dhToggleBand").html(langDictionary["dhToggleBand"]);
+		$("#dhSSID").html(HTMLEnCode(ssid));
+		$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+	}
+	else{
+		$("#dhToggleBand").html(langDictionary["dhToggleBand2G"]);
+		$("#dhSSID").html(HTMLEnCode(ssid5g));
+		$("#dhPasswordObscured24").html(HTMLEnCode(str5gpwd));
+	}
+	tmpssid=1-tmpssid
+})
+*/
+$("#dhToggle24").click(function(){
+	$("#dhToggle24").addClass("selected");
+	$("#dhToggle5").removeClass("selected");
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+})
+$("#dhToggle5").click(function(){
+	$("#dhToggle24").removeClass("selected");
+	$("#dhToggle5").addClass("selected");
+	$("#dhSSID").html(HTMLEnCode(ssid5g));
+	$("#dhPasswordObscured24").html(HTMLEnCode(str5gpwd));
+})
+function printContent(div_id)
+{
+	
+//	$.get("getLoginStatus.asp", function(data) {
+//		if(data == 0){
+		if(login_flag == 0){
+			showMsgMask("passwordChallenge");
+			$("#p1210Password").focus();
+		}
+		else{
+			var DocumentContainer = document.getElementById(div_id);
+			var html = '&lt;html&gt;&lt;head&gt;'+
+				'&lt;link href="../stylesheets/app.css" rel="stylesheet" type="text/css" /&gt;'+
+				'&lt;link href="../stylesheets/serviceCard.css?_t=1234567" rel="stylesheet" type="text/css" /&gt;'+
+				'&lt;/head&gt;&lt;body style=\"background:#ffffff;\"&gt;';
+			html += "";
+			html += DocumentContainer.innerHTML+
+				'&lt;/body&gt;&lt;/html&gt;';
+
+			var WindowObject = window.open("", "PrintWindow",
+				"width=900,height=650,top=50,left=50,toolbars=no,scrollbars=yes,status=no,resizable=yes");
+			WindowObject.document.writeln(html);
+			WindowObject.document.close();
+			WindowObject.focus();
+			WindowObject.print();
+		}
+//	});
+	//WindowObject.close();
+	//document.getElementById('print_link').style.display='block';
+}
+function funChgLang(targ,selObj,restore) {
+	$("#webpage").val(window.location.toString());
+	var choice = selObj.options[selObj.selectedIndex].value;
+	document.dashboard_ChLang.langtype.value = choice;
+	document.dashboard_ChLang.submit();
+}
+//validation related
+function isHex(s)
+{
+    var j;
+    for(var i = 0; i &lt; s.length; i++)
+    {
+        var c = s.charAt(i);
+        j = parseInt(c,16);
+        if ((j == 0) || (j == 1)|| (j == 2)|| (j == 3)|| (j == 4)|| (j == 5)|| (j == 6)
+        || (j == 7)|| (j == 8)|| (j == 9)|| (j == 10)|| (j == 11)|| (j == 12)|| (j == 13)|| (j == 14)|| (j == 15))
+        {
+            ;
+        }
+        else
+            return false;
+
+    }
+    return true;
+}
+
+
+function validVisibleStr(Str)
+{
+	var i, len = Str.length;
+	for(i = 0; i &lt; len; i++)
+	{
+		if(Str.charAt(i) &lt; ' ' || Str.charAt(i) &gt; '~')
+			return false;
+	}
+	return true;
+}
+function validateMTU(val)
+{
+	mval = val;
+	mval = mval-0;
+	if(val.length&lt;3 || mval&lt;500 || mval&gt;1500) //modifed by Richard
+	{
+		alert(vjs14);
+		return false;
+	}
+	for(i=0; i&lt;val.length; i++)
+	{
+		if(val.charAt(i)&lt;'0' || val.charAt(i)&gt;'9')
+		{
+//			alert(vm4+val.charAt(i)+vm2+ (i+1)+'! '+vm3+' 0123456789');
+			alert(vjs14);
+			return false;
+		}
+	}
+}
+function validateIp(val){
+	if(val.length==0) return;
+	var ii; sval=String(val);
+	if(val.length&gt;15)
+		{alert(vjs1);return false;}
+	i1=val.indexOf('.');
+	if(i1==-1)
+		{alert(vjs2);return false;}
+	sub1=val.substring(0,i1);
+	tempval=val.substring(i1+1,val.length);
+	i2=tempval.indexOf('.');
+	if(i2==-1)
+		{alert(vjs2);return false;}
+	sub2=tempval.substring(0,i2);
+	tempval=tempval.substring(i2+1,tempval.length);
+	i3=tempval.indexOf('.');
+	if(i3==-1)
+		{alert(vjs2);return false;}
+	sub3=tempval.substring(0,i3);
+	tempval=tempval.substring(i3+1,tempval.length);
+	i4=tempval.indexOf('.');
+	if(i4!=-1)
+		{alert(vjs4);return false;}
+	sub4=tempval.substring(0,tempval.length);
+	if(sub1.length==0 || sub2.length==0 || sub3.length==0 || sub4.length==0)
+		{alert(vjs3);return false;}
+	if((sub1-0)&lt;0 || (sub1-0)&gt;255 || (sub2-0)&lt;0 || (sub2-0)&gt;255 || (sub3-0)&lt;0 || (sub3-0)&gt;255 || (sub4-0)&lt;0 || (sub4-0)&gt;255)
+	{alert(vjs5);return false;}
+	for (ii=0; ii&lt;sval.length; ii++)
+	{
+		if (sval.charAt(ii)=='.')
+		{continue;}
+		else if (sval.charAt(ii)&lt;'0' || sval.charAt(ii)&gt;'9')
+		{
+			alert(vm1+'['+sval.charAt(ii)+'] '+vm2+(ii+1)+'! '+vm3+' 0123456789');
+			return false;
+		}
+	}
+}
+function validateWanIp_1(val)
+{
+	if(validateIp(val)==false) return false;
+	var ii; sval=String(val);
+	i1=val.indexOf('.');
+	sub1=val.substring(0,i1);
+	tempval=val.substring(i1+1,val.length);
+	i2=tempval.indexOf('.');
+	sub2=tempval.substring(0,i2);
+	tempval=tempval.substring(i2+1,tempval.length);
+	i3=tempval.indexOf('.');
+	sub3=tempval.substring(0,i3);
+	tempval=tempval.substring(i3+1,tempval.length);
+	i4=tempval.indexOf('.');
+	sub4=tempval.substring(0,tempval.length);
+
+	if( sub1=='0' || sub1=='255' || sub4=='0' || sub4=='255')
+	{
+		alert(fvipm);
+		return false;
+	}
+	if(sub1=='127')
+	{
+		alert(vjs31);
+		return false;
+	}
+	if(val=='0.0.0.0')
+	{
+		alert(vjs32);
+		return false;
+	}
+	if((sub1-0)&gt;223)
+	{
+		alert(vjs33);
+		return false;
+	}
+	return true;
+}
+function hex(val)
+{
+	var h = (val-0).toString(16);
+	if(h.length==1) h='0'+h;
+	return h.toUpperCase();
+}
+function validateGateway(wanIp,netmaskIp,gatewayIp) {
+        if(gatewayIp.length==0) return true;
+        if(validateWanIp_1(gatewayIp) == false) return false;
+        var i1,i2,i3, wip, nip, gip;
+        i1=wanIp.indexOf('.');
+        i2=wanIp.indexOf('.',(i1+1));
+        i3=wanIp.indexOf('.',(i2+1));
+        wip = hex(wanIp.substring(0,i1)) + hex(wanIp.substring((i1+1),i2)) +hex(wanIp.substring((i2+1),i3))+hex(wanIp.substring((i3+1),wanIp.length));
+        wip = '0x'+wip;
+        i1=netmaskIp.indexOf('.');
+        i2=netmaskIp.indexOf('.',(i1+1));
+        i3=netmaskIp.indexOf('.',(i2+1));
+        nip = hex(netmaskIp.substring(0,i1)) + hex(netmaskIp.substring((i1+1),i2)) +hex(netmaskIp.substring((i2+1),i3)) +hex(netmaskIp.substring((i3+1),netmaskIp.length));
+        nip = '0x'+nip;
+        i1=gatewayIp.indexOf('.');
+        i2=gatewayIp.indexOf('.',(i1+1));
+        i3=gatewayIp.indexOf('.',(i2+1));
+        gip = hex(gatewayIp.substring(0,i1)) + hex(gatewayIp.substring((i1+1),i2)) +hex(gatewayIp.substring((i2+1),i3)) +hex(gatewayIp.substring((i3+1),gatewayIp.length));
+        gip = '0x'+gip;
+        if((wip &amp; nip) != (gip &amp; nip))
+        {
+                //alert(vjs16 +gatewayIp+vjs161 + wanIp+"/"+netmaskIp+vjs162);
+                alert(lsnetm);
+                return false;
+        }
+        if((nip|gip-0)==-1) {
+                //alert(vjs36+gatewayIp+vjs35);
+                alert(lsnetm);
+                return false;
+        }
+
+}
+function validateStartEndIp(lanip,netip,startip, endip)
+{
+	if(endip.length==0) return;
+	if((validateGateway(lanip,netip,endip)) == false) return false;
+	i1=startip.indexOf('.');
+	i2=startip.indexOf('.',(i1+1));
+	i3=startip.indexOf('.',(i2+1));
+	sip = hex(startip.substring(0,i1)) + hex(startip.substring((i1+1),i2)) +hex(startip.substring((i2+1),i3))+hex(startip.substring((i3+1),startip.length));
+	sip = '0x'+sip;
+	i1=endip.indexOf('.');
+	i2=endip.indexOf('.',(i1+1));
+	i3=endip.indexOf('.',(i2+1));
+	eip = hex(endip.substring(0,i1)) + hex(endip.substring((i1+1),i2)) +hex(endip.substring((i2+1),i3))+hex(endip.substring((i3+1),endip.length));
+	eip = '0x'+eip;
+	if(sip&gt;eip)
+	{
+		alert(vjs26);
+		return false;
+	}
+}
+function isInteger(str, min_value, max_value, allowBlank)  // allowBlank = true or false
+{
+	if(str.length == 0)
+		if(allowBlank)
+			return true;
+		else
+			return false;
+	for (var i=0; i &lt; str.length; i++)
+	{
+		if ((str.charAt(i) &lt; '0') || (str.charAt(i) &gt; '9'))
+		return false;
+	}
+	var int_value = parseInt(str,10);
+	if ((int_value &lt; min_value) || (int_value &gt; max_value))
+		return false;
+	return true;
+}
+function isBlank(s)
+{
+	if(!s)
+		return true;
+	for (i=0;i&lt;s.length;i++)
+	{
+		c=s.charAt(i);
+		if ((c!=' ')&amp;&amp;(c!='\n')&amp;&amp;(c!='\t'))
+		return false;
+	}
+	return true;
+}
+function isIncludeDot(s)
+{
+	var i;
+	var c;
+	for(i=0;i&lt;s.length;i++)
+	{
+		c=s.charAt(i);
+		if((c=='.'))return true;
+	}
+	return false;
+}
+function isNValidIP(s)
+{
+	if((isBlank(s))||(isNaN(s))||(s&lt;0||s&gt;255)) return true;
+	else return false;
+}
+function isNValidEndIP_4TH(s)
+{
+	if((isBlank(s))||(isNaN(s))||(s&lt;=0||s&gt;=255)) return true;
+	else return false;
+}
+function isNValidEndIP_1ST(s)
+{
+	if((isBlank(s))||(isNaN(s))||(s&lt;=0||s&gt;=224)) return true;
+	else return false;
+}
+function isNValidMask_1ST(s)
+{
+	if((isBlank(s))||(isNaN(s))||(s != 255)) return true;
+	else return false;
+}
+function isNValidMask(s)
+{
+	if((isBlank(s))||(isNaN(s))||((s != 0 ) &amp;&amp; (s != 128) &amp;&amp; (s != 192) &amp;&amp; (s != 224) &amp;&amp; (s != 240) &amp;&amp; (s != 248) &amp;&amp; ( s != 252) &amp;&amp; (s != 254) &amp;&amp; ( s != 255))) return true;
+	else return false;
+}
+function isNValidMask_4TH(s)
+{
+	if((isBlank(s))||(isNaN(s))||((s != 0 ) &amp;&amp; (s != 128) &amp;&amp; (s != 192) &amp;&amp; (s != 224) &amp;&amp; (s != 240) &amp;&amp; (s != 248) &amp;&amp; ( s != 252) &amp;&amp; (s != 254))) return true;
+	else return false;
+}
+function badMask(ip1, ip2, ip3, ip4)   // mask fields
+{
+	var i,j,match0,match1 = -1;
+	var m = new Array(4);
+	for( i = 0; i &lt; 4; i++ )
+	{
+		m[i] = badMask.arguments[i].value;
+		if(!(isInteger(m[i], 0, 255, false)))
+		{
+			return true; // bad
+		}
+	}
+	for(i = 3; i &gt;= 0; i--)
+	{
+		for(j = 1;j &lt;= 8;j++)
+		{
+			if( ( m[i] % 2 ) == 0)   match0 = ( 3 - i ) * 8 + j;
+			else if(((m[i] % 2) == 1) &amp;&amp; match1 == -1)   match1 = ( 3 - i ) * 8 + j;
+			m[i] = Math.floor(m[i] / 2);
+		}
+	}
+	if(match0 &gt; match1)
+		return true;
+	else
+		return false;
+}
+function isNValidPort(s)
+{
+	if((isBlank(s))||(isNaN(s)) || (s&gt;65535) || (s&lt;1) || isIncludeDot(s)) return true;
+	else    return false;
+}
+var RegStatus = 0;
+function ChkReg(){
+	if(RegStatus==1)
+		return 1;
+	else
+		return 0;
+}
+function SetReg(){
+	RegStatus=1;
+}
+var base64EncodeChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+function base64encode(str) {
+    var out, i, len;
+    var c1, c2, c3;
+    len = str.length;
+    i = 0;
+    out = "";
+    while(i &lt; len) {
+ c1 = str.charCodeAt(i++) &amp; 0xff;
+ if(i == len)
+ {
+     out += base64EncodeChars.charAt(c1 &gt;&gt; 2);
+     out += base64EncodeChars.charAt((c1 &amp; 0x3) &lt;&lt; 4);
+     out += "==";
+     break;
+ }
+ c2 = str.charCodeAt(i++);
+ if(i == len)
+ {
+     out += base64EncodeChars.charAt(c1 &gt;&gt; 2);
+     out += base64EncodeChars.charAt(((c1 &amp; 0x3)&lt;&lt; 4) | ((c2 &amp; 0xF0) &gt;&gt; 4));
+     out += base64EncodeChars.charAt((c2 &amp; 0xF) &lt;&lt; 2);
+     out += "=";
+     break;
+ }
+ c3 = str.charCodeAt(i++);
+ out += base64EncodeChars.charAt(c1 &gt;&gt; 2);
+ out += base64EncodeChars.charAt(((c1 &amp; 0x3)&lt;&lt; 4) | ((c2 &amp; 0xF0) &gt;&gt; 4));
+ out += base64EncodeChars.charAt(((c2 &amp; 0xF) &lt;&lt; 2) | ((c3 &amp; 0xC0) &gt;&gt;6));
+ out += base64EncodeChars.charAt(c3 &amp; 0x3F);
+    }
+    return out;
+}
+</pre></body></html>

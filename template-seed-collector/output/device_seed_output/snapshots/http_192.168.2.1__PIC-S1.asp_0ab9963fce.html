@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	  <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+	<title tid="gtDashTitle">Belkin router dashboard</title>
+	<link rel="icon" href="images/favicon/favicon.ico">
+	<!-- For third-generation iPad with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+	<!-- For iPhone with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+	<!-- For first- and second-generation iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+	<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+	<link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+	<link rel="stylesheet" href="stylesheets/app.css">
+	<!--[if lt IE 9]>
+		<link rel="stylesheet" href="stylesheets/ie.css">
+	<![endif]-->
+</head>
+<body>
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<script src="../javascripts/PIC_helper.js"></script>
+<script>
+var ts = new Date().getTime();
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var str24gpwd
+var str5gpwd
+var str24genc
+var tmpssid=1;
+var parNum="0"
+var AllBlock="0"
+var ParTbl = new Array(
+new Array())
+function initDataHeader(){
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);//ken
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str5gpwd="66caye9w"
+	}
+
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+	if(AllBlock == 0){
+		$('#PIC_BlockAllInfo').show();
+		$('#PIC_UnblockAllInfo').hide();
+		$('#htPICUnblocked').show();
+		$('#htPICBlocked').hide();
+	}
+	else{
+		$('#PIC_BlockAllInfo').hide();
+		$('#PIC_UnblockAllInfo').show();
+		$('#htPICUnblocked').hide();
+		$('#htPICBlocked').show();
+		$('#PIC-S1d').trigger('reveal:close');
+	}
+
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+}
+function ChkBlock(){
+	$.post("/goform/formParConSave", {
+		work:"0",
+		block:AllBlock
+	},function(data){});
+	TblPreSort()
+	for(i=0 ; i<parNum ; i++ ){
+		var devName = ParTbl[i][0]
+		var block = ParTbl[i][5]
+		var devIDs = ["#" + devName + "_Toggle", "#" + devName + "_BlockedImg", "#" + devName + "_BlockedText", "#" + devName + "_UnblockedImg", "#" + devName + "_UnblockedText"];
+		if (block == 1 || AllBlock == 1) {
+			$(devIDs[1]).show();
+			$(devIDs[2]).css('visibility', 'visible');
+			$(devIDs[3]).hide();
+			$(devIDs[4]).css('visibility', 'hidden');
+		} else {
+			$(devIDs[1]).hide();
+			$(devIDs[2]).css('visibility', 'hidden');
+			$(devIDs[3]).show();
+			$(devIDs[4]).css('visibility', 'visible');
+		}
+	}
+}
+function TblPreSort() {
+	var wDay = '3'
+	var wHour = '6'
+	for (i=0; i<parNum; i++)
+		ParTbl[i][12] = 0
+	var ConDevMAC = new Array("ffffffffffff");
+	var on=1
+	var off=1
+	for (i=parNum-1 ; i>=0; i--) {
+		for (j=0; j<ConDevMAC.length; j++) {
+			if (ParTbl[i][1].toUpperCase() == ConDevMAC[j].toUpperCase()){
+				ParTbl[i][12] = 1
+				ParTbl[i][0] = "On"+on
+				on++
+			}
+		}
+		if(ParTbl[i][12] == 0){
+			ParTbl[i][0] = "Off"+off
+			off++
+		}
+		if (0 == 1){
+			if(ParTbl[i][6] == 1){
+				if(wDay <=4){
+					if(!(wHour >= ParTbl[i][7] && (wHour < ParTbl[i][8] || ParTbl[i][8] == 0))){
+						ParTbl[i][5]=1
+					}
+				}
+				else{
+					if(!(wHour >= ParTbl[i][9] && (wHour < ParTbl[i][10] || ParTbl[i][10] == 0))){
+						ParTbl[i][5]=1
+					}
+				}
+			}
+		}	
+	}
+}
+function MACtransform(Mac){
+	var x=new Array();
+	x[0]=Mac.substring(0,2);
+	x[1]=Mac.substring(2,4);
+	x[2]=Mac.substring(4,6);
+	x[3]=Mac.substring(6,8);
+	x[4]=Mac.substring(8,10);
+	x[5]=Mac.substring(10,12);
+	var Mac1 = x[0] + ":" + x[1] + ":" + x[2] + ":" + x[3] + ":" + x[4] + ":" + x[5];
+	Mac1= Mac1.toUpperCase()
+	
+	return Mac1
+}
+</script>
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+
+<div class="container top-pane hide-on-phones">
+<div class="row">
+<div class="twelve columns">
+<a href="000-dashboard.asp"><script>dwt('gtBackToDashboard')</script></a>
+<ul class="sub-nav">
+<li><a href="fw_parent.asp" tid="gtNortonConnectSafe"><script>dwt('gtNortonConnectSafe')</script></a></li>
+<li class="current"><a href="PIC-S1.asp" tid="gtPIC"><script>dwt('gtPIC')</script></a></li>
+</ul>
+</div>
+</div>
+</div>
+<div class="main container mobileNav show-on-phones">
+<div class="row">
+<div class="twelve columns">
+<a href="000-dashboard.asp" id="pICaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard')</script></span></a>
+<h2 tid="gtPIC"><script>dwt('gtPIC')</script></h2>
+</div>
+</div>
+</div>
+
+<div class="main container" id="PIC-S1">
+	  <div class="row page-title2 hide-on-phones">
+		<h3 tid="gtPIC"><script>dwt('gtPIC')</script></h3>
+	  </div>
+	  <div class="row">
+	  	<div class="content eight columns">
+			<div id="PIC_noTimeWarning" class="ancillary warning withtop" style="display: none;">
+				<h5 tid="PIC-S1t020"><script>dwt('PIC_S1t020')</script></h5>
+				<p tid="PIC-S1t021"><script>dwt('PIC_S1t021')</script></p>
+				<p tid="PIC-S1t022"><script>dwt('PIC_S1t022')</script></p>
+			</div>
+			<div id="PIC_BlockAllInfo" class="PICBlockAllOff">
+				<a id="PIC_blockall" class="button nice radius green" tid="PIC-S1t001"><script>dwt('PIC_S1t001')</script></a>
+			</div>
+			<div id="PIC_UnblockAllInfo" class="PICBlockAllOn" style="display:none">
+				<p tid="PIC-S1t003"><script>dwt('PIC_S1t003')</script></p>
+				<a id="PIC_unblockall" class="button nice radius white" tid="PIC-S1t004"><script>dwt('PIC_S1t004')</script></a>
+			</div>
+			<div id="PIC_loading" style="display: none;">
+			</div>
+			<h4 class="PICListHeader" id="PIC-S1t010" tid="PIC-S1t010"><script>dwt('PIC_S1t010')</script></h4>
+			<h4 class="PICListHeader" id="PIC-S1t005" tid="PIC-S1t005" style="display:none"><script>dwt('PIC_S1t005')</script></h4>
+			<img class="PICLoading" id="PICLoadingImg" src="../images/loading.gif">
+	  		<div class="row">
+				<div class="twelve columns">
+					<ul class="PICOnNet">
+						<script>
+						TblPreSort();
+						for(i=parNum ; i>=0 ; i-- ){
+							if(ParTbl[i][12] == 1){
+								addDevice(ParTbl[i][0], ParTbl[i][2].replace(/_/g," "), ParTbl[i][1], ParTbl[i][5], ParTbl[i][6], ParTbl[i][7] , ParTbl[i][8] , ParTbl[i][9] , ParTbl[i][10]);
+							}
+						}
+						</script>
+					</ul>
+				</div>
+			</div>
+	  		<div class="row" id="PIC_recent" style="display:none">
+				<div class="twelve columns">
+					<h3 class="PICListHeader" id="PIC_S1t006" tid="PIC_S1t006"><script>dwt('PIC_S1t006')</script></h3>
+					<ul id="PICOffNet" class="PICOffNet scrollableNoBorder">
+						<script>
+						PICOffNet = 0
+						for(i=parNum ; i>=0; i-- ){
+							if(ParTbl[i][12] == 0) {
+								addDevice(ParTbl[i][0], ParTbl[i][2].replace(/_/g," "), ParTbl[i][1], ParTbl[i][5], ParTbl[i][6], ParTbl[i][7] , ParTbl[i][8] , ParTbl[i][9] , ParTbl[i][10]);
+								PICOffNet = PICOffNet + 1
+							}
+						}
+						if (PICOffNet <= 3)
+							$("#PICOffNet").removeClass("scrollableNoBorder");
+						</script>
+					</ul>
+				</div>
+			</div>
+	    </div>
+	  	<div class="sidebar2 four columns">
+	  		<div>
+				<span id="htPICUnblocked">
+		  			<h6><span tid="htPIC"><script>dwt('htPIC')</script></span></h6>
+					<p><span tid="htPICContent"><script>dwt('htPICContent')</script></span><span class="nub"> </span></p>
+				</span>
+				<span id="htPICBlocked" style="display:none">
+		  			<h6><span tid="htPICBlocked"><script>dwt('htPICBlocked')</script></span></h6>
+					<p><span tid="htPICBlockedContent"><script>dwt('htPICBlockedContent')</script></span><span class="nub"> </span></p>
+				</span>
+	  		</div>
+	  	</div>
+	</div>
+</div>
+
+<div id="PIC-S1d" class="large reveal-modal">
+	<span tid="PIC-S1dt001"><script>dwt('PIC_S1dt001')</script></span>
+	<p></p>
+	<br>
+	<a href="javascript:void(0);" class="nice radius button green large" tid="gtYes" id="PIC-S1da001"><script>dwt('gtYes')</script></a>
+	<a href="javascript:void(0);" class="nice radius button white large" tid="gtNo" id="PIC-S1da002"><script>dwt('gtNo')</script></a>
+</div>
+<script>
+//$(function() {
+$(document).ready(function() {
+	var index = "0";
+	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+	if (0 == 1)
+		$("#PIC_noTimeWarning").hide()
+	else
+		$("#PIC_noTimeWarning").show()
+	$('#PIC_blockall').click(function(e) {
+		e.preventDefault();
+		$('#PIC-S1d').reveal();
+	});
+	$('#PIC_unblockall').click(function(e) {
+		e.preventDefault();
+
+		$('#PIC_BlockAllInfo').show();
+		$('#PIC_UnblockAllInfo').hide();
+		$('#htPICUnblocked').show();
+		$('#htPICBlocked').hide();
+		AllBlock = 0
+		ChkBlock()
+	});
+	$('#PIC-S1da001').click(function(e) {
+		e.preventDefault();
+
+		$('#PIC_BlockAllInfo').hide();
+		$('#PIC_UnblockAllInfo').show();
+		$('#htPICUnblocked').hide();
+		$('#htPICBlocked').show();
+		$('#PIC-S1d').trigger('reveal:close');
+		AllBlock = 1
+		ChkBlock()
+	});
+	$('#PIC-S1da002').click(function(e) {
+		e.preventDefault();
+		$('#PIC-S1d').trigger('reveal:close');
+	});
+
+	// Initial state
+	if (!$('#Dev1_details').is(":hidden")) {
+		$('#Dev1_caret').rotate(180);
+	}
+
+	// Fake the loading of devices to show how it should look
+	// Show what we we've seen at least every 5 seconds.
+	setTimeout(function() {
+		for(i=0 ; i<=parNum ; i++ )
+			$('#On'+(i+1)).slideDown();
+	}, 800);
+	setTimeout(function() {
+	}, 2000);
+
+	// All finished.  Show all of the off-network devices and hide the loading anim.
+	setTimeout(function() {
+		$('#PICLoadingImg').slideUp("slow");
+		$('#PIC-S1t010').hide();
+		$('#PIC-S1t005').show();
+		for (i=parNum; i>=0; i--) {
+			if (ParTbl[i][12] == 0) {
+				$('#PIC_recent').slideDown();
+				break;
+			}
+		}
+		$('#PIC_loading').slideUp();
+		for(i=0 ; i<=parNum ; i++ )
+			$('#Off'+(i+1)).slideDown();
+	}, 1600);
+	initDataHeader();
+});
+</script>
+<div id="bg"></div>
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>

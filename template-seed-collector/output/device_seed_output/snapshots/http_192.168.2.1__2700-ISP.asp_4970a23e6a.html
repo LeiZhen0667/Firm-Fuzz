@@ -1,0 +1,1594 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>    <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>    <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+        <meta charset="utf-8" />
+        <!-- Set the viewport width to device width for mobile -->
+        <meta name="viewport" content="width=device-width" />
+        <title tid="gtDashTitle">Belkin router dashboard</title>
+        <link rel="icon" href="images/favicon/favicon.ico">
+        <!-- For third-generation iPad with high-resolution Retina display: -->
+        <link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+        <!-- For iPhone with high-resolution Retina display: -->
+        <link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+        <!-- For first- and second-generation iPad: -->
+        <link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+        <!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+        <link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+        <link rel="stylesheet" href="stylesheets/app.css">
+        <!--[if lt IE 9]>
+                <link rel="stylesheet" href="stylesheets/ie.css">
+        <![endif]-->
+</head>
+<body>
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<script>
+var isChanged = false;
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var wanstate="Dynamic IP disconnected"
+var str24gpwd
+var str5gpwd
+var str24genc
+var ConnType
+var names = ['p2700fDynToggle','p2700fPPPoEToggle','p2700fL2TPToggle','p2700fStaticToggle'];
+var ISP_2700 = "p2700"
+var wan_mode=0
+var ChkPPTPcredentialStop;
+var ChkPPL2TP_PINGStop;
+var ts = new Date().getTime();
+var retryPPTP=0;
+var retryPING=0;
+var retryPPL2TP=0;
+function checkDyn()
+{
+	var localname=$('#p2700fDynHost').val();
+	if(validVisibleStr(localname)==false || localname.length > 39){
+		//$('#p2700eDynHost').html(translate(""));
+		$('#p2700eDynHost').html("Invalid host name");
+		$('#p2700eDynHost').fadeTo(200, 1);
+		$("#p2700fDynHost").focus();
+		return false;
+	}
+	return true;
+}
+function initDataHeader(){
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);//ken
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str5gpwd="66caye9w"
+	}
+
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+}
+$(document).ready(function(){
+	var index = "0";
+	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+	initDataHeader();
+	var PPTP_Region = 0;
+	if(PPTP_Region==1)
+		$("#L2TPHeader").show();
+
+	$('#p2700fDynHost').val('');
+	$('#p2700fPPPoEUser').val('');
+	$('#p2700fPPPoEPass').val('');
+	$('#p2700fPPPoEServ').val('');
+	$('#p2700fL2TPUser').val('');
+	$('#p2700fL2TPPass').val('');
+	$('#p2700fL2TPServ').val('0.0.0.0');
+	var wanipType='0';
+	if(wanipType=='0'){
+		$('#p2700fPPPoEDHCP').attr("checked",true);
+		$('#p2700fPPPoEStatic').slideUp();
+	}
+	else{
+		$('#p2700fPPPoEStatic').slideDown();
+	}
+	$('#p2700fPPPoEStaticIP').val('');
+	$('#p2700fPPPoEMTU').val('1492');
+	var demand='0';
+	if(demand=='1')
+		$('#p2700fPPPoETimeout').attr("checked",true);
+	$('#p2700fPPPoETimeoutLength').val('0');
+
+	var staticIP = '0.0.0.0'
+	var staticMask = '0.0.0.0'
+	var staticGateway = '0.0.0.0'
+	var staticDNS1 = ''
+	var staticDNS2 = ''
+	if(staticIP != '0.0.0.0'){
+		$('#p2700fStaticIP').val(staticIP);
+		if(staticDNS1 != '0.0.0.0')
+			$('#p2700fStaticDNS1').val(staticDNS1);
+		else
+			$('#p2700fStaticDNS1').val("");
+		if(staticDNS2 != '0.0.0.0')
+			$('#p2700fStaticDNS2').val(staticDNS2);
+		else
+			$('#p2700fStaticDNS2').val("");
+	}
+	else
+		$('#p2700fStaticIP').val("");
+	if(staticMask != '0.0.0.0')
+		$('#p2700fStaticSubnet').val(staticMask);
+	else
+		$('#p2700fStaticSubnet').val("");
+	if(staticGateway != '0.0.0.0')
+		$('#p2700fStaticGateway').val(staticGateway);
+	else
+		$('#p2700fStaticGateway').val("");
+
+	$('#p2700fPPPoEAdvToggle').click(function() {
+		if ($('#p2700fPPPoEAdv').is(":hidden")) {
+			$('#p2700fPPPoEAdvArrow').rotate({animateTo:90, duration:600});
+			$('#p2700fPPPoEAdv').slideDown();
+		} else {
+			$('#p2700fPPPoEAdvArrow').rotate({animateTo:0, duration:600});
+			$('#p2700fPPPoEAdv').slideUp();
+		}
+	});
+	//$('#p2700fPPPoEAdvArrow').rotate(90);
+	$('#p2700fPPPoEAdvArrow').rotate({animateTo:0, duration:600});
+	$('#p2700fPPPoEAdv').slideUp();
+
+	$('#p2700fPPPoEDHCP').click(function() {
+		displayPPPoEStatic($(this).is(':checked'));
+	});
+
+	// TODO: Get actual values from DUT.  For now, assume it is automatic from ISP
+//	$('#p2700fPPPoEStatic').toggle($(this).is(':checked'));
+
+	$('#p2700fDynToggle,#p2700fPPPoEToggle,#p2700fL2TPToggle,#p2700fStaticToggle').click(function(e) {
+		e.preventDefault();
+		for (var i in names) {
+			var contentID = "#" + names[i].substr(0, names[i].length-6), caretID = contentID + "Caret";
+			if (this.id == names[i]) {
+				if ($(contentID).is(":hidden")) {
+					$(caretID).rotate({animateTo:0, duration:600});
+				} else {
+					$(caretID).rotate({animateTo:180, duration:600});
+				}
+				$(contentID).slideToggle(600);
+			} else {
+				$(contentID).slideUp();
+				$(caretID).rotate({animateTo:180, duration:600});
+			}
+		}
+	});
+	$('#p2705a003').click(function(){
+		closeMsgMask("p2705");
+	//	$.get("getInitWan.asp", function(data) {});
+		ISPConnectDefault(ConnType)
+		if(ConnType == 0){
+		//	$.post("/goform/formKillallWan", {wantype:0});
+			$.post("/goform/formSetWanDynamic", $("#p2700f001").serialize());
+		//	DoErouting();
+			setTimeout(DoErouting(),2000)
+		}
+		else if(ConnType == 1){
+			//$.post("/goform/formKillallWan", {wantype:1});
+			showMsgMask("p711");
+			$.post("/goform/formSetWanStatic", $("#p2700f001").serialize());
+			ChkStaticStop = self.setInterval("ChkStatic()",4000);
+		}
+		else if(ConnType == 2){
+			//$("input[name='fromBBS']").val("0")
+			$.post("/goform/formKillallWan", {wantype:2});
+			showMsgMask("p211");
+			$.post("/goform/formSetPreWanPPPoE", $("#p2700f001").serialize());
+			//ChkPPPoEcredential();
+			ChkPPPoEcredentialStop = self.setInterval("ChkPPPoEcredential()",23333);
+		}
+		else if(ConnType == 3){
+			$.post("/goform/formKillallWan", {wantype:3});
+			showMsgMask("p221");
+			ChkPPL2TPcredential();
+			ChkPPL2TPFinishedStop = self.setInterval("ChkPPL2TPFinished()",10000);
+		}
+	})
+	$('#p2705a004').click(function(){
+		AllExpandableClose();
+		closeMsgMask("p2705");
+	})
+
+	$('#p2700fDynSave').click(function(){
+		if(checkDyn()==false)return false;
+		$('#p2700eDynHost').hide();
+		ConnType=0
+		window.clearInterval(StopChkISPConnect);
+		$.get("getWanConnect.asp", function(data) {
+			if (data == 1) {
+				showMsgMask("p2705");
+			}
+			else{
+				ISPConnectDefault(ConnType)
+			//	$.get("getInitWan.asp", function(data) {});
+			//	$.post("/goform/formKillallWan", {wantype:0});
+				$.post("/goform/formSetWanDynamic", $("#p2700f001").serialize());
+			//	DoErouting();
+				setTimeout(DoErouting(),1000)
+			}
+        	});
+		//SUB6_checkWAN();
+	})
+
+	$('#p2700a002,#p2700t024').click(function(){
+		window.clearInterval(StopChkISPConnect);
+		if(wan_mode != 0)
+			$.get("getInitWan.asp", function(data) {});
+	//	$.post("/goform/formKillallWan", {wantype:wan_mode});
+		Do_A_Route();
+	});
+	$("#p2700fPPPoESave").click(function(){
+		ConnType=2
+		if($("#p2700fPPPoEDHCP").attr("checked"))
+			$("input[name='ip_mode']").val("0")
+		else
+			$("input[name='ip_mode']").val("1")
+
+		if($("#p2700fPPPoETimeout").attr("checked"))
+			$("input[name='pppoe_demand']").val("1")
+		else
+			$("input[name='pppoe_demand']").val("0")
+		if(isSecTryPPPoE()){
+			lastMask_id = 0;
+		}
+		if(ChkSubmit_PPPoE()){
+			$.get("getWanConnect.asp", function(data) {
+				if (data == 1) {
+					showMsgMask("p2705");
+				}
+				else{
+					ISPConnectDefault(ConnType)
+				//	$.get("getInitWan.asp", function(data) {});
+					$.post("/goform/formKillallWan", {wantype:2});
+					showMsgMask("p211");
+					$.post("/goform/formSetPreWanPPPoE", $("#p2700f001").serialize());
+					//ChkPPPoEcredential();
+					ChkPPPoEcredentialStop = self.setInterval("ChkPPPoEcredential()",23333);
+				}
+			});
+		}
+		else
+			return;
+	});
+	$("#p2700fL2TPSave").click(function(){
+		ConnType=3
+
+	//	$.post("/goform/formSetWanPPTP", $("#p2700f001").serialize());
+		if(isSecTryPPL2TP()){
+			lastMask_id = 0;
+		}
+		if(ChkSubmit_L2TP()){
+			$.get("getWanConnect.asp", function(data) {
+				if (data == 1) {
+					showMsgMask("p2705");
+				}
+				else{
+					ISPConnectDefault(ConnType)
+					$.post("/goform/formKillallWan", {wantype:3});
+					showMsgMask("p221");
+					ChkPPL2TPcredential();
+					//ChkPPTPcredentialStop = self.setInterval("ChkPPTPcredential()",23333);
+					ChkPPL2TPFinishedStop = self.setInterval("ChkPPL2TPFinished()",10000);
+				}
+			});
+		}
+		else
+			return;
+	/*
+		$.get("getWanConnect.asp", function(data) {
+			if (data == 1) {
+				showMsgMask("p2705");
+			}
+			else{
+				$.get("getInitWan.asp", function(data) {});
+				showMsgMask("p211");
+				ChkPPPoEcredential();
+				ChkPPPoEcredentialStop = self.setInterval("ChkPPPoEcredential()",23333);
+			}
+		});
+	*/
+	});
+	$("#p2700fStaticSave").click(function(){
+		ConnType=1
+		if(isSecTryStatic()){
+			lastMask_id = 0;
+		}
+		if(ChkSubmit_Static() ){
+			$.get("getWanConnect.asp", function(data) {
+				if (data == 1) {
+					showMsgMask("p2705");
+				}
+				else{
+					ISPConnectDefault(ConnType)
+				//	$.get("getInitWan.asp", function(data) {});
+					//$.post("/goform/formKillallWan", {wantype:1});
+					showMsgMask("p711");
+					$.post("/goform/formSetWanStatic", $("#p2700f001").serialize());
+					ChkStaticStop = self.setInterval("ChkStatic()",4000);
+				}
+			});
+		}
+	});
+
+
+	$('#p2701,#p2702,#p2703,#p300iOnline').hide()
+	if("" != ""){
+		$('#p2701').show()
+	}
+	else{
+		$.get("getPhysicLink.asp", function(data) {
+			if (data == 1) {
+				$('#p2702').show()
+			}
+			else{
+				$('#p2703').show()
+			}
+		});
+	}
+        var url = window.location.toString();
+        if(url.indexOf("?") != -1){
+                var str = url.split("?")[1];
+                if(str == "S"){
+                        $('#p300iOnline').show();
+			$('#p2701,#p2702,#p2703').hide()
+		}
+        }
+	AllExpandableClose();
+	if(wan_mode == 0){ //Dynamic
+		ExpandableOne("p2700fDynToggle")
+		ChkISPConnect("Dyn")
+		StopChkISPConnect = self.setInterval('ChkISPConnect("Dyn")', 5000);
+	}
+	if(wan_mode == 1){ //Static
+		ExpandableOne("p2700fStaticToggle")
+		ChkISPConnect("Static")
+		StopChkISPConnect = self.setInterval('ChkISPConnect("Static")', 5000);
+	}
+	if(wan_mode == 2){ //PPPoE
+		ExpandableOne("p2700fPPPoEToggle")
+		ChkISPConnect("PPP")
+		StopChkISPConnect = self.setInterval('ChkISPConnect("PPP")', 5000);
+	}
+	if(wan_mode == 3 || wan_mode == 6){ //L2TP+PPTP
+		ExpandableOne("p2700fL2TPToggle")
+		ChkISPConnect("L2TP")
+		StopChkISPConnect = self.setInterval('ChkISPConnect("L2TP")', 5000);
+	}
+});
+function ISPConnectDefault(wan_mode){
+	window.clearInterval(StopChkISPConnect);
+//	$("#DynState","#StaticState","#PPPState","#L2TPState").hide();
+	$("#DynState").removeClass("offline").removeClass("online").html("");
+	$("#StaticState").removeClass("offline").removeClass("online").html("");
+	$("#PPPState").removeClass("offline").removeClass("online").html("");
+	$("#L2TPState").removeClass("offline").removeClass("online").html("");
+
+	$("#DynHeader").removeClass("offline").removeClass("online");
+	$("#StaticHeader").removeClass("offline").removeClass("online");
+	$("#PPPHeader").removeClass("offline").removeClass("online");
+	$("#L2TPHeader").removeClass("offline").removeClass("online");
+	if(wan_mode == 0){ //Dynamic
+		ChkISPConnect("Dyn")
+		StopChkISPConnect = self.setInterval('ChkISPConnect("Dyn")', 5000);
+	}
+	if(wan_mode == 1){ //Static
+		ChkISPConnect("Static")
+		StopChkISPConnect = self.setInterval('ChkISPConnect("Static")', 5000);
+	}
+	if(wan_mode == 2){ //PPPoE
+		ChkISPConnect("PPP")
+		StopChkISPConnect = self.setInterval('ChkISPConnect("PPP")', 5000);
+	}
+	if(wan_mode == 3 || wan_mode == 6){ //L2TP+PPTP
+		ChkISPConnect("L2TP")
+		StopChkISPConnect = self.setInterval('ChkISPConnect("L2TP")', 5000);
+	}
+}
+function ISPConnectSelect(){
+	if($("#DynState").is(":visible"))
+		StopChkISPConnect = self.setInterval('ChkISPConnect("Dyn")', 5000);
+	if($("#StaticState").is(":visible"))
+		StopChkISPConnect = self.setInterval('ChkISPConnect("Static")', 5000);
+	if($("#PPPState").is(":visible"))
+		StopChkISPConnect = self.setInterval('ChkISPConnect("PPP")', 5000);
+	if($("#L2TPState").is(":visible"))
+		StopChkISPConnect = self.setInterval('ChkISPConnect("L2TP")', 5000);
+}
+var StopChkISPConnect
+function ChkISPConnect(openitem) {
+	var HeaderID = "#" + openitem + "Header"
+	var StateID = "#" + openitem + "State"
+	$.get("getPhysicLink.asp", function(data) {
+		if (data == 1) {
+			$.get("getWanConnect.asp", function(data) {
+				if (data == 1) { //online
+					$(HeaderID).removeClass("offline").addClass("online")
+					$(StateID).removeClass("offline").addClass("online")
+					$(StateID).attr("tid","gtYouAreOnline")
+					$(StateID).html(langDictionary["gtYouAreOnline"])
+					$(StateID).show()
+					$('#p2702,#p2703').hide()
+					if($('#p300iOnline').is(":hidden") )
+						$('#p2701').show()
+				}
+				else{ //offline
+					$(HeaderID).removeClass("online").addClass("offline")
+					$(StateID).removeClass("online").addClass("offline")
+					$(StateID).attr("tid","gtYouAreOffline")
+					$(StateID).html(langDictionary["gtYouAreOffline"])
+					$(StateID).show()
+					$('#p2701,#p2703,#p300iOnline').hide()
+					$('#p2702').show()
+				}
+			});
+		}
+		else{ //Disconnected
+			$(HeaderID).removeClass("online").addClass("offline")
+			$(StateID).removeClass("online").addClass("offline")
+			$(StateID).attr("tid","gtYouAreOffline")
+			$(StateID).html(langDictionary["gtYouAreOffline"])
+			$(StateID).show()
+			$('#p2701,#p2702,#p300iOnline').hide()
+			$('#p2703').show()
+		}
+	});
+}
+function displayPPPoEStatic(show) {
+	if (show) {
+		$('#p2700fPPPoEStatic').slideUp();
+	} else {
+		$('#p2700fPPPoEStatic').slideDown();
+	}
+}
+function ChkPPPoE_PING(){
+	$.get("BelkinAPI/GetPrePINGorNot.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+		if(data==1){
+			retryPING=0;
+			$.get("getDNSorNot.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+				if(data==1){
+					window.clearInterval(ChkPPPoE_PINGStop);
+					retryPPPoE = 0;
+					window.location = "2700-ISP.asp?S";
+				}
+				else{
+					window.location = "FWGUI_ISP3.asp";
+				}
+			});
+		}else{
+			retryPING++;
+			if(retryPING==5){
+				window.clearInterval(ChkPPPoE_PINGStop);
+				window.location = "FWGUI_ISP3.asp";
+			}
+		}
+	});
+}
+function isSecTryPPPoE(){
+	if($("#p212").css("display")=="block")
+		return 1;
+	else
+		return 0;
+}
+function ChkPPPoEcredential(){
+	$.post("/goform/formSetWanPPPoE", $("#p2700f001").serialize(),function(data){
+		if(data=="ok"){
+			window.clearInterval(ChkPPPoEcredentialStop);
+			ChkPPPoE_PING();
+			ChkPPPoE_PINGStop = self.setInterval("ChkPPPoE_PING()",3000);
+			retryPPPoE=0;
+		}
+		else if(data=="fail" || data == "AccessReject" ){
+			if(retryPPPoE==3){
+				window.clearInterval(ChkPPPoEcredentialStop);
+				if(isSecTryPPPoE())
+					window.location = "FWGUI_ISP4.asp?4";
+				else{
+					closeMsgMask("p211");
+					$("#p212").show();
+					retryPPPoE=0;
+				//	ISPConnectSelect();
+				}
+			}
+			retryPPPoE++
+		}
+	},"text");
+}
+function ChkSubmit_L2TP(){
+	cur_username = $("#p2700fL2TPUser").val();
+	cur_password = $("#p2700fL2TPPass").val();
+	cur_username = cur_username.replace(/(^\s*)|(\s*$)/g, "");
+	cur_password = cur_password.replace(/(^\s*)|(\s*$)/g, "");
+	$("#p2700fL2TPUser").val(cur_username);
+	$("#p2700fL2TPPass").val(cur_password);
+	if ( cur_username == "")
+	{
+		$('#p2700eL2TPUser').html(translate("errUsernameEmpty"));
+		$('#p2700eL2TPUser').fadeTo(200, 1);
+		$("#p2700fL2TPUser").focus();
+		return false;
+	}
+	if( cur_username.length >=64 )
+	{
+		$('#p2700eL2TPUser').html(translate("errUsernameTooLong"));
+		$('#p2700eL2TPUser').fadeTo(200, 1);
+		$("#p2700fL2TPUser").focus();
+		return false;
+	}
+	if( !validVisibleStr(cur_username) )
+	{
+		$('#p2700eL2TPUser').html(translate("errUsernameInvalid"));
+		$('#p2700eL2TPUser').fadeTo(200, 1);
+		$("#p2700fL2TPUser").focus();
+		return false;
+	}
+	$('#p2700eL2TPUser').hide();
+
+	if ( cur_password == "")
+	{
+		$('#p2700eL2TPPass').html(translate("errPasswordEmpty"));
+		$('#p2700eL2TPPass').fadeTo(200, 1);
+		$("#p2700fL2TPPass").focus();
+		return false;
+	}
+	if( cur_password.length >=64 )
+	{
+		$('#p2700eL2TPPass').html(translate("errPasswordTooLong"));
+		$('#p2700eL2TPPass').fadeTo(200, 1);
+		$("#p2700fL2TPPass").focus();
+		return false;
+	}
+	if( !validVisibleStr(cur_password) )
+	{
+		$('#p2700eL2TPPass').html(translate("errPasswordInvalid"));
+		$('#p2700eL2TPPass').fadeTo(200, 1);
+		$("#p2700fL2TPPass").focus();
+		return false;
+	}
+	$('#p2700eL2TPPass').hide();
+
+	gateway =  $("#p2700fL2TPServ").val();
+	if ( gateway == "")
+	{
+		$('#p2700eL2TPServ').html(translate("errServAddressEmpty"));
+		$('#p2700eL2TPServ').fadeTo(200, 1);
+		$("#p2700fL2TPServ").focus();
+		return false;
+	}
+
+	var gateway_array;
+	gateway_array = gateway.split('.');
+
+	for(i=0; i<gateway_array.length; i++)
+	{
+		if( (gateway_array.length != 4) || (gateway_array[i] == "") || isNaN(gateway_array[i]) || (gateway_array[i]<0) || (gateway_array[i]>255) )
+		{
+			$('#p2700eL2TPServ').html(translate("errDefaultGatewayInvalid"));
+			$('#p2700eL2TPServ').fadeTo(200, 1);
+
+			$("#p2700fL2TPServ").focus();
+			return false;
+		}
+	}
+	$('#p2700eL2TPServ').hide();
+	return true;
+}
+function ChkSubmit_PPPoE(){
+	cur_username = $("#p2700fPPPoEUser").val();
+	cur_password = $("#p2700fPPPoEPass").val();
+	cur_mtu = $("#p2700fPPPoEMTU").val();
+	cur_idle = $("#p2700fPPPoETimeoutLength").val();
+	cur_username = cur_username.replace(/(^\s*)|(\s*$)/g, "");
+	cur_password = cur_password.replace(/(^\s*)|(\s*$)/g, "");
+	$("#p2700fPPPoEUser").val(cur_username);
+	$("#p2700fPPPoEPass").val(cur_password);
+	if ( cur_username == "")
+	{
+		$('#p2700ePPPoEUser').html(translate("errUsernameEmpty"));
+		$('#p2700ePPPoEUser').fadeTo(200, 1);
+		$("#p2700fPPPoEUser").focus();
+		return false;
+	}
+	if( cur_username.length >=64 )
+	{
+		$('#p2700ePPPoEUser').html(translate("errUsernameTooLong"));
+		$('#p2700ePPPoEUser').fadeTo(200, 1);
+		$("#p2700fPPPoEUser").focus();
+		return false;
+	}
+	if( !validVisibleStr(cur_username) )
+	{
+		$('#p2700ePPPoEUser').html(translate("errUsernameInvalid"));
+		$('#p2700ePPPoEUser').fadeTo(200, 1);
+		$("#p2700fPPPoEUser").focus();
+		return false;
+	}
+	$('#p2700ePPPoEUser').hide();
+
+	if ( cur_password == "")
+	{
+		$('#p2700ePPPoEPass').html(translate("errPasswordEmpty"));
+		$('#p2700ePPPoEPass').fadeTo(200, 1);
+		$("#p2700fPPPoEPass").focus();
+		return false;
+	}
+	if( cur_password.length >=64 )
+	{
+		$('#p2700ePPPoEPass').html(translate("errPasswordTooLong"));
+		$('#p2700ePPPoEPass').fadeTo(200, 1);
+		$("#p2700fPPPoEPass").focus();
+		return false;
+	}
+	if( !validVisibleStr(cur_password) )
+	{
+		$('#p2700ePPPoEPass').html(translate("errPasswordInvalid"));
+		$('#p2700ePPPoEPass').fadeTo(200, 1);
+		$("#p2700fPPPoEPass").focus();
+		return false;
+	}
+	$('#p2700ePPPoEPass').hide();
+
+	cur_pppserv = $("#p2700fPPPoEServ").val()
+	if( cur_pppserv.length >= 64 ){
+		$('#p2700ePPPoEServ').html(translate("errUsernameTooLong"));
+		$('#p2700ePPPoEServ').fadeTo(200, 1);
+		$("#p2700fPPPoEServ").focus();
+		return false;
+	}
+	if( !validVisibleStr(cur_pppserv)){
+		$('#p2700ePPPoEServ').html(translate("wppa18"));
+		$('#p2700ePPPoEServ').fadeTo(200, 1);
+		$("#p2700fPPPoEServ").focus();
+		return false;
+	}
+	$('#p2700ePPPoEServ').hide();
+
+	if(!$("#p2700fPPPoEDHCP").is(":checked")){
+		cur_pppip = $("#p2700fPPPoEStaticIP").val();
+		if ( cur_pppip == " " || cur_pppip ==""){
+			$('#p2700ePPPoEStaticIP').html(translate("760")+": "+translate("1360"));
+			$('#p2700ePPPoEStaticIP').fadeTo(200, 1);
+			$("#p2700fPPPoEStaticIP").focus();
+			return false;
+		}
+		var ip_array = cur_pppip.split('.');
+
+		if(isNValidEndIP_1ST(ip_array[0])){
+			$('#p2700ePPPoEStaticIP').html(translate("760")+": "+translate("1360"));
+			$('#p2700ePPPoEStaticIP').fadeTo(200, 1);
+			$("#p2700fPPPoEStaticIP").focus();
+			return false;
+		}
+		else if(isNValidIP(ip_array[1]) || isNValidIP(ip_array[2])){
+			$('#p2700ePPPoEStaticIP').html(translate("760")+": "+translate("641"));
+			$('#p2700ePPPoEStaticIP').fadeTo(200, 1);
+			$("#p2700fPPPoEStaticIP").focus();
+			return false;
+		}
+		else if(isNValidEndIP_4TH(ip_array[3]) ){
+			$('#p2700ePPPoEStaticIP').html(translate("760")+": "+translate("675"));
+			$('#p2700ePPPoEStaticIP').fadeTo(200, 1);
+			$("#p2700fPPPoEStaticIP").focus();
+			return false;
+		}
+	}
+	$('#p2700ePPPoEStaticIP').hide();
+
+	if(!validatePPPMTU(cur_mtu)){
+		$('#p2700ePPPoEMTU').html(translate("659"));
+		$('#p2700ePPPoEMTU').fadeTo(200, 1);
+		$("#p2700fPPPoEMTU").focus();
+		return false;
+	}
+	$('#p2700ePPPoEMTU').hide();
+
+	if($("#p2700fPPPoETimeout").is(":checked")){
+		if((isBlank(cur_idle)) || (isNaN(cur_idle)) || (cur_idle<1 || cur_idle>99) )
+		{
+			$('#p2700ePPPoETimeoutLength').html(translate("738"));
+			$('#p2700ePPPoETimeoutLength').fadeTo(200, 1);
+			$("#p2700fPPPoETimeoutLength").focus();
+			return false;
+		}
+	}
+	$('#p2700ePPPoETimeoutLength').hide();
+
+	return true;
+}
+function isSecTryStatic(){
+	if($("#p712").css("display")=="block")
+		return 1;
+	else
+		return 0;
+}
+function ChkSubmit_Static(){
+
+	ip = $("#p2700fStaticIP").val();
+	net_mask = $("#p2700fStaticSubnet").val();
+	gateway =  $("#p2700fStaticGateway").val();
+	dns1 = $("#p2700fStaticDNS1").val();
+	dns2 = $("#p2700fStaticDNS2").val();
+//--------------------------------check ip----------------------------------
+	if ( ip == " " || ip =="")
+	{
+		//$('#p2700eStaticIP').html(translate("errIpAddressEmpty"));
+		$('#p2700eStaticIP').html(translate("760")+": "+translate("1360"));
+		$('#p2700eStaticIP').fadeTo(200, 1);
+		$("#p2700fStaticIP").focus();
+		return false;
+	}
+
+	var ip_array,i;
+	ip_array = ip.split('.');
+
+	if(isNValidEndIP_1ST(ip_array[0])){
+		$('#p2700eStaticIP').html(translate("760")+": "+translate("1360"));
+		$('#p2700eStaticIP').fadeTo(200, 1);
+		$("#p2700fStaticIP").focus();
+		return false;
+	}
+	else if(isNValidIP(ip_array[1]) || isNValidIP(ip_array[2])){
+		$('#p2700eStaticIP').html(translate("760")+": "+translate("395"));
+		$('#p2700eStaticIP').fadeTo(200, 1);
+		$("#p2700fStaticIP").focus();
+		return false;
+	}
+	else if(isNValidEndIP_4TH(ip_array[3]) ){
+		$('#p2700eStaticIP').html(translate("760")+": "+translate("675"));
+		$('#p2700eStaticIP').fadeTo(200, 1);
+		$("#p2700fStaticIP").focus();
+		return false;
+	}
+	/*
+	for(i=0; i<ip_array.length ; i++)
+	{
+		if( (ip_array.length != 4) || (ip_array[i] == "") || isNaN(ip_array[i]) || (ip_array[i]< 0) || (ip_array[i]>255))
+		{
+			$('#p2700eStaticIP').html(translate("errIpAddressInvalid"));
+			$('#p2700eStaticIP').fadeTo(200, 1);
+
+			$("#p2700fStaticIP").focus();
+			return false;
+		}
+	}
+	*/
+	$('#p2700eStaticIP').hide();
+//-------------------------check netmask------------------------------------
+	if ( net_mask == "")
+	{
+		//$('#p2700eStaticSubnet').html(translate("errSubnetMaskEmpty"));
+		$('#p2700eStaticSubnet').html(translate("sm_1"));
+		$('#p2700eStaticSubnet').fadeTo(200, 1);
+		$("#p2700fStaticSubnet").focus();
+		return false;
+	}
+	var mask_array;
+	mask_array = net_mask.split('.');
+
+	if(mask_array[0] != 255)
+	{
+		//$('#p2700eStaticSubnet').html(translate("errSubnetMaskInvalid"));
+		$('#p2700eStaticSubnet').html(translate("sm_1"));
+		$('#p2700eStaticSubnet').fadeTo(200, 1);
+		$("#p2700fStaticSubnet").focus();
+		return false;
+	}
+
+	for(i=0; i< mask_array.length; i++)
+	{
+		if( (mask_array.length != 4) || (mask_array[i] == "") || isNaN(mask_array[i]) || (mask_array[i]< 0) || (mask_array[i]>255) )
+		{
+			//$('#p2700eStaticSubnet').html(translate("errSubnetMaskInvalid"));
+			$('#p2700eStaticSubnet').html(translate("sm_1"));
+			$('#p2700eStaticSubnet').fadeTo(200, 1);
+			$("#p2700fStaticSubnet").focus();
+			return false;
+		}
+	}
+	$('#p2700eStaticSubnet').hide();
+//----------------------------check gateway---------------------------------
+/*	if ( gateway == "")
+	{
+		$('#p2700eStaticGateway').html(translate("errDefaultGatewayEmpty"));
+		$('#p2700eStaticGateway').fadeTo(200, 1);
+		$("#p2700fStaticGateway").focus();
+		return false;
+	}
+*/
+	var gateway_array;
+	gateway_array = gateway.split('.');
+	if(isNValidEndIP_1ST(gateway_array[0])){
+		$('#p2700eStaticGateway').html(translate("762")+": "+translate("1360"));
+		$('#p2700eStaticGateway').fadeTo(200, 1);
+		$("#p2700fStaticGateway").focus();
+		return false;
+	}
+	else if(isNValidIP(gateway_array[1]) || isNValidIP(gateway_array[2])){
+		$('#p2700eStaticGateway').html(translate("762")+": "+translate("395"));
+		$('#p2700eStaticGateway').fadeTo(200, 1);
+		$("#p2700fStaticGateway").focus();
+		return false;
+	}
+	else if(isNValidEndIP_4TH(gateway_array[3]) ){
+		$('#p2700eStaticGateway').html(translate("762")+": "+translate("675"));
+		$('#p2700eStaticGateway').fadeTo(200, 1);
+		$("#p2700fStaticGateway").focus();
+		return false;
+	}
+	/*
+	for(i=0; i<gateway_array.length; i++)
+	{
+		if( (gateway_array.length != 4) || (gateway_array[i] == "") || isNaN(gateway_array[i]) || (gateway_array[i]<0) || (gateway_array[i]>255) )
+		{
+			$('#p2700eStaticGateway').html(translate("errDefaultGatewayInvalid"));
+			$('#p2700eStaticGateway').fadeTo(200, 1);
+
+			$("#p2700fStaticGateway").focus();
+			return false;
+		}
+	}
+	*/
+	$('#p2700eStaticGateway').hide();
+//----------------------------check dns1------------------------------------
+	if ( dns1 == "")
+	{
+		//$('#p2700eStaticDNS1').html(translate("errDNSServerEmpty"));
+		$('#p2700eStaticDNS1').html(translate("766"));
+		$('#p2700eStaticDNS1').fadeTo(200, 1);
+		$("#p2700fStaticDNS1").focus();
+		return false;
+	}
+
+	var dns1_array;
+	dns1_array = dns1.split('.');
+
+	for(i=0; i<dns1_array.length; i++)
+	{
+		if( (dns1_array.length!=4) || (dns1_array[i] == "") || isNaN(dns1_array[i]) || (dns1_array[i]< 0) || (dns1_array[i]>255) )
+		{
+			//$('#p2700eStaticDNS1').html(translate("errDNSServerInvalid"));
+			$('#p2700eStaticDNS1').html(translate("766"));
+			$('#p2700eStaticDNS1').fadeTo(200, 1);
+			$("#p2700fStaticDNS1").focus();
+			return false;
+		}
+	}
+	$('#p2700eStaticDNS1').hide();
+//----------------------------check dns2------------------------------------
+	if(dns2 != "" && dns2 != "0.0.0.0")
+	{
+		var dns2_array;
+		dns2_array = dns2.split('.');
+
+		for(i=0; i<dns2_array.length; i++)
+		{
+			if( (dns2_array.length!=4) || (dns2_array[i] == "") || isNaN(dns2_array[i]) || (dns2_array[i]< 0) || (dns2_array[i]>255) )
+			{
+				i//$('#p2700eStaticDNS2').html(translate("errDNSServerInvalid"));
+				$('#p2700eStaticDNS2').html(translate("766"));
+				$('#p2700eStaticDNS2').fadeTo(200, 1);
+				$("#p2700fStaticDNS2").focus();
+				return false;
+			}
+		}
+		$('#p2700eStaticDNS2').hide();
+	}
+	return true;
+}
+function WaitPhysicLine(){
+	window.clearInterval(WaitPhysicLineStop);
+	$.get("getPhysicLink.asp", { NoCache: Math.floor(Math.random() * 10000) }, function (data) {
+		if(data ==1){
+			$.get("getPINGorNot.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+				if(data==1){
+					$.get("getDNSorNot.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+						if(data==1){
+							closeMsgMask(lastMask_id)
+							window.location = "2700-ISP.asp?S";
+							//$("#p300iOnline").show();
+							$("#ErrorMessageContent,#p2702,#p2703").hide();
+						}
+						else if(isSecTryStatic())
+							window.location = "FWGUI_ISP6.asp";
+						else{
+							closeMsgMask(lastMask_id);
+							$("#p712").show();
+						}
+					});
+				}
+				else if(isSecTryStatic())
+					window.location = "FWGUI_ISP6.asp";
+				else{
+					closeMsgMask(lastMask_id);
+					$("#p712").show();
+				}
+			});
+		}
+		else{
+			if(isSecTryStatic())
+				window.location = "FWGUI_ISP6.asp";
+			else{
+				closeMsgMask(lastMask_id);
+				$("#p712").show();
+			}
+		}
+	});
+}
+function ChkStatic(){
+	$.get("getIsStaticLinked.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+		window.clearInterval(ChkStaticStop);
+		if(data==1){
+			WaitPhysicLineStop = self.setInterval("WaitPhysicLine()",10000);
+		}
+		else if(isSecTryStatic())
+			window.location = "FWGUI_ISP6.asp";
+		else{
+			//window.location = "710-StaticConnection.asp?sec";
+			closeMsgMask(lastMask_id);
+			$("#p712").show();
+		}
+	});
+}
+function isSecTryPPL2TP(){
+	if($("#p222").css("display")=="block")
+		return 1;
+	else
+		return 0;
+}
+function ChkPPL2TPcredential(){
+	$.post("/goform/formSetBBSPPL2TP", $("#p2700f001").serialize(),function(data){
+	});
+}
+function ChkPPL2TPFinished(){
+	$.get("BelkinAPI/GetPPL2TPStatus.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+		//pptp/l2tp/failed
+		if( data==6 || data == 3){
+			window.clearInterval(ChkPPL2TPFinishedStop);
+			//ChkPPL2TP_PING();
+			ChkPPL2TP_PINGStop = self.setInterval("ChkPPL2TP_PING()",3000);
+		}else{ //failed
+			if(retryPPL2TP==6){
+				window.clearInterval(ChkPPL2TPFinishedStop);
+				if(isSecTryPPL2TP())
+					window.location = "FWGUI_ISP4.asp";
+				else{
+					closeMsgMask("p221");
+					$("#p222").show();
+					retryPPL2TP =0;
+				}
+			}
+			retryPPL2TP++
+		}
+	});
+}
+function ChkPPL2TP_PING(){
+	$.get("BelkinAPI/GetPrePINGorNot.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+		if(data==1){
+			retryPING=0;
+			$.get("getDNSorNot.asp", { noCache: Math.floor(Math.random() * 10000) }, function (data) {
+				if(data==1){
+					window.clearInterval(ChkPPL2TP_PINGStop);
+					retryPPTP = 0;
+					window.location = "2700-ISP.asp?S";
+				}
+				else{
+					window.location = "FWGUI_ISP3.asp";
+				}
+			});
+		}else{
+			retryPING++;
+			if(retryPING==5){
+				window.clearInterval(ChkPPL2TP_PINGStop);
+				window.location = "FWGUI_ISP3.asp";
+			}
+		}
+	});
+}
+function ExpandableOne(openitem){
+	for (var i in names) {
+		var contentID = "#" + names[i].substr(0, names[i].length-6), caretID = contentID + "Caret";
+		if (openitem == names[i]) {
+			if ($(contentID).is(":hidden")) {
+				$(caretID).rotate({animateTo:0, duration:600});
+			} else {
+				$(caretID).rotate({animateTo:180, duration:600});
+			}
+			$(contentID).slideToggle(600);
+		} else {
+			$(contentID).slideUp();
+			$(caretID).rotate({animateTo:180, duration:600});
+		}
+	}
+}
+function AllExpandableClose(){
+	for (var i in names) {
+		var contentID = "#" + names[i].substr(0, names[i].length-6), caretID = contentID + "Caret";
+		$(contentID).slideUp();
+		$(caretID).rotate({animateTo:180, duration:600});
+	}
+}
+function validatePPPMTU(val)
+{
+	mval = val;
+	mval = mval-0;
+	if(val.length<3 || mval<500 || mval>1500)
+	{
+		return false;
+	}
+	for(i=0; i<val.length; i++)
+	{
+		if(val.charAt(i)<'0' || val.charAt(i)>'9')
+		{
+			return false;
+		}
+	}
+	return true;
+}
+</script>
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+<div class="container top-pane hide-on-phones">
+        <div class="row">
+                <div class="twelve columns">
+                        <a href="000-dashboard.asp" tid="gtBackToDashboard">&larr;&nbsp;<script>dwt('gtBack');</script></a>
+                        <ul class="sub-nav hide-on-phones" id="top_sub_nav">
+                                <li class="current">
+                                <a href="2700-ISP.asp" ><script>dwt('gtISP');</script></a>
+                                </li>
+                                <li>
+                                <a href="dns.asp" ><script>dwt('3442');</script></a>
+                                </li>
+                                <li>
+                                <a href="wan_mac.asp" ><script>dwt('357');</script></a>
+                                </li>
+                        </ul>
+                </div>
+        </div>
+</div>
+<div class="main container mobileNav show-on-phones">
+	<div class="row">
+		<div class="twelve columns">
+			<a href="000-dashboard.asp" id="pISPaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard');</script></span></a>
+			<h2 tid="gtISP"><script>dwt('gtISP');</script></h2>
+		</div>
+	</div>
+</div>
+  <div class="main container" id="p2700">
+	<div class="row">
+		<div class="page-title hide-on-phones">
+			<h3 tid="gtISP"><script>dwt('gtISP');</script></h3>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns">
+			<form name="p2700f001" id="p2700f001" class="nice" action="#">
+				<!-- Only one of these messages (p300iOnline, p2701, p2702, p2703) should be shown! -->
+				<p class="ancillary greytop" id="p300iOnline" style="display:none"><span class="status"></span><span class="online" tid="p300t005"><script>dwt('p300t005');</script></span></p>
+				<p class="ancillary greytop" id="p2701" style="display:none"><span class="status"></span><span class="online" tid="p2701t001"><script>dwt('p2701t001');</script></span></p>
+				<p class="ancillary warning withtop" id="p2702" style="display:none"><span tid="p2702t001"><script>dwt('p2702t001');</script></span></p>
+				<p class="ancillary warning withtop" id="p2703" style="display:none"><span tid="p2703t001"><script>dwt('p2703t001');</script></span></p>
+				<a href="#" id="p2700a002" tid="gtAutoFind" class="nice radius large green button"><script>dwt('gtAutoFind');</script></a>
+				<p>
+					<span tid="p2700t003"><script>dwt('p2700t003');</script></span>
+				</p>
+				<ul class="conntype">
+				<!-- Dynamic -->
+					<li class="indicator" id="DynHeader">
+						<p id="p2700fDynName">
+							<span class="statusbutton"></span><span class="connname" tid="gtDynamic"><script>dwt('gtDynamic');</script></span>
+							<a class="PICDevToggle" href="#" id="p2700fDynToggle" style="float:right; display:block;">
+							<img src="../images/btn-Caret2.png" class="PICCaret" id="p2700fDynCaret" alt="Toggle"></a>
+							<span class="offline" tid="gtYouAreOffline" style="display:none" id="DynState"><script>dwt('gtYouAreOffline');</script></span>
+						</p>
+						<div style="clear: both;"></div>
+						<div id="p2700fDyn" style="display:none">
+							<hr>
+							<p><span tid="p2700t004"><script>dwt('p2700t004');</script></span></p>
+							<p>
+								<label for="p2700fDynHost">
+									<span tid="p2700t005"><script>dwt('p2700t005');</script></span>
+									<span class="more"><span class="desc" tid="p2700t006"><script>dwt('p2700t006');</script></span></span>
+								</label>
+								<input type="text" class="input-text" name="m_wan_hostname" id="p2700fDynHost" maxlength="63">
+								<small class="error" id="p2700eDynHost" style="display: none;"></small>
+							</p>
+							<p>
+								<a href="wan_mac.asp" id="p2700fDynChangeWAN" tid="p2700t007"><script>dwt('p2700t007');</script></a>
+							</p>
+							<a id="p2700fDynSave" tid="gtSaveAndConnect" class="nice radius large green button"><script>dwt('gtSaveAndConnect');</script></a>
+						</div>
+					</li>
+					<!-- PPPoE -->
+					<li class="indicator" id="PPPHeader">
+						<p id="p2700fPPPoEName" >
+							<span class="statusbutton "></span><span class="connname" tid="gtPPPoE"><script>dwt('gtPPPoE');</script></span>
+							<a class="PICDevToggle" href="#" id="p2700fPPPoEToggle" style="float:right; display:block;">
+							<img src="../images/btn-Caret2.png" class="PICCaret" id="p2700fPPPoECaret" alt="Toggle"></a>
+							<span class="offline" tid="gtYouAreOffline" style="display:none" id="PPPState"><script>dwt('gtYouAreOnline');</script></span>
+						</p>
+						<div style="clear: both;"></div>
+						<div id="p2700fPPPoE" style="display:none">
+
+							<div class="ancillary warning" id="p212" style="display:none">
+
+    								<h6 tid="p212t001"><script>dwt('p212t001');</script></h6>
+    								<ul class="disc">
+									<li tid="p212t002"><script>dwt('p212t002');</script></li>
+								</ul>
+							</div>
+							<hr>
+							<p><span tid="p2700t008"><script>dwt('p2700t008');</script></span></p>
+							<p>
+								<label for="p2700fPPPoEUser" tid="gtUserName"><script>dwt('gtUserName');</script></label>
+								<input type="text" class="input-text" name="pppoe_username" id="p2700fPPPoEUser" maxlength="63">
+								<small class="error" id="p2700ePPPoEUser" style="display: none;"></small>
+							</p>
+							<p>
+								<label for="p2700fPPPoEPass" tid="gtPass"><script>dwt('gtPass');</script></label>
+								<input type="text" class="input-text" name="pppoe_passwd" id="p2700fPPPoEPass" maxlength="63">
+								<small class="error" id="p2700ePPPoEPass" style="display: none;"></small>
+							</p>
+							<p><a href="javascript:void(0);" id="p2700fPPPoEAdvToggle" class=""><img class="expando" id="p2700fPPPoEAdvArrow" src="../images/expando.png" alt="Expand"><span class="expando" tid="gtAdvSettings"><script>dwt('gtAdvSettings');</script></span></a></p>
+							<div id="p2700fPPPoEAdv">
+								<p>
+									<label for="p2700fPPPoEServ"><span tid="gtServiceName"><script>dwt('gtServiceName');</script></span>
+									</label>
+									<input type="text" class="input-text" name="pppoe_servicename" id="p2700fPPPoEServ" maxlength="63">
+									<small class="error" id="p2700ePPPoEServ" style="display: none;"></small>
+								</p>
+								<p>
+									<label for="p2700fPPPoEDHCP"><span tid="p2700t009"><script>dwt('p2700t009');</script></span>
+										<input type="checkbox" name="p2700fPPPoEDHCP" id="p2700fPPPoEDHCP">
+										<input type="hidden" name="ip_mode" >
+									</label>
+									<div id="p2700fPPPoEStatic" class="subform">
+										<label for="p2700fPPPoEStaticIP"><span tid="p2700t010"><script>dwt('p2700t010');</script></span></label>
+										<input type="text" class="input-text" placeholder="example: 10.10.10.5" name="pppoe_ipaddr" id="p2700fPPPoEStaticIP" tid="gtIPExamplePlaceholder">
+										<!-- This is format, location and ID of validation error message <small class="error" id="p2700ePPPoEStaticIP"></small> -->
+										<small class="error" id="p2700ePPPoEStaticIP" style="display: none;"></small>
+<!--
+										<label for="p2700fPPPoEStaticSubnet"><span tid="p2700t013"><script>dwt('p2700t013');</script></span></label>
+										<input type="text" class="input-text" placeholder="example: 255.255.255.0" id="p2700fPPPoEStaticSubnet" tid="gtSubnetPlaceholder">
+										<small class="error" id="p2700ePPPoEStaticSubnet" style="display: none;"></small>
+										<label for="p2700fPPPoEStaticGateway"><span tid=""><script>dwt('p2700t025');</script></span></label>
+										<input type="text" class="input-text" placeholder="example: 10.10.10.1" id="p2700fPPPoEStaticGateway" tid="gtGatewayExample">
+										<small class="error" id="p2700ePPPoEStaticGateway" style="display: none;"><script>dwt('p2700t025');</script></small>
+-->
+									</div>
+								</p>
+								<p>
+									<label for="p2700fPPPoEMTU">
+										<span tid="p2700t014"><script>dwt('p2700t014');</script></span>
+										<span class="more"><span class="desc" tid="p2700t015"><script>dwt('p2700t015');</script></span></span>
+									</label>
+									<input type="text" class="input-text autosize" name="pppoe_mtu" id="p2700fPPPoEMTU" size="4" maxlength="4">
+									<small class="error" id="p2700ePPPoEMTU" style="display: none;"></small>
+								</p>
+								<p>
+									<label for="p2700fPPPoETimeout"><span tid="p2700t016"><script>dwt('p2700t016');</script></span>
+										<span class="more"><span class="desc" tid="p2700t017"><script>dwt('p2700t017');</script></span></span>
+									</label>
+									<input type="checkbox" name="p2700fPPPoETimeout" id="p2700fPPPoETimeout">
+									<input type="text" class="input-text autosize" name="pppoe_idletime_min" id="p2700fPPPoETimeoutLength" size="3" maxlength="4">
+									<small class="error" id="p2700ePPPoETimeoutLength" style="display: none;"></small>
+									<span tid="p2700t018"><script>dwt('p2700t018');</script></span>
+									<INPUT type=hidden name=pppoe_demand>
+								</p>
+							</div>
+							<a id="p2700fPPPoESave" tid="gtSaveAndConnect" class="nice radius large green button"><script>dwt('gtSaveAndConnect');</script></a>
+						</div>
+					</li>
+					<!-- L2TP or PPTP -->
+					<li class="indicator" id="L2TPHeader" style="display:none">
+						<p id="p2700fL2TPName">
+							<span class="statusbutton"></span><span class="connname" tid="gtL2TPorPPTP"><script>dwt('gtL2TPorPPTP');</script></span>
+							<a class="PICDevToggle" href="#" id="p2700fL2TPToggle" style="float:right; display:block;">
+							<img src="../images/btn-Caret2.png" class="PICCaret" id="p2700fL2TPCaret" alt="Toggle"></a>
+							<span class="offline" tid="gtYouAreOffline" style="display:none" id="L2TPState"><script>dwt('gtYouAreOffline');</script></span>
+						</p>
+						<div style="clear: both;"></div>
+						<div id="p2700fL2TP" style="display:none">
+							<div id="p222" style="display:none" class="ancillary warning">
+								<h6 tid="p222t004"><script>dwt('p222t004');</script></h6>
+								<ul class="disc">
+									<!-- include only relevant items -->
+									<li tid="p222t002"><script>dwt('p222t002');</script></li>
+								</ul>
+							</div>
+							<hr>
+							<p><span tid="p2700t019"><script>dwt('p2700t019');</script></span></p>
+							<p>
+								<label for="p2700fL2TPUser" tid="gtUserName"><script>dwt('gtUserName');</script></label>
+								<input type="text" class="input-text" name="username" id="p2700fL2TPUser" maxlength="63">
+								<small class="error" id="p2700eL2TPUser" style="display: none;"></small>
+							</p>
+							<p>
+								<label for="p2700fL2TPPass" tid="gtPass"><script>dwt('gtPass');</script></label>
+								<input type="text" class="input-text" name="password" id="p2700fL2TPPass" maxlength="63">
+								<small class="error" id="p2700eL2TPPass" style="display: none;"></small>
+							</p>
+							<p>
+								<label for="p2700fL2TPServ" tid="gtServiceAddress"><script>dwt('gtServiceAddress');</script></label>
+								<input type="text" class="input-text" name="serverip" id="p2700fL2TPServ" maxlength="63">
+								<small class="error" id="p2700eL2TPServ" style="display: none;"></small>
+							</p>
+							<a id="p2700fL2TPSave" tid="gtSaveAndConnect" class="nice radius large green button"><script>dwt('gtSaveAndConnect');</script></a>
+						</div>
+					</li>
+					<!-- Static -->
+					<li class="indicator" id="StaticHeader">
+						<p id="p2700fStaticName">
+							<span class="statusbutton"></span><span class="connname" tid="gtStatic"><script>dwt('gtStatic');</script></span>
+							<a class="PICDevToggle" href="#" id="p2700fStaticToggle" style="float:right; display:block;">
+							<img src="../images/btn-Caret2.png" class="PICCaret" id="p2700fStaticCaret" alt="Toggle"></a>
+							<span class="offline" tid="gtYouAreOffline" style="display:none" id="StaticState"><script>dwt('gtYouAreOffline');</script></span>
+						</p>
+						<div style="clear: both;"></div>
+						<div id="p2700fStatic" style="display:none">
+							<!-- Ancillary Text for static credentials no likey -->
+							<div class="ancillary warning" id="p712" style="display:none">
+								<h6 tid="p712t001"><script>dwt('p712t001');</script></h6>
+								<ul class="disc">
+								<!-- include only relevant items -->
+									<li tid="p712t002"><script>dwt('p712t002');</script></li>
+								</ul>
+							</div>
+							<hr>
+							<p><span tid="p2700t020"><script>dwt('p2700t020');</script></span></p>
+							<label for="p2700fStaticIP"><span tid="p2700t021"><script>dwt('p2700t010');</script></span></label>
+							<input type="text" class="input-text" placeholder="example: 10.10.10.5" name="m_wan_ipaddr" id="p2700fStaticIP" tid="gtIPExamplePlaceholder">
+							<!-- This is format, location and ID of validation error message - <small class="error" id="p2700eStaticIP"></small> -->
+							<small class="error" id="p2700eStaticIP" style="display: none;"></small>
+
+							<label for="p2700fStaticSubnet"><span tid="p2700t022"><script>dwt('p2700t013');</script></span></label>
+							<input type="text" class="input-text" placeholder="example: 255.255.255.0" name="m_wan_netmask" id="p2700fStaticSubnet" tid="gtSubnetPlaceholder">
+							<!-- This is format, location and ID of validation error message - <small class="error" id="p2700eStaticSubnet"></small> -->
+							<small class="error" id="p2700eStaticSubnet" style="display: none;"></small>
+
+							<label for="p2700fStaticGateway"><span tid="p2700t025"><script>dwt('p2700t025');</script></span></label>
+							<input type="text" class="input-text" placeholder="example: 10.10.10.1" name="m_wan_gateway" id="p2700fStaticGateway" tid="gtGatewayExample">
+							<!-- This is format, location and ID of validation error message - <small class="error" id="p2700eStaticGateway"></small> -->
+							<small class="error" id="p2700eStaticGateway" style="display: none;"></small>
+							<label for="p2700fStaticDNS1"><span tid="p710t011"><script>dwt('p710t011');</script></span>
+							  <input type="text" class="input-text" placeholder="example: 8.8.8.8" id="p2700fStaticDNS1" name="m_wan_staticdns1" tid="p710t012">
+							  <!-- This is format, location and ID of validation error message - <small class="error" id="p2700eStaticDNS1"></small> -->
+							  <small class="error" id="p2700eStaticDNS1" style="display: none;"></small>
+							</label>
+							<label for="p2700fStaticDNS2"><span tid="p710t013"><script>dwt('p710t013');</script></span>
+							  <input type="text" class="input-text" placeholder="example: 8.8.4.4" id="p2700fStaticDNS2" name="m_wan_staticdns2" tid="p710t014">
+							  <!-- This is format, location and ID of validation error message - <small class="error" id="p2700eStaticDNS1"></small> -->
+							  <small class="error" id="p2700eStaticDNS2" style="display: none;"></small>
+							</label>
+							<p class="tip" tid="p710t015"><script>dwt('p710t015');</script></p>
+							<a id="p2700fStaticSave" tid="gtSaveAndConnect" class="nice radius large green button"><script>dwt('gtSaveAndConnect');</script></a>
+						</div>
+					</li>
+				</ul>
+				<p>
+					<a href="#" id="p2700t024"><span tid="gtAutoFind"><script>dwt('gtAutoFind');</script></span><span> &rarr;</span></a>
+				</p>
+				<input type="hidden" name="fromBBS" value="1" >
+				<input type="hidden" name="fromISP" value="1" >
+			</form>
+		</div>
+		<!-- Content Sidebar -->
+		<div class="four columns sidebar2">
+			<div id="p2700iHeaderDB">
+				<h6 tid="htISP"><script>dwt('htISP');</script></h6>
+				<p>
+					<span tid="htISPContent"><script>dwt('htISPContent');</script></span>
+					<span class="nub"></span>
+				</p>
+			</div>
+		</div>
+		<!-- / #sidebar -->
+	</div>
+  </div>
+
+<div id="p800" class="large reveal-modal">
+	<h1 tid="p800t001"><script>dwt('p800t001');</script>&hellip;</h1>
+	<p class="lead" tid="p800t002"><script>dwt('p800t002');</script></p>
+	<div class="installation">
+		<span class="progress" id="p800Progress"></span>
+	</div>
+</div>
+
+<div id="p200" class="large reveal-modal">
+	<h1 tid="p200t001"><script>dwt('p200t001');</script></h1>
+	<p class="waiting"><img width="28" src="../images/loading.gif" alt="Loading" alt="Loading"><span tid="p200t002"><script>dwt('p200t002');</script></span></p>
+</div>
+
+<div id="p202" class="large reveal-modal">
+	<h1 tid="p202t001"><script>dwt('p202t001');</script></h1>
+	<p class="waiting"><img width="28" src="../images/loading.gif" alt="Loading"><span tid="p202t002"><script>dwt('p202t002');</script></span></p>
+</div>
+
+<div id="p202A" class="large reveal-modal">
+	<h1 tid="p202At001"><script>dwt('p202At001');</script></h1>
+	<p class="waiting"><img width="28" src="../images/loading.gif" alt="Loading"><span tid="p202At002"><script>dwt('p202At002');</script></span></p>
+</div>
+
+<div id="p202B" class="large reveal-modal">
+	<h1 tid="p202Bt001"><script>dwt('p202Bt001');</script></h1>
+	<p class="waiting"><img width="28" src="../images/loading.gif" alt="Loading"><span tid="p202Bt002"><script>dwt('p202Bt002');</script></span></p>
+</div>
+
+<div id="p202C" class="large reveal-modal">
+	<h1 tid="p202Ct001"><script>dwt('p202Ct001');</script></h1>
+	<p class="waiting"><img width="28" src="../images/loading.gif" alt="Loading"><span tid="p202Ct002"><script>dwt('p202Ct002');</script></span></p>
+</div>
+
+<div id="p2705" class="large reveal-modal">
+	<h1 tid="p2705t001"><script>dwt('p2705t001');</script></h1>
+	<p class="lead"><span tid="p2705t002"><script>dwt('p2705t002');</script></span></p>
+	<br>
+    <a href="javascript:void(0);" class="nice radius button green large" tid="gtYes" id="p2705a003"><script>dwt('2006');</script></a>
+    <a href="javascript:void(0);" class="nice radius button white large" tid="gtNo" id="p2705a004"><script>dwt('2007');</script></a>
+</div>
+<div id="p701" class="large reveal-modal">
+        <h1 tid="p701t001"><script>dwt('p701t001');</script></h1>
+        <p class="waiting"><img width="28" src="images/loading.gif"><span tid="p701t002"><script>dwt('p701t002');</script></span></p>
+</div>
+<div id="p711" class="large reveal-modal">
+	<h1 tid="p711t001"><script>dwt('p711t001');</script>&hellip;</h1>
+	<p class="waiting"><img width="28" src="images/loading.gif"><span tid="p711t002"><script>dwt('p711t002');</script></span></p>
+</div>
+<div id="p211" class="large reveal-modal">
+        <h1 tid="p211t001"><script>dwt('p211t001');</script>&hellip;</h1>
+        <p class="waiting"><img width="28" src="images/loading.gif"><span tid="p211t002"><script>dwt('p211t002');</script></span></p>
+</div>
+<div id="p221" class="large reveal-modal">
+        <h1 tid="p221t001"><script>dwt('p221t001');</script>&hellip;</h1>
+        <p class="waiting"><img width="28" src="../images/loading.gif" alt="Loading"><span tid="p221t002"> <script>dwt('p221t002');</script></span></p>
+</div>
+<div id="p2710" class="large reveal-modal">
+	<h1 tid="p2710t001"><script>dwt('p2710t001');</script></h1>
+	<p class="lead"><span tid="p2710t002"><script>dwt('p2710t002');</script></span></p>
+	<br>
+	<a href="javascript:void(0);" class="nice radius button green large" tid="gtOK" id="p2710a003">OK</a>
+</div>
+
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<!-- container -->
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>

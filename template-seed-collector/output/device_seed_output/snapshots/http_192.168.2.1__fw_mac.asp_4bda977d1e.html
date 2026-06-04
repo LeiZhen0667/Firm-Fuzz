@@ -1,0 +1,793 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	  <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+	<title tid="gtDashTitle">Belkin router dashboard</title>
+	<link rel="icon" href="images/favicon/favicon.ico">
+	<!-- For third-generation iPad with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+	<!-- For iPhone with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+	<!-- For first- and second-generation iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+	<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+	<link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+	<link rel="stylesheet" href="stylesheets/app.css">
+	<!--[if lt IE 9]>
+		<link rel="stylesheet" href="stylesheets/ie.css">
+	<![endif]-->
+</head>
+<body style="min-width:600px">
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<style type="text/css">
+table.minimal tbody tr td:first-child{width: auto;}
+</style>
+<script>
+var ts = new Date().getTime();
+var newmac='2ef0fded77f4';
+if(newmac.length == 18){
+var x=new Array();
+        x[0]=newmac.substring(0,2);
+        x[1]=newmac.substring(3,5);
+        x[2]=newmac.substring(6,8);
+        x[3]=newmac.substring(9,11);
+        x[4]=newmac.substring(12,14);
+        x[5]=newmac.substring(15,17);
+}
+else if(newmac.length == 12){
+var x=new Array();
+        x[0]=newmac.substring(0,2);
+        x[1]=newmac.substring(2,4);
+        x[2]=newmac.substring(4,6);
+        x[3]=newmac.substring(6,8);
+        x[4]=newmac.substring(8,10);
+        x[5]=newmac.substring(10,12);
+}
+var xs = x[0] + ":" + x[1] + ":" + x[2] + ":" + x[3] + ":" + x[4] + ":" + x[5];
+var MAX_MAC_FILTER_ENTRY = 20;
+var todEnabled='0';
+
+function MEntry(block, mac)
+{
+        this.block = block;
+        this.mac = mac;
+}
+function MemberList()
+{
+        return{
+                length: 0,
+                entry: [],
+                hasAdminMac: false,
+                adminMac: "",
+                
+                SetAdminMac: function(mac)
+                {
+                        this.adminMac = mac;
+                },
+                
+                AddAdminMac: function()
+                {
+                        this.hasAdminMac = true;
+                        this.AddEntry(false, this.adminMac);
+                        document.formFilterAdd.admin_mac_addr.value = pure_admin_mac;
+                },
+                
+                AddEntry: function(block, mac)
+                {
+                        if(this.IsDuplicated(mac))
+                        {
+                                alert(langDictionary[112] +" (" + mac + ")");                       
+                                return;
+                        }
+                        this.entry[this.length] = new MEntry(block, mac);
+                        e = this.entry[this.length];
+                        this.length++;
+                        if(mac == this.adminMac)
+                                this.hasAdminMac = true;
+                },
+                
+                DelEntry: function(index)
+                {
+                        for(var i=index;i<this.length-1;i++)
+                        {
+                                var d = this.entry[i];
+                                var s = this.entry[i+1];
+                                for (var j in s) {
+                                        d[j] = s[j];
+                                }
+                        }
+                        delete this.entry[this.length-1];
+                        this.length--;
+                },
+                IsDuplicated: function(mac)
+                {
+                        for(var i=0;i<this.length;i++)
+                        {
+                                if(this.entry[i].mac == mac)
+                                        return true;
+                        }
+                        return false;
+                }
+        };
+};
+
+var m_list = new MemberList();
+var admin_mac = x[0].toUpperCase()+":"+x[1].toUpperCase()+":"+x[2].toUpperCase()+":"+x[3].toUpperCase()+":"+x[4].toUpperCase()+":"+x[5].toUpperCase();
+m_list.SetAdminMac(admin_mac);
+var pure_admin_mac = x[0] + x[1] + x[2] + x[3] + x[4] + x[5] ;
+
+function isValidMacAddress(address) {
+	var c = '';
+	var i = 0, j = 0;
+
+	if ( address.toLowerCase() == 'ff:ff:ff:ff:ff:ff' ) return false;
+	if(address.toLowerCase() == '00:00:00:00:00:00' || address.toLowerCase() == '0:0:0:0:0:0' ) return false;
+
+	addrParts = address.split(':');
+	if ( addrParts.length != 6 ) return false;
+
+	for (i = 0; i < 6; i++) {
+		for ( j = 0; j < addrParts[i].length; j++ ) {
+			c = addrParts[i].toLowerCase().charAt(j);
+			if ( (c >= '0' && c <= '9') ||	(c >= 'a' && c <= 'f') )
+				continue;
+			else
+				return false;
+		}
+	}
+
+	return true;
+}
+function isBlank_Zero(s)
+{
+        var i;
+        var c;
+        for(i=0;i<s.length;i++){
+                c=s.charAt(i);
+                if((c!=' ')&&(c!='\n')&&(c!='\t')&&(c!='0'))return false;
+        }
+        return true;
+}
+function is2Hex(s) {
+        var j,x = 0;
+        for(var i = 0; i < s.length; i++) {
+                var c = s.charAt(i);
+                j = parseInt(c,16);
+                if ((j == 0) || (j == 1)|| (j == 2)|| (j == 3)|| (j == 4)|| (j == 5)|| (j == 6)
+                        || (j == 7)|| (j == 8)|| (j == 9)|| (j == 10)|| (j == 11)|| (j == 12)|| (j == 13)|| (j == 14)|| (j == 15)) {
+                        if(x==1)        return false;
+                        x=1;
+                }
+        }
+        return true;
+}
+function isNValid(s) {
+        if( isBlank(s) || is2Hex(s))
+                return true;
+        else
+                return false;
+}
+function IsValidMac(mac)
+{
+        var m = mac.split(":");
+        if ( m[0] == ''|| m[1] == '' || m[2] == '' || m[3] == '' || m[4] == '' ||m[5] == '' ) {
+                alert(langDictionary[115]);
+                return false;
+        }
+        cusmac = m[0] +':'+m[1] +':'+m[2] +':'+m[3] +':'+m[4] +':'+m[5];
+        macUsed = cusmac.toUpperCase();
+        if ( isValidMacAddress( macUsed ) == false ) {
+                alert(langDictionary[115]);
+                return false;
+        }
+        if (!(isBlank_Zero(m[0])) || !(isBlank_Zero(m[1])) || !(isBlank_Zero(m[2])) || !(isBlank_Zero(m[3])) || !(isBlank_Zero(m[4])) || !(isBlank_Zero(m[5]))){
+                if (isNValid(m[0]) || isNValid(m[1]) || isNValid(m[2]) || isNValid(m[3]) || isNValid(m[4]) || isNValid(m[5]))
+                {
+                	alert(langDictionary[115]);
+                        return false;
+                }
+        }else{
+               	alert(langDictionary[115]);
+                return false;
+        }
+        return true;
+}
+function AddMacListTableRow(t, block, mac, index)
+{
+        mac = mac.toUpperCase();
+        var r = t.insertRow(-1);
+        var c = r.insertCell(-1);
+        c.innerHTML = (index+1) + ".";
+        var checked = "";
+        if(block)
+                checked = "checked";
+        c = r.insertCell(-1);
+        var m = mac.split(":");
+        var puremac = m[0]+m[1]+m[2]+m[3]+m[4]+m[5];
+        var html = "";
+        var disabled = "";
+        if(mac == admin_mac)
+                disabled = "disabled";
+        for(var i=0;i<6;i++)
+                if(i<5)
+                        html += "<input type='text' maxlength='2' size='2' name='MAC"+index+"_"+i+"' value='"+m[i]+"' "+disabled+">&nbsp;:&nbsp;&nbsp; ";
+                else
+                        html += "<input type='text' maxlength='2' size='2' name='MAC"+index+"_"+i+"' value='"+m[i]+"' "+disabled+">";
+        c.innerHTML = html;
+        c = r.insertCell(-1);
+	if(mac == admin_mac)
+                //c.innerHTML = "<input class='nice radius small green button margin-rows' type='button' value='Del' disabled  name='deleteMac'>";
+		c.innerHTML = "<a href=\"#deleteMac\" class=\"nice radius small green button margin-rows\" tid=\"114\" disabled name=\"deleteMac\">"
+				+ langDictionary['114'] 
+				+ "<\/a>";
+        else
+                //c.innerHTML = "<input class='nice radius small green button margin-rows' type='button' value='Del' onclick='RemoveMac("+index+")' name='deleteMac'>";
+		c.innerHTML = "<a href=\"#deleteMac\" class=\"nice radius small green button margin-rows\" tid=\"114\" onClick='RemoveMac("
+				+ index
+				+ ")' name=\"deleteMac\">" 
+				+ langDictionary['114'] 
+				+ "<\/a>";
+}
+function RefreshMacListTable(tb_id)
+{
+        var t = document.getElementById(tb_id);
+        for(var i=t.rows.length-1;i>1;i--)
+                t.deleteRow(i);
+        for(var i=0;i<m_list.length;i++)
+        {
+                AddMacListTableRow(t, m_list.entry[i].block, m_list.entry[i].mac, i);
+        }
+        if(m_list.length >= MAX_MAC_FILTER_ENTRY){
+                document.getElementById("add_panel").style.display = "none";
+		//alert("Maximum 20 entries allowed");
+	}
+        else
+                document.getElementById("add_panel").style.display = "";
+        
+}
+
+function AddMac()
+{
+        var f = document.formFilterAdd;
+        var block = false;
+        var macstr = f.cusmac[0].value + ":" + f.cusmac[1].value + ":" + f.cusmac[2].value + ":" + f.cusmac[3].value + ":" + f.cusmac[4].value + ":" + f.cusmac[5].value;
+        //
+        var macforcgi = f.cusmac[0].value + f.cusmac[1].value + f.cusmac[2].value + f.cusmac[3].value + f.cusmac[4].value  + f.cusmac[5].value;
+        if(!IsValidMac(macstr)) {
+                location.reload();
+                return;
+        }       
+        if(!m_list.hasAdminMac)
+                m_list.AddAdminMac();
+        m_list.AddEntry(block, macstr.toUpperCase());
+        //RefreshMacListTable("mac_filter_table");
+        for(var i=0;i<6;i++)
+                f.cusmac[i].value = "";
+	document.formFilterAdd.mac.value = macforcgi;
+	//document.formFilterAdd.submit();
+	$.post("/goform/formFilter", $("#p6006031").serialize());
+        RefreshMacListTable("mac_filter_table");
+}
+$(document).ready(function(){
+	var index = "0";
+	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+        var i, j;
+        if (todEnabled != '0')
+                document.formFilterAdd.todEnabled.checked = true;  
+        
+        var mlist = "";
+        var mlist = mlist.split(" ");
+        var blocked;
+	if(mlist.length > 1)
+		m_list.hasAdminMac = true;
+/*
+	if(mlist.length == 1){
+		m_list.AddAdminMac();
+	}
+	else{
+		m_list.hasAdminMac = true;
+	}
+*/
+        for(i=0;i<mlist.length-1;i++)
+        {
+                //alert("mlist["+i+"]="+ mlist[i])
+                m_list.AddEntry(false, mlist[i]); //ç®åé½æ¯è¨­å®allowçmac block = false
+        }
+        RefreshMacListTable("mac_filter_table");
+	initDataHeader();
+});
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var str24gpwd
+var str5gpwd
+var str24genc
+var tmpssid=1;
+function initDataHeader(){
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);//ken
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str5gpwd="66caye9w"
+	}
+
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+} 
+function RemoveMac(i)
+{
+        m_list.DelEntry(i);
+        document.formFilterDel.Delindex.value=i+1;
+        //document.formFilterDel.submit();
+	$.post("/goform/formFilter", $("#p6006032").serialize());
+	if(m_list.length == 1){
+		setTimeout(function(){
+			m_list.DelEntry(0);
+			m_list.hasAdminMac = false;
+			document.formFilterDel.Delindex.value=1;
+			$.post("/goform/formFilter", $("#p6006032").serialize());
+        		RefreshMacListTable("mac_filter_table");
+		}, 500);
+	}
+	else
+        	RefreshMacListTable("mac_filter_table");
+}
+function HasDuplicatedMac()
+{
+        var f = document.formFilterAdd;
+        var m = new Array();
+        for(var i=0;i<m_list.length;i++)
+        {
+                m[i] = f["MAC"+i+"_0"].value + ":" + f["MAC"+i+"_1"].value + ":" + f["MAC"+i+"_2"].value + ":" + f["MAC"+i+"_3"].value + ":" + f["MAC"+i+"_4"].value + ":" + f["MAC"+i+"_5"].value;
+        }
+        for(var i=0;i<m_list.length;i++)
+                for(var j=0;j<m_list.length;j++)
+                        if(i != j && m[i].toUpperCase() == m[j].toUpperCase())
+                                return m[i];
+
+        return "";
+}
+function ApplyChanges()
+{
+        var param = "";
+        var f = document.formFilterAdd;
+        var sf = document.submit_form;
+        var member_list;
+        var puresubmitMAC;
+        member_list = "";
+        for(var i=0;i<m_list.length;i++)
+        {
+                var e = m_list.entry[i];
+                var old_mac = e.mac; //save the old value
+                e.block = false;
+                e.mac = f["MAC"+i+"_0"].value + ":" + f["MAC"+i+"_1"].value + ":" + f["MAC"+i+"_2"].value + ":" + f["MAC"+i+"_3"].value + ":" + f["MAC"+i+"_4"].value + ":" + f["MAC"+i+"_5"].value;
+                if(!IsValidMac(e.mac))
+                {
+                        e.mac = old_mac;//recover
+                        location.reload();
+                        return false;
+                }
+                puresubmitMAC = f["MAC"+i+"_0"].value + f["MAC"+i+"_1"].value + f["MAC"+i+"_2"].value + f["MAC"+i+"_3"].value + f["MAC"+i+"_4"].value + f["MAC"+i+"_5"].value;
+                
+                member_list +=  puresubmitMAC + " "; //add to the list
+                
+        }
+        member_list = member_list.substring(0, member_list.length-1);
+        var dmac = HasDuplicatedMac();
+        if(dmac != "")
+        {
+                alert(langDictionary[112] +" (" + dmac + ")");
+                location.reload();
+                return false;
+        }
+        document.formMacFilterApply.submitMAC.value = member_list;
+        return true;
+}
+function goToWeb()
+{
+        if (document.formFilterAdd.enabled.checked==true)
+        {
+                document.formFilterEnabled.enabled.value="ON";
+                document.formFilterEnabled.admin_mac_addr.value = pure_admin_mac;
+                //if (macEntryNum == 0) alert(showText(EnterMACWhenEnableMACFiltering));
+        }
+	$.post("/goform/formFilter", $("#p6006033").serialize());
+}
+
+function evaltF()
+{       
+        if(!ApplyChanges())
+                return false;
+	$.post("/goform/formFilter", $("#p6006034").serialize());
+        SubmitDelay(15);
+
+}
+
+</script>
+
+<!-- / .lock -->
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+
+<div class="container top-pane hide-on-phones">
+        <div class="row">
+                <div class="twelve columns">
+                        <a href="000-dashboard.asp" tid="gtBackToDashboard"><script>dwt('gtBackToDashboard');</script></a>
+                        <ul class="sub-nav hide-on-phones" id="top_sub_nav">
+                                <li >
+                                <a href="fw_main.asp" ><script>dwt('23');</script></a>
+                                </li>
+                                <li>
+                                <a href="fw_port.asp" ><script>dwt('24');</script></a>
+                                </li>
+                                <li class="current">
+                                <a href="fw_mac.asp" ><script>dwt('26');</script></a>
+                                </li>
+                                <li >
+                                <a href="fw_dmz.asp" ><script>dwt('27');</script></a>
+                                </li>
+                                <li>
+                                <a href="ddns.asp" ><script>dwt('41');</script></a>
+                                </li>
+                                <li>
+                                <a href="fw_ping.asp" ><script>dwt('28');</script></a>
+                                </li>
+                                <li>
+                                <a href="log.asp" ><script>dwt('29');</script></a>
+                                </li>
+                        </ul>
+                </div>
+        </div>
+</div>
+<div class="main container mobileNav show-on-phones">
+        <div class="row">
+                <div class="twelve columns">
+                        <a href="000-dashboard.asp" id="pUtilsaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard');</script></span></a>
+                        <h2 tid="gtMACAddressFiltering"><script>dwt('gtMACAddressFiltering');</script></h2>
+                </div>
+        </div>
+</div>
+
+    <div class="main container">
+        <div class="row">
+            <div class="eight columns">
+        <div class="row page-title hide-on-phones">
+                <h3 tid="gtMACAddressFiltering"><script>dwt('gtMACAddressFiltering');</script></h3>
+        </div>
+                <form class="nice" name="formFilterAdd" method="post" action="" target="OUTfrm" id="p6006031">
+                            <p class="drop-ip">
+                                <label class="has-more" style="display:inline-block;">
+                                    <input type="checkbox" name="enabled" value="ON"  onClick="goToWeb()">&nbsp;&nbsp; <b><span tid="106"><script>dwt('106');</script></span></b>
+                                </label>
+                            </p>
+                            <p class="drop-ip">
+                                <label class="has-more"><b><span tid="107"><script>dwt('107');</script></span></b>
+                                </label>
+                                <div id="div_tb">
+                                    <table border=0 id="mac_filter_table" class="minimal nofirst" width="550">
+                                        <thead>
+                                            <tr>
+                                                <th>&nbsp;</th>
+                                                <th><b><span tid="110"><script>dwt('110');</script></span></b></th>
+                                                <th>&nbsp;</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr id="add_panel" >
+                                                <td>&nbsp;</td>
+                                                <td align="center"><span>
+						<input type="hidden"name="cusmod"value="0">
+						<input value=""maxlength="2"size="2"name="cusmac">&nbsp;:&nbsp;&nbsp;
+						<input value=""maxlength="2"size="2"name="cusmac">&nbsp;:&nbsp;&nbsp;
+						<input value=""maxlength="2"size="2"name="cusmac">&nbsp;:&nbsp;&nbsp;
+						<input value=""maxlength="2"size="2"name="cusmac">&nbsp;:&nbsp;&nbsp;
+						<input value=""maxlength="2"size="2"name="cusmac">&nbsp;:&nbsp;&nbsp;
+						<input value=""maxlength="2"size="2"name="cusmac"></span> 
+                                                </td>
+                                                <td align="center"> <a href="#add" style="{width:120px;}" class="nice radius small green button margin-rows" tid="113" onClick="AddMac()" id="btnadd"><script>dwt('113');</script></a>
+						 <!--input type="button" class="nice radius small green button margin-rows" tid="113" onClick="AddMac()" id="btnadd" value="Add"></a--> 
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+			<input type="hidden" value="Add" name="addFilterMac">
+			<input type="hidden" name="adminmac0">
+			<input type="hidden" name="adminmac1">
+			<input type="hidden" name="adminmac2">
+			<input type="hidden" name="adminmac3">
+			<input type="hidden" name="adminmac4">
+			<input type="hidden" name="adminmac5">
+			<input type="hidden" name="filter_macmode">
+			<input type="hidden" name="filter_maclist">
+			<input type="hidden" name="mac">
+			<input type="hidden" name="admin_mac_addr">
+			</form>
+			<form action=/goform/formFilter method=POST name="formMacFilterApply" id="p6006034">
+                    <br><a href="#save" class="nice radius medium green button" tid="49" onClick="return evaltF()" id="btnapply"><script>dwt('49');</script></a>
+			<input type="hidden" name="submitMAC" >
+			<input type="hidden" name="applyAllFilterMac" value="1">
+			<input type="hidden" name="isApply" value="1">
+                </form>
+		<form action=/goform/formFilter method=POST name="formFilterEnabled" id="p6006033">
+		        <input type="hidden" value="Enable" name="addFilterMac">
+		        <input type="hidden" value="" name="enabled">
+		        <input type="hidden" value="" name="admin_mac_addr">
+		        <input type="hidden" value="/fw_mac.asp" name="submit-url">
+		</form>
+
+		<form action=/goform/formFilter method=POST name="formFilterDel" id="p6006032">
+		        <input type="hidden" value="Del" name="deleteSelFilterMac">
+		        <input type="hidden" name="Delindex">
+		        <input type="hidden" value="/fw_mac.asp" name="submit-url">
+		</form>
+
+            </div>
+<div class="sidebar four columns">
+<div>
+<h6 tid="26" class="tpad30"><script>dwt('26')</script></h6>
+<p><span tid="105"><script>dwt('105')</script></span><span class="nub"></span></p>
+</div>
+</div>
+        </div>
+    </div>
+<div id="p800" class="large reveal-modal">
+        <h1 tid="p800t001"><script>dwt('p800t001');</script>&hellip;</h1>
+        <p class="lead" tid="p800t002" id="submit_run"><script>dwt('p800t002');</script></p>
+        <p class="lead hide" tid="2053" id="submit_ok"><script>dwt('2053');</script></p>
+        <p class="lead hide" tid="422" id="submit_rsok"><script>dwt('422');</script></p>
+        <p class="lead hide" tid="2054" id="submit_fmwok"><script>dwt('2054');</script></p>
+	<div class="installation">
+		<span class="progress" id="p800Progress"></span>
+	</div>
+</div>
+<div id="p801" class="large reveal-modal">
+        <h1 tid="gtReconnectingHell"><script>dwt('gtReconnectingHell');</script></h1>
+        <p class="waiting"><img width="28" src="images/loading.gif"><span tid="p801t002"><script>dwt('p801t002');</script></span></p>
+</div>
+<div id="bg"></div>
+<!-- Dashboard Footer -->
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<!-- container -->
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>

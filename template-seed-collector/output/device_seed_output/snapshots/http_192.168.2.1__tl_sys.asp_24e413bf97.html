@@ -1,0 +1,1222 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	  <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+	<title tid="gtDashTitle">Belkin router dashboard</title>
+	<link rel="icon" href="images/favicon/favicon.ico">
+	<!-- For third-generation iPad with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+	<!-- For iPhone with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+	<!-- For first- and second-generation iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+	<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+	<link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+	<link rel="stylesheet" href="stylesheets/app.css">
+	<!--[if lt IE 9]>
+		<link rel="stylesheet" href="stylesheets/ie.css">
+	<![endif]-->
+</head>
+<body style="min-width:550px">
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<script>
+var ts = new Date().getTime();
+var init_value=0;
+$(document).ready(function(){
+	var index = "0";
+	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+	//var remoteIP="0.0.0.0";
+	var f=document.tF;
+	var t1,t2,t3;
+	var i;
+	var ntpserver1='';
+	var ntpserver2='';
+/*
+	if('' ==1)
+		f.upnp_en[0].checked=true;
+	else
+		f.upnp_en[1].checked=true;
+*/
+	f.http_user.value='';
+	setSelectedIndex(f.ntp_tzone, "46");
+	
+	if(2 == 3){
+		$("#ap_block").hide();
+	}
+
+	var remote_enable='0'
+	if(remote_enable == 1)
+		$('input[name="rm_en"]')[0].checked = true
+	else
+		$('input[name="rm_en"]')[1].checked = true
+	//EnableDisableIPTextbox();
+	if('0' ==1)
+		f.b1.checked=true;
+	if('0' == '1')
+		f.checkremote.checked=true;
+	else
+		f.checkremote.checked=false;
+	EnableRemote();
+	//var remote_ip='';
+	var remote_ip='0.0.0.0';
+	t1=remote_ip.indexOf('.');
+	t2=remote_ip.indexOf('.',t1+1);
+	t3=remote_ip.indexOf('.',t2+1);
+	if(remote_ip=='' && f.checkremote.checked==true )
+	{
+		for(i=0 ; i<4 ; i++)
+			f.rm_ip[i].disabled=true;
+	}
+	else
+	{
+		f.rm_ip[0].value=remote_ip.substring(0,t1);
+		f.rm_ip[1].value=remote_ip.substring(t1+1,t2);
+		f.rm_ip[2].value=remote_ip.substring(t2+1,t3);
+		f.rm_ip[3].value=remote_ip.substring(t3+1);
+	}
+	f.login_timeout.value='10';
+	f.timeout.value=f.login_timeout.value;
+/*
+	if('Disabled' == 'Enabled')
+	{
+		f.auto_fmw[0].checked=true;
+	}
+	else
+		f.auto_fmw[1].checked=true;
+*/
+	for(i=0; i<f.primary_ntp_server.options.length;i++){
+		if(ntpserver1==f.primary_ntp_server.options[i].value){
+			f.primary_ntp_server.options[i].selected = true;
+			break;
+		}
+	}
+	for(i=0; i<f.backup_ntp_server.options.length;i++){
+		if(ntpserver2==f.backup_ntp_server.options[i].value){
+			f.backup_ntp_server.options[i].selected = true;
+			break;
+		}
+	}
+	f.remotePort.value = "8080";
+//	if (0 == 1) f.eco_dim.checked = true
+	if (0 == 1) f.eco_dis.checked = true
+	var ECODay = 0
+	if (ECODay % 2) f.eco_day1.checked = true
+	if (parseInt(ECODay / 2) % 2) f.eco_day2.checked = true
+	if (parseInt(ECODay / 4) % 2) f.eco_day3.checked = true
+	if (parseInt(ECODay / 8) % 2) f.eco_day4.checked = true
+	if (parseInt(ECODay / 16) % 2) f.eco_day5.checked = true
+	if (parseInt(ECODay / 32) % 2) f.eco_day6.checked = true
+	if (parseInt(ECODay / 64) % 2) f.eco_day7.checked = true
+	f.eco_sta_hour.selectedIndex = 0
+	f.eco_end_hour.selectedIndex = 0
+	initDataHeader();
+	init_value=1;
+});
+var ssid="belkin.6d1"
+var ssid5g="belkin.6d1.media"
+var str24gpwd
+var str5gpwd
+var str24genc
+var tmpssid=1;
+function initDataHeader(){
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	$("#dhToggleBand").html(langDictionary["dhToggleBand"]);//ken
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else{
+		str5gpwd="66caye9w"
+	}
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			str24gpwd=TexttoEncry(str24gpwd)
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+		else{
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+		}
+	})
+	StopBGfunction = self.setInterval("ChkinitConnectType()", 5000);
+}
+function setSelectedIndex(field, value){
+	field.selectedIndex = 4 ;
+	for(i=0 ;i < field.options.length ; i++){
+		if(field.options[i].value == value){
+			field.options[i].selected = true;
+			break;
+		}
+	}
+}
+var time_str_array= new Array("12:00 AM","12:30 AM","01:00 AM","01:30 AM","02:00 AM","02:30 AM","03:00 AM","03:30 AM","04:00 AM","04:30 AM","05:00 AM","05:30 AM","06:00 AM","06:30 AM","07:00 AM","07:30 AM","08:00 AM","08:30 AM","09:00 AM","09:30 AM","10:00 AM","10:30 AM","11:00 AM","11:30 AM","12:00 PM","12:30 PM","01:00 PM","01:30 PM","02:00 PM","02:30 PM","03:00 PM","03:30 PM","04:00 PM","04:30 PM","05:00 PM","05:30 PM","06:00 PM","06:30 PM","07:00 PM","07:30 PM","08:00 PM","08:30 PM","09:00 PM","09:30 PM","10:00 PM","10:30 PM","11:00 PM","11:30 PM");
+/*usys93='192.43.244.18-North America';
+usys94='132.163.4.102-North America';
+usys95='192.5.41.41-North America';
+usys96='192.5.41.209-North America';
+usys97='207.200.81.113-North America';
+usys98='208.184.49.9-North America';
+usys99='129.132.2.21-Europe';
+usys100='130.149.17.8-Europe';
+usys101='137.189.8.174-Asia Pacific';
+usys102='128.250.36.3-Austrlia & NZ';
+usys103='130.123.2.99-Austrlia & NZ';*/
+var time_zone0=translate('2300');//"(GMT-12:00) Eniwetok, Kwajalein";
+var time_zone1=translate('2301');//"(GMT-11:00) Midway Island, Samoa";
+var time_zone2=translate('2302');//"(GMT-10:00) Hawaii";
+var time_zone3=translate('2303');//"(GMT-09:00) Alaska";
+var time_zone4=translate('2304');//"(GMT-08:00) Pacific Time (US & Canada), Tijuana";
+var time_zone5=translate('2305');//"(GMT-07:00) Arizona";
+var time_zone6=translate('2306');//"(GMT-07:00) Mountain Time (US & Canada)";
+var time_zone7=translate('2307');//"(GMT-06:00) Central Time (US & Canada)";
+var time_zone8=translate('2308');//"(GMT-06:00) Mexico City, Tegucigalpa";
+var time_zone9=translate('2309');//"(GMT-06:00) Saskatchewan";
+var time_zone10=translate('2310');//"(GMT-05:00) Bogota, Lima, Quito";
+var time_zone11=translate('2311');//"(GMT-05:00) Eastern Time (US & Canada)";
+var time_zone12=translate('2312');//"(GMT-05:00) Indiana (East)";
+var time_zone13=translate('2313');//"(GMT-04:00) Atlantic Time (Canada)";
+var time_zone14=translate('2314');//"(GMT-04:00) Caracas, La Paz";
+var time_zone15=translate('2315');//"(GMT-04:00) Santiago";
+var time_zone16=translate('2316');//"(GMT-03:30) Newfoundland";
+var time_zone17=translate('2317');//"(GMT-03:00) Brasilia";
+var time_zone18=translate('2318');//"(GMT-03:00) Buenos Aires, Georgetown";
+var time_zone19=translate('2319');//"(GMT-02:00) Mid-Atlantic";
+var time_zone20=translate('2320');//"(GMT-01:00) Azores, Cape Verde Is.";
+var time_zone21=translate('2321');//"(GMT) Casablanca, Monrovia";
+var time_zone22=translate('2322');//"(GMT) Greenwich Mean Time: Edinburgh, Lisbon, London";
+var time_zone23=translate('2323');//"(GMT+01:00) Amsterdam, Berlin, Bern, Rome, Vienna";
+var time_zone24=translate('2324');//"(GMT+01:00) Belgrade, Budapest, Ljubljana, Prague";
+var time_zone25=translate('2325');//"(GMT+01:00) Brussels, Copenhagen, Madrid, Paris";
+var time_zone26=translate('2326');//"(GMT+01:00) Sarajevo, Skopje, Sofija, Warsaw";
+var time_zone27=translate('2327');//"(GMT+02:00) Athens, Istanbul, Minsk";
+var time_zone28=translate('2328');//"(GMT+02:00) Bucharest";
+var time_zone29=translate('2329');//"(GMT+02:00) Cairo";
+var time_zone30=translate('2330');//"(GMT+02:00) Harare, Pretoria";
+var time_zone31=translate('2331');//"(GMT+02:00) Helsinki, Riga, Tallinn";
+var time_zone32=translate('2332');//"(GMT+02:00) Israel";
+var time_zone33=translate('2333');//"(GMT+03:00) Baghdad, Kuwait, Riyadh";
+var time_zone34=translate('2334');//"(GMT+03:00) Moscow, St. Petersburg, Volgograd";
+var time_zone35=translate('2335');//"(GMT+03:00) Nairobi";
+var time_zone36=translate('2336');//"(GMT+03:30) Tehran";
+var time_zone37=translate('2337');//"(GMT+04:00) Abu Dhabi, Muscat";
+var time_zone38=translate('2338');//"(GMT+04:00) Baku, Tbilisi";
+var time_zone39=translate('2339');//"(GMT+04:30) Kabul";
+var time_zone40=translate('2340');//"(GMT+05:00) Ekaterinburg";
+var time_zone41=translate('2341');//"(GMT+05:00) Islamabad, Karachi, Tashkent";
+var time_zone42=translate('2342');//"(GMT+05:30) Bombay, Calcutta, Madras, New Delhi";
+var time_zone43=translate('2343');//"(GMT+06:00) Almaty, Dhaka";
+var time_zone44=translate('2344');//"(GMT+06:00) Colombo";
+var time_zone45=translate('2345');//"(GMT+07:00) Bangkok, Hanoi, Jakarta";
+var time_zone46=translate('2346');//"(GMT+08:00) Beijing, Chongqing, Hong Kong";
+var time_zone47=translate('2347');//"(GMT+08:00) Perth";
+var time_zone48=translate('2348');//"(GMT+08:00) Singapore";
+var time_zone49=translate('2349');//"(GMT+08:00) Taipei";
+var time_zone50=translate('2350');//"(GMT+09:00) Osaka, Sapporo, Tokyo";
+var time_zone51=translate('2351');//"(GMT+09:00) Seoul";
+var time_zone52=translate('2352');//"(GMT+09:00) Yakutsk";
+var time_zone53=translate('2353');//"(GMT+09:30) Adelaide";
+var time_zone54=translate('2354');//"(GMT+09:30) Darwin";
+var time_zone55=translate('2355');//"(GMT+10:00) Brisbane";
+var time_zone56=translate('2356');//"(GMT+10:00) Canberra, Melbourne, Sydney";
+var time_zone57=translate('2357');//"(GMT+10:00) Guam, Port Moresby";
+var time_zone58=translate('2358');//"(GMT+10:00) Hobart";
+//var time_zone59=translate('2359');//"(GMT+10:00) Vladivostok";
+//var time_zone60=translate('2360');//"(GMT+11:00) Magadan, Solomon Is., New Caledonia";
+//var time_zone61=translate('2361');//"(GMT+12:00) Auckland, Wllington";
+var ntp_zone_index=46;
+function ntp_entry(name, value) {
+        this.name = name ;
+        this.value = value ;
+}
+var ntp_zone_array=new Array(59);
+ntp_zone_array[0]=new ntp_entry(time_zone0,"12 1");
+ntp_zone_array[1]=new ntp_entry(time_zone1,"11 1");
+ntp_zone_array[2]=new ntp_entry(time_zone2, "10 1");
+ntp_zone_array[3]=new ntp_entry(time_zone3, "9 1");
+ntp_zone_array[4]=new ntp_entry(time_zone4, "8 1");
+ntp_zone_array[5]=new ntp_entry(time_zone5, "7 1");
+ntp_zone_array[6]=new ntp_entry(time_zone6, "7 2");
+ntp_zone_array[7]=new ntp_entry(time_zone7, "6 1");
+ntp_zone_array[8]=new ntp_entry(time_zone8, "6 2");
+ntp_zone_array[9]=new ntp_entry(time_zone9, "6 3");
+ntp_zone_array[10]=new ntp_entry(time_zone10, "6 4");
+ntp_zone_array[11]=new ntp_entry(time_zone11, "5 1");
+ntp_zone_array[12]=new ntp_entry(time_zone12, "5 2");
+ntp_zone_array[13]=new ntp_entry(time_zone13, "5 3");
+ntp_zone_array[14]=new ntp_entry(time_zone14, "4 1");
+ntp_zone_array[15]=new ntp_entry(time_zone15, "4 2");
+ntp_zone_array[16]=new ntp_entry(time_zone16, "4 3");
+ntp_zone_array[17]=new ntp_entry(time_zone17, "3 1");
+ntp_zone_array[18]=new ntp_entry(time_zone18, "3 2");
+ntp_zone_array[19]=new ntp_entry(time_zone19, "3 3");
+ntp_zone_array[20]=new ntp_entry(time_zone20, "2 1");
+ntp_zone_array[21]=new ntp_entry(time_zone21, "1 1");
+ntp_zone_array[22]=new ntp_entry(time_zone22, "0 1");
+ntp_zone_array[23]=new ntp_entry(time_zone23, "0 2");
+ntp_zone_array[24]=new ntp_entry(time_zone24, "0 3");
+ntp_zone_array[25]=new ntp_entry(time_zone25, "-1 1");
+ntp_zone_array[26]=new ntp_entry(time_zone26, "-1 2");
+ntp_zone_array[27]=new ntp_entry(time_zone27, "-1 3");
+ntp_zone_array[28]=new ntp_entry(time_zone28, "-1 4");
+ntp_zone_array[29]=new ntp_entry(time_zone29, "-1 5");
+ntp_zone_array[30]=new ntp_entry(time_zone30, "-1 6");
+ntp_zone_array[31]=new ntp_entry(time_zone31, "-2 1");
+ntp_zone_array[32]=new ntp_entry(time_zone32, "-2 2");
+ntp_zone_array[33]=new ntp_entry(time_zone33, "-2 3");
+ntp_zone_array[34]=new ntp_entry(time_zone34, "-2 4");
+ntp_zone_array[35]=new ntp_entry(time_zone35, "-2 5");
+ntp_zone_array[36]=new ntp_entry(time_zone36, "-2 6");
+ntp_zone_array[37]=new ntp_entry(time_zone37, "-3 1");
+ntp_zone_array[38]=new ntp_entry(time_zone38, "-3 2");
+ntp_zone_array[39]=new ntp_entry(time_zone39, "-3 3");
+ntp_zone_array[40]=new ntp_entry(time_zone40, "-4 1");
+ntp_zone_array[41]=new ntp_entry(time_zone41, "-4 2");
+ntp_zone_array[42]=new ntp_entry(time_zone42, "-5 1");
+ntp_zone_array[43]=new ntp_entry(time_zone43, "-5 2");
+ntp_zone_array[44]=new ntp_entry(time_zone44, "-6 1");
+ntp_zone_array[45]=new ntp_entry(time_zone45, "-7 1");
+ntp_zone_array[46]=new ntp_entry(time_zone46, "-8 1");
+ntp_zone_array[47]=new ntp_entry(time_zone47, "-8 2");
+ntp_zone_array[48]=new ntp_entry(time_zone48, "-9 1");
+ntp_zone_array[49]=new ntp_entry(time_zone49, "-9 2");
+ntp_zone_array[50]=new ntp_entry(time_zone50, "-9 3");
+ntp_zone_array[51]=new ntp_entry(time_zone51, "-10 1");
+ntp_zone_array[52]=new ntp_entry(time_zone52, "-10 2");
+ntp_zone_array[53]=new ntp_entry(time_zone53, "-10 3");
+ntp_zone_array[54]=new ntp_entry(time_zone54, "-10 4");
+ntp_zone_array[55]=new ntp_entry(time_zone55, "-11 1");
+ntp_zone_array[56]=new ntp_entry(time_zone56, "-12 1");
+ntp_zone_array[57]=new ntp_entry(time_zone57, "-12 2");
+ntp_zone_array[58]=new ntp_entry(time_zone58, "-13 1");
+function funClock() {
+	if (!document.layers && !document.all && !document.getElementById)
+		return;
+	var runTime = new Date();
+	var hours = document.tF.hour.value;
+	var minutes = document.tF.min.value;
+	var seconds = document.tF.sec.value;
+	var dn = "AM";
+	if (hours >= 12) {
+		dn = "PM";
+		hours = hours - 12;
+	}
+	if (seconds == 0)
+	{
+		minutes++;
+		document.tF.min.value++;
+		if(minutes ==60)
+		{
+			hours++;
+			document.tF.hour.value++;
+			minutes = 0;
+			document.tF.min.value = 0;
+		}
+	}
+	if (hours == 0) hours = 12;
+	if (hours == 12 && minutes==0 && seconds == 0)
+	{
+		setTimeout('document.location.href="util_system.asp";',0);
+	}
+	var temp_min=String(minutes);
+	if (minutes <= 9 && temp_min.length==1) minutes = "0" + minutes;
+	if (seconds <= 9) seconds = "0" + seconds;
+	movingtime = "<font color=red size=3><b>"+ hours + ":" + minutes + ":" + seconds + " " + dn + "</b></font>";
+	if (document.layers) {
+		document.layers.u_clock.document.write(movingtime);
+		document.layers.u_clock.document.close();
+	}
+	else if (document.all) u_clock.innerHTML = movingtime;
+	else if (document.getElementById)
+	{
+		var CL=document.getElementById("u_clock");
+		CL.innerHTML = movingtime;
+	}
+	document.tF.sec.value++;
+	if(document.tF.sec.value>59) document.tF.sec.value = 0;
+	setTimeout("funClock()", 1000)
+}
+function EnableDisableIPTextbox()
+{
+	var f=document.tF;
+	if ($('input[name="checkremote"]')[0].checked == true)
+	{
+		if(init_value == 1)
+			alert(langDictionary[628]);
+		for(i=0 ; i<4 ; i++){
+			$('input[name="rm_ip"]')[i].disabled=true;
+			f.rm_ip[i].value=0;
+		}
+	}
+	else
+	{
+		for(i=0 ; i<4 ; i++)
+			$('input[name="rm_ip"]')[i].disabled=false;
+	}
+}
+function EnableRemote(){
+	if($('input[name="rm_en"]')[0].checked == true){
+		$('input[name="checkremote"]').attr("disabled", false);
+		$('input[name="remotePort"]').attr("disabled", false);
+		EnableDisableIPTextbox();
+	}
+	else if($('input[name="rm_en"]')[1].checked == true){
+		$('input[name="checkremote"]').attr("disabled", true);
+	//	$('input[name="checkremote"]')[0].checked = true;
+		$('input[name="remotePort"]').attr("disabled", true);
+		for(i=0 ; i<4 ; i++){
+			$('input[name="rm_ip"]')[i].disabled=true;
+			$('input[name="rm_ip"]')[i].value=0;
+		}
+	}
+}
+window.onload = funClock;
+function storeData()
+{
+	var f=document.tF;
+	f.http_user.value = 'user';
+	var timeout_token=f.timeout.value;
+	if(timeout_token.length==2)
+	{
+		var a_str=timeout_token.substring(0,1);
+		if(a_str!='1' && a_str!='2' && a_str!='3' && a_str!='4' && a_str!='5'
+			&& a_str!='6' && a_str!='7' && a_str!='8' && a_str!='9' && a_str!='0')
+		{
+			alert(langDictionary[738]);
+			return false;
+		}
+		var b_str=timeout_token.substring(1,2);
+		if(b_str!='1' && b_str!='2' && b_str!='3' && b_str!='4' && b_str!='5'
+			&& b_str!='6' && b_str!='7' && b_str!='8' && b_str!='9' && b_str!='0')
+		{
+			alert(langDictionary[738]);
+			return false;
+		}
+	}
+	else
+	{
+		var a_str=timeout_token.substring(0,1);
+		if(a_str!='1' && a_str!='2' && a_str!='3' && a_str!='4' && a_str!='5'
+			&& a_str!='6' && a_str!='7' && a_str!='8' && a_str!='9' && a_str!='0')
+		{
+			alert(langDictionary[738]);
+			return false;
+		}
+	}
+	if(eval(f.timeout.value)<1 || eval(f.timeout.value)>99)
+	{
+		alert(langDictionary[738]);
+		return false;
+	}
+	f.login_timeout.value=f.timeout.value;
+	f.ntp_timezone.value=f.ntp_tzone.value;
+	f.ntp_timezone_sel.value = f.ntp_timezone.value;
+	if(f.b1.checked==true) f.ntp_dst_enabled.value='1';
+	else f.ntp_dst_enabled.value='0';
+	if(f.checkremote.checked==true) f.remote_config_ip.value='0.0.0.0';
+	else
+	{
+		f.remote_config_ip.value=f.rm_ip[0].value+'.'+f.rm_ip[1].value+'.'+f.rm_ip[2].value+'.'+f.rm_ip[3].value;
+		if(f.rm_ip[0].value=="")
+			f.remote_config_ip.value='';
+	}
+	if(f.upnp_en[0].checked==true) f.upnp_enable.value='1';
+	else f.upnp_enable.value='0';
+/*
+	if(f.auto_fmw[0].checked==true)
+		f.fw_auto_detect.value='1';
+	else
+		f.fw_auto_detect.value='0';
+*/
+	return true;
+}
+function evaltF()
+{
+	var f=document.tF;
+/*
+	if(f.backup_ntp_server.value == f.primary_ntp_server.value)
+	{
+		alert(usysntp);
+		return false;
+	}
+*/
+	if($('input[name="rm_en"]')[0].checked == true){
+		if($('input[name="checkremote"]')[0].checked == false){
+			//if(!(isBlank(f.rm_ip[0].value))||!(isBlank(f.rm_ip[1].value))||!(isBlank(f.rm_ip[2].value))||!(isBlank(f.rm_ip[3].value)))
+			//{
+				if(isNValidEndIP_1ST(f.rm_ip[0].value) || isIncludeDot(f.rm_ip[0].value)) { alert(langDictionary[1360]); return false; 	}
+				if(isNValidIP(f.rm_ip[1].value) || isIncludeDot(f.rm_ip[1].value)) { alert(langDictionary['usysipm']);return false; 	}
+				if(isNValidIP(f.rm_ip[2].value) || isIncludeDot(f.rm_ip[2].value)) { alert(langDictionary['usysipm']); return false; 	}//20130123 ken
+				if(isNValidEndIP_4TH(f.rm_ip[3].value) || isIncludeDot(f.rm_ip[3].value)) { alert(langDictionary[675]); return false; 	}
+			//}
+		}
+		if(isNValidPort(f.remotePort.value))
+		{
+			alert(langDictionary['usys92']);//20130123 ken
+			return false;
+		}
+		else if(f.remotePort.value == 80){
+			alert(langDictionary[85]);//20130123 ken
+			return false;
+		}
+		else if(f.checkremote.checked == true || !(isBlank(f.rm_ip[0].value)))
+		{
+			var portRange = "";
+			var remotePort = f.remotePort.value;
+			v0 = 0;
+			v1 = portRange.indexOf('-');
+			while(v1 != -1)
+			{
+				v2 = portRange.indexOf(' ', v1 + 1);
+				if(parseInt(remotePort) >= parseInt(portRange.substring(v0, v1))
+					&& parseInt(remotePort) <= parseInt(portRange.substring(v1 + 1, v2)))
+				{
+					alert(langDictionary['fvrm']);
+					return false;
+				}
+				if(v2 == portRange.length - 1)
+					break;
+				v0 = v2 + 1;
+				v1 = portRange.indexOf('-', v2 + 1);
+			}
+		}
+	}
+	f.eco_day.value = 0
+	if (f.eco_day1.checked == true) f.eco_day.value = parseInt(f.eco_day.value) + 1
+	if (f.eco_day2.checked == true) f.eco_day.value = parseInt(f.eco_day.value) + 2
+	if (f.eco_day3.checked == true) f.eco_day.value = parseInt(f.eco_day.value) + 4
+	if (f.eco_day4.checked == true) f.eco_day.value = parseInt(f.eco_day.value) + 8
+	if (f.eco_day5.checked == true) f.eco_day.value = parseInt(f.eco_day.value) + 16
+	if (f.eco_day6.checked == true) f.eco_day.value = parseInt(f.eco_day.value) + 32
+	if (f.eco_day7.checked == true) f.eco_day.value = parseInt(f.eco_day.value) + 64
+
+	if (f.eco_dis.checked == true)
+		f.eco_dis_value.value = 1
+	else
+		f.eco_dis_value.value = 0
+
+	if(!(isBlank(f.userOldPswd.value)
+		&& isBlank(f.sysPasswd.value)
+		&& isBlank(f.sysConfirmPasswd.value)))
+	{
+		if(!validVisibleStr(f.userOldPswd.value))
+		{
+			f.userOldPswd.focus();
+			f.userOldPswd.select();
+			alert(langDictionary[623]);
+			return false;
+		}
+		if(!validVisibleStr(f.sysPasswd.value))
+		{
+			f.sysPasswd.focus();
+			f.sysPasswd.select();
+			alert(langDictionary[623]);
+			return false;
+		}
+	        $.post("/goform/formCheckUserPassword", {
+			NoCache: Math.floor(Math.random() * 10000),
+			userpwd: base64encode(f.userOldPswd.value)
+		} ,function(data){
+			if(data == 2){ //admin password not match
+				f.userOldPswd.focus();
+				f.userOldPswd.select();
+				alert(langDictionary[623]);
+				return false;
+			}
+			else if(f.sysPasswd.value != f.sysConfirmPasswd.value){ //confirm password not match
+				f.sysConfirmPasswd.focus();
+				f.sysConfirmPasswd.select();
+				alert(langDictionary[624]);
+				return false;
+			}
+			else if(data == 0 && f.sysPasswd.value == f.sysConfirmPasswd.value){ //password are match
+				if((f.sysPasswd.value.length < 3 || f.sysPasswd.value.length > 12)
+					&& f.sysPasswd.value != "")
+				{
+					f.sysPasswd.focus();
+					f.sysPasswd.select();
+					alert(langDictionary[626]);
+					return false;
+				}
+				f.sysPasswd2.value = base64encode(f.sysPasswd.value)
+				if(storeData()==false)return false;
+				$.post("/goform/formSetSystemSettings", $("#p600706").serialize());
+			        SubmitDelay(15);
+				return true;
+				
+			}
+		},"html");
+	}
+	else{
+		if(storeData()==false)return false;
+		$.post("/goform/formSetSystemSettings", $("#p600706").serialize());
+		SubmitDelay(15);
+		return true;
+	}
+}
+</script>
+<!-- / .lock -->
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+<div class="container top-pane hide-on-phones">
+        <div class="row">
+                <div class="twelve columns">
+                       	<a href="000-dashboard.asp" tid="gtBackToDashboard"><script>dwt('gtBackToDashboard');</script></a> 
+                        <ul class="sub-nav hide-on-phones" id="top_sub_nav">
+                                <li>
+                                <a href="tl_sys_r.asp" ><script>dwt('32');</script></a>
+                                </li>
+                                <li>
+                                <a href="tl_save_restore.asp" ><script>dwt('gtSaveRestore');</script></a>
+                                </li>
+                                <li>
+                                <a href="2300-FWUpdate.asp" ><script>dwt('37');</script></a>
+                                </li>
+                                <li class="current">
+                                <a href="tl_sys.asp" ><script>dwt('38');</script></a>
+                                </li>
+                                <li>
+                                <a href="tl_health.asp" ><script>dwt('39');</script></a>
+                                </li>
+								<li><a href="h500-Reg.asp" id="navReg" tid="gtRegistration"><script>dwt('gtRegistration')</script></a></li>
+                                <li>
+                                <a href="opt_sw.asp" ><script>dwt('1790');</script></a>
+                                </li>
+                        </ul>
+                </div>
+        </div>
+</div>
+<div class="main container mobileNav show-on-phones">
+        <div class="row">
+                <div class="twelve columns">
+                        <a href="000-dashboard.asp" id="pUtilsaDashboard"><span tid="gtDashboard"><script>dwt('gtDashboard');</script></span></a>
+                        <h2 tid="gtSystemSettings"><script>dwt('gtSystemSettings');</script></h2>
+                </div>
+        </div>
+</div>
+
+    <div class="main container">
+        <div class="row">
+            <div class="eight columns">
+        <div class="row page-title hide-on-phones">
+                <h3 tid="gtSystemSettings"><script>dwt('gtSystemSettings');</script></h3>
+        </div>
+                <form class="nice" name="tF" method="post" action="" target="OUTfrm" id="p600706">
+		<INPUT type=hidden name=http_user value="user" >
+		<INPUT type=hidden name=sysPasswd2 >
+		<INPUT type=hidden value=10 name=login_timeout>
+		<INPUT type=hidden name=ntp_timezone>
+		<INPUT type=hidden name=ntp_timezone_sel>
+		<INPUT type=hidden name=remote_config_ip>
+		<INPUT type=hidden value=1 name=ntp_dst_enabled>
+		<INPUT type=hidden value=0 name=upnp_enable>
+		<INPUT type=hidden value=0 name=fw_auto_detect>
+		<INPUT type=hidden value=0 name=ECO_led_enable>
+		<INPUT type=hidden value=0 name=ECO_wlan_enable>
+		<INPUT type=hidden value=0 name=year><INPUT type=hidden value=0 name=mon>
+		<INPUT type=hidden value=0 name=day><INPUT type=hidden value=0 name=hour>
+		<INPUT type=hidden value=0 name=min><INPUT type=hidden value=0 name=sec>
+                            <p class="drop-ip">
+                                <table class="normal" width="40%">
+                                    <tr>
+                                        <td colspan=2> <b><font tid="541"><script>dwt('541');</script></font></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"> <font tid="542"><script>dwt('542');</script></font>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td width="15%">&nbsp;-&nbsp;<b><span><font tid="543"><script>dwt('543');</script></font></span></b>
+                                        </td>
+                                        <td width="25%">
+                                            <input type="password" name="userOldPswd" class="input-text csmall" maxlength="63" size="15">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;-&nbsp;<b><span><font tid="544"><script>dwt('544');</script></font></span></b>
+                                        </td>
+                                        <td>
+                                            <input type="password" name="sysPasswd" class="input-text csmall" maxlength="63" size="15">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;-&nbsp;<b><span><font tid="545"><script>dwt('545');</script></font></span></b>
+                                        </td>
+                                        <td>
+                                            <input type="password" name="sysConfirmPasswd" class="input-text csmall" maxlength="63" size="15">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;-&nbsp; <b><span><font tid="546"><script>dwt('546');</script></font></span></b>
+                                        </td>
+                                        <td>
+                                            <input type="text" name="timeout" class="input-text xsmall" maxlength="2" size="4" value=""><span class=plaintext><font id="547"></font> </span>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p>
+			<div id="ap_block">
+				<a name="timezone"></a>
+                            <p class="drop-ip" id="tr_timezone">
+                                <table class="normal" width="70%">
+                                    <tr>
+                                        <td colspan=2>
+                                            <hr color=#666666 noshade size=1>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=2> <b><font tid="548"><script>dwt('548');</script></font></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="drop-ip"><b><font color="red" size="3" id="u_month_name">&nbsp;</font>&nbsp;</b>
+                                            <font color="red" size="3"><b>
+						<script type=text/javascript>
+						document.tF.year.value='2026';
+						document.tF.mon.value='6';
+						document.tF.day.value='3';
+						document.tF.hour.value='6';
+						document.tF.min.value='6';
+						document.tF.sec.value='10';
+						var d=new Date()
+						var monthname=new Array("January","February","March","April","May","June","July","August","September","October","November","December")
+					//	if (language=='French') {
+					//		document.write(document.tF.day.value+" ")
+					//		document.write(monthname[document.tF.mon.value-1] + ", ")
+					//	}
+					//	else {
+							document.write(monthname[document.tF.mon.value-1] + " ")
+							document.write(document.tF.day.value+", ")
+					//		document.write(document.tF.day.value +Mday+ ", ")
+					//	}
+						document.write(document.tF.year.value)
+						</script>
+						<span id="u_clock" style="position:relative"></span></b></font>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=2><font tid=550><script>dwt('550');</script></font>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="drop-ip">&nbsp;-&nbsp;<b><span><font tid="551"><script>dwt('551');</script></font></span></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="drop-ip">
+                                            <select size="1" name="ntp_tzone">
+					<script type="text/javascript">
+					var i;
+					for(i=0;i<ntp_zone_array.length;i++){
+						if (i == ntp_zone_index)
+							//document.write('<option value="',ntp_zone_array[i].value,'" selected>',ntp_zone_array[i].name,'</option>');
+							document.write('<option value="',i,'" selected>',ntp_zone_array[i].name,'</option>');
+						else
+							//document.write('<option value="',ntp_zone_array[i].value,'">',ntp_zone_array[i].name,'</option>');
+							document.write('<option value="',i,'">',ntp_zone_array[i].name,'</option>');
+					}
+					</script>
+						</select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;-&nbsp;<b><span><font tid="606"><script>dwt('606');</script></font></span></b>
+                                        </td>
+                                        <td>
+                                            <input type=checkbox value="1" name="b1"><font tid=607><script>dwt('607');</script></font>
+                                        </td>
+                                    </tr>
+                                    <tr style="display:none">
+                                        <td>&nbsp;-&nbsp;<b><span><font tid="629"><script>dwt('629');</script></font></span></b>
+                                        </td>
+                                        <td>
+                                            <select size="1" name="primary_ntp_server">
+						<script type="text/javascript">
+						document.write('<OPTION value=192.43.244.18 >'+'192.43.244.18-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=132.163.4.102>'+'132.163.4.102-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=192.5.41.41>'+'192.5.41.41-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=192.5.41.209>'+'192.5.41.209-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=207.200.81.113>'+'207.200.81.113-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=208.184.49.9>'+'208.184.49.9-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=129.132.2.21>'+'129.132.2.21-'+translate('Europe')+'</OPTION>');
+						document.write('<OPTION value=130.149.17.8>'+'130.149.17.8-'+translate('Europe')+'</OPTION>');
+						document.write('<OPTION value=128.250.36.3>'+'128.250.36.3-'+translate('Australia')+'</OPTION>');
+						document.write('<OPTION value=130.123.2.99>'+'130.123.2.99-'+translate('Australia')+'</OPTION>');
+						document.write('<OPTION value=129.132.2.21>'+'129.132.2.21-'+translate('AsiaPacific')+'</OPTION>');
+						document.write('<OPTION value=130.149.17.8>'+'130.149.17.8-'+translate('AsiaPacific')+'</OPTION>');
+						</script>
+						</select>
+                                        </td>
+                                    </tr>
+                                    <tr style="display:none">
+                                        <td>&nbsp;-&nbsp;<b><span><font tid="630"><script>dwt('630');</script></font></span></b>
+                                        </td>
+                                        <td>
+                                            <select size="1" name="backup_ntp_server">
+						<script type="text/javascript">
+						document.write('<OPTION value=192.43.244.18 >'+'192.43.244.18-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=132.163.4.102>'+'132.163.4.102-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=192.5.41.41>'+'192.5.41.41-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=192.5.41.209>'+'192.5.41.209-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=207.200.81.113>'+'207.200.81.113-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=208.184.49.9>'+'208.184.49.9-'+translate('NorthAmerica')+'</OPTION>');
+						document.write('<OPTION value=129.132.2.21>'+'129.132.2.21-'+translate('Europe')+'</OPTION>');
+						document.write('<OPTION value=130.149.17.8>'+'130.149.17.8-'+translate('Europe')+'</OPTION>');
+						document.write('<OPTION value=128.250.36.3>'+'128.250.36.3-'+translate('Australia')+'</OPTION>');
+						document.write('<OPTION value=130.123.2.99>'+'130.123.2.99-'+translate('Australia')+'</OPTION>');
+						document.write('<OPTION value=129.132.2.21>'+'129.132.2.21-'+translate('AsiaPacific')+'</OPTION>');
+						document.write('<OPTION value=130.149.17.8>'+'130.149.17.8-'+translate('AsiaPacific')+'</OPTION>');
+						</script>
+						</select>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p>
+                            <p class="drop-ip" id="tr_rm">
+                                <table class="normal" width=40%>
+                                    <tr>
+                                        <td colspan=2>
+                                            <hr color=#666666 noshade size=1>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td> <b><font tid="608"><script>dwt('608');</script></font></b>
+                                        </td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2"><b><font tid="609"><script>dwt('609');</script></font></b>&nbsp;<font tid="610"><script>dwt('610');</script></font><b><font tid="611"><script>dwt('611');</script></font></b>&nbsp;
+                                            <font tid="642"></font>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>-&nbsp;<span><b><font tid="614"><script>dwt('614');</script></font></b>
+                                            </span>
+                                        </td>
+                                        <td class="drop-ip">
+						<span class="drop-ip">
+						<input type="radio" name="rm_en" value="1" onClick="return EnableRemote()" ><font tid="374"><script>dwt('374');</script></font>
+						<input type="radio" name="rm_en" value="0" onClick="return EnableRemote()" ><font tid="375"><script>dwt('375');</script></font></span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="drop-ip">
+                                            <input type="checkbox" name="checkremote" onclick="EnableDisableIPTextbox();" value="1" NOCHECK="0" ><b><font tid="612"><script>dwt('612');</script></font></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">&nbsp;-&nbsp;<b><span><font tid="613"><script>dwt('613');</script></font></span></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="drop-ip">
+                                            <input type="text" class="input-text xsmall" maxlength="3" size="4" name="rm_ip" value="">.
+                                            <input type="text" class="input-text xsmall" maxlength="3" size="4" name="rm_ip" value="">.
+                                            <input type="text" class="input-text xsmall" maxlength="3" size="4" name="rm_ip" value="">.
+                                            <input type="text" class="input-text xsmall" maxlength="3" size="4" name="rm_ip" value="">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">&nbsp;-&nbsp;<b><span><font tid="640"><script>dwt('640');</script></font></span></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2" class="drop-ip">
+                                            <input type="text" class="input-text xsmall" maxlength="5" size="4" name="remotePort" >
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p>
+                            <p class="drop-ip">
+                                <table class="normal" width=40%>
+                                    <tr>
+                                        <td colspan=2>
+                                            <hr color=#666666 noshade size=1>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=2><b><font tid="617"><script>dwt('617');</script></font></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=2> <b><font tid="609"><script>dwt('609');</script></font></b>&nbsp;<font tid="618"><script>dwt('618');</script></font>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>-&nbsp;<b><span><font tid="619"><script>dwt('619');</script></font></span></b>
+                                        </td>
+                                        <td align=right>
+                                            <input type="radio" name="upnp_en" value="1" checked><font tid="374"><script>dwt('374');</script></font>
+                                            <input type="radio" name="upnp_en" value="0" ><font tid="375"><script>dwt('375');</script></font>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p>
+			<!--
+                            <p class="drop-ip" id="tr_autoupdate">
+                                <table class="normal" width=40%>
+                                    <tr>
+                                        <td colspan=2>
+                                            <hr color=#666666 noshade size=1>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=2><b><font tid="620"><script>dwt('620');</script></font></b>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan=2> <b><font tid="609"><script>dwt('609');</script></font></b>&nbsp;<font tid="621"><script>dwt('621');</script></font>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>&nbsp;-&nbsp;<b><span><font tid="622"><script>dwt('622');</script></font></span></b>
+                                        </td>
+                                        <td>
+                                            <input type="radio" name="auto_fmw" value="1"><font tid="374"><script>dwt('374');</script></font>
+                                            <input type="radio" name="auto_fmw" value="0"><font tid="375"><script>dwt('375');</script></font>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </p>
+			-->
+				<p class="drop-ip" id="eco_mode_fun"> </p>
+				<input type=hidden name="ecodis_conf" value="22-23">
+				<table class="normal" width="40%">
+					<tbody>
+					<tr>
+						<td colspan="5"> <hr color="#666666" noshade="" size="1"></td>
+					</tr>
+					<tr>
+						<td colspan="5" width="218" height="25"><b><font tid="2401"><script>dwt('2401');</script></font></b></td>
+					</tr>
+					<tr>
+						<td colspan="5"> <font id="2405"><script>dwt('2405');</script></font></td>
+					</tr>
+<!--
+					<tr>
+						<td width="30"></td>
+						<td colspan="2" width="218" height="25">
+							<input type="checkbox" name="eco_dim" value="">&nbsp;<font tid="2402">Dim front panel LEDs</font>
+						</td>
+					</tr>
+-->
+					<tr>
+						<td width="30"></td>
+						<td class="body" align="left" width="40%">
+							<input type="checkbox" name="eco_dis" value="1">&nbsp;<span tid="2403"><script>dwt('2403');</script></span>
+						</td>
+						<td class="drop-ip" width="120">
+						<select name="eco_sta_hour" id="eco_sta_hour" align="left">
+						<script language="javascript" type="text/javascript">
+						for(i=0;i<48;i++)
+							document.write('<option value="'+i+'">'+time_str_array[i]+'</option>')
+						</script>
+						</select>
+						</td>
+						<td class="drop-ip" width="60">
+						<script language="javascript" type="text/javascript">
+						EcoTo=translate('EcoTo');
+						  dw('&nbsp;'+EcoTo+'&nbsp;');
+						</script>
+						</td>
+						<td class="drop-ip" width="120">
+						<select name="eco_end_hour" id="eco_end_hour" align="left">
+						<script language="javascript" type="text/javascript">
+						for(i=0;i<48;i++)
+							document.write('<option value="'+i+'">'+time_str_array[i]+'</option>')
+						</script>
+						</select>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+				<table class="normal" width="40%">
+					<tbody>
+					<tr>
+						  <td width="14%" align="right" class="body">&nbsp;</td>
+						  <td width="14%" align="right" class="body">&nbsp;</td>
+						  <td class="body" align="left" tid="2370"><script>dwt('2370');</script></td>
+						  <td class="body" align="left" tid="2371"><script>dwt('2371');</script></td>
+						  <td class="body" align="left" tid="2372"><script>dwt('2372');</script></td>
+						  <td class="body" align="left" tid="2373"><script>dwt('2373');</script></td>
+						  <td class="body" align="left" tid="2374"><script>dwt('2374');</script></td>
+						  <td class="body" align="left" tid="2375"><script>dwt('2375');</script></td>
+						  <td class="body" align="left" tid="2376"><script>dwt('2376');</script></td>
+					</tr>
+					<tr>
+						  <td width="14%" align="right" class="body">&nbsp;</td>
+						  <td width="14%" align="right" class="body" tid="2404"><script>dwt('2404');</script></td>
+						  <td class="body" align="left"><input type="checkbox" name="eco_day1" value=""> </td>
+						  <td class="body" align="left"><input type="checkbox" name="eco_day2" value=""> </td>
+						  <td class="body" align="left"><input type="checkbox" name="eco_day3" value=""> </td>
+						  <td class="body" align="left"><input type="checkbox" name="eco_day4" value=""> </td>
+						  <td class="body" align="left"><input type="checkbox" name="eco_day5" value=""> </td>
+						  <td class="body" align="left"><input type="checkbox" name="eco_day6" value=""> </td>
+						  <td class="body" align="left"><input type="checkbox" name="eco_day7" value=""> </td>
+						  <td width="20%" class="body">&nbsp;</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		    <a href="#Save" class="nice radius large green button" onClick="return evaltF()" id="btnapply"><script>dwt('49');</script></a>
+                    <!--br><input type="button" value="Save" class="nice radius large green button" tid="49" onClick="return evaltF()" id="btnapply"-->
+			<input type="hidden" name="eco_day">
+			<input type="hidden" name="eco_dim_value">
+			<input type="hidden" name="eco_dis_value">
+                </form>
+            </div>
+<div class="sidebar four columns">
+<div>
+<h6 tid="htSystem" class="tpad30"><script>dwt('htSystem')</script></h6>
+<p><span tid="htSystemContent"><script>dwt('htSystemContent')</script></span><span class="nub"></span></p>
+</div>
+</div>
+        </div>
+    </div>
+<div id="p800" class="large reveal-modal">
+        <h1 tid="p800t001"><script>dwt('p800t001');</script>&hellip;</h1>
+        <p class="lead" tid="p800t002" id="submit_run"><script>dwt('p800t002');</script></p>
+        <p class="lead hide" tid="2053" id="submit_ok"><script>dwt('2053');</script></p>
+        <p class="lead hide" tid="422" id="submit_rsok"><script>dwt('422');</script></p>
+        <p class="lead hide" tid="2054" id="submit_fmwok"><script>dwt('2054');</script></p>
+	<div class="installation">
+		<span class="progress" id="p800Progress"></span>
+	</div>
+</div>
+<div id="p801" class="large reveal-modal">
+        <h1 tid="gtReconnectingHell"><script>dwt('gtReconnectingHell');</script></h1>
+        <p class="waiting"><img width="28" src="images/loading.gif"><span tid="p801t002"><script>dwt('p801t002');</script></span></p>
+</div>
+<div id="bg"></div>
+<!-- Dashboard Footer -->
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+<!-- container -->
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+		<input type="text" class="input-text" id="p1201Password" name="newpass">
+		<input type="hidden" id="p1201Password2" name="newpass2">
+		<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+		<br>
+		<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword');</script></a>
+		<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<script src="javascripts/app.js"></script>
+
+</body>
+</html>

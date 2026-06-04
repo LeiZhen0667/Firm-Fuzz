@@ -1,0 +1,1392 @@
+<!DOCTYPE html>
+<!-- Copyright BELKIN 2012 -->
+<!--[if lt IE 7]> <html class="no-js lt-ie9 lt-ie8 lt-ie7" lang="en"> <![endif]-->
+<!--[if IE 7]>	  <html class="no-js lt-ie9 lt-ie8" lang="en"> <![endif]-->
+<!--[if IE 8]>	  <html class="no-js lt-ie9" lang="en"> <![endif]-->
+<!--[if gt IE 8]><!--> <html lang="en" class="gt-ie8"> <!--<![endif]-->
+<head>
+	<meta charset="utf-8" />
+	<!-- Set the viewport width to device width for mobile -->
+	<meta name="viewport" content="width=device-width" />
+	<title tid="gtDashTitle">Belkin router dashboard</title>
+	<link rel="icon" href="images/favicon/favicon.ico">
+	<!-- For third-generation iPad with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="144x144" href="images/favicon/belkin_144.png">
+	<!-- For iPhone with high-resolution Retina display: -->
+	<link rel="apple-touch-icon-precomposed" sizes="114x114" href="images/favicon/belkin_114.png">
+	<!-- For first- and second-generation iPad: -->
+	<link rel="apple-touch-icon-precomposed" sizes="72x72" href="images/favicon/belkin_72.png">
+	<!-- For non-Retina iPhone, iPod Touch, and Android 2.1+ devices: -->
+	<link rel="apple-dertouch-icon-precomposed" href="images/favicon/belkin_57.png">
+	<link rel="stylesheet" href="stylesheets/app.css">
+	<!--[if lt IE 9]>
+		<link rel="stylesheet" href="stylesheets/ie.css">
+	<![endif]-->
+</head>
+<body>
+<!-- Included JS Files -->
+<meta http-equiv="Content-Type" content="text/html;charset=iso-8859-1" />
+<!--link rel="stylesheet" type="text/css" href="styles.css" media="all" /-->
+<script type="text/javascript" src="lang/language_en.js"></script>
+<script src="javascripts/jquery.min.js"></script>
+<script src="javascripts/app.js"></script>
+<script src="javascripts/timezone.js"></script>
+<script src="javascripts/jQueryRotateCompressed.2.2.js"></script>
+<script>
+function HTMLEnCode(str)
+{
+      var s = "";
+      if (str.length    ==    0)    return    "";
+      s = str.replace(/&/g,    "&gt;");
+      s = s.replace(/</g,        "&lt;");
+      s = s.replace(/>/g,        "&gt;");
+      s = s.replace(/    /g,        "&nbsp;");
+      s = s.replace(/\'/g,      "'");
+      s = s.replace(/\"/g,      "&quot;");
+      s = s.replace(/\n/g,      "<br>");
+      return    s;
+}
+var wanstate="Dynamic IP disconnected"
+var wanconnect="0"
+var ts = new Date().getTime();
+var tmpssid=1;
+var ssid="belkin.6d1";
+var ssid5g="belkin.6d1.media";
+var str24gpwd
+var str5gpwd
+var strguestpwd
+var str24genc
+var wiredlink="2142405848"
+var timezone = jstz.determine_timezone();
+var TZ_id=timezone.belkin_id();
+var TZ=46
+var links_block
+var FWdate="2015.01.29"
+var FW_F_date=FWdate.substring(5,7)+'/'+FWdate.substring(8,10)+'/'+FWdate.substring(0,4)
+var ap_router_mode = 2
+var parNum='0'
+var ParTbl = new Array(
+new Array())
+if(ap_router_mode == 3){
+	links_block='#linksA'
+}
+else{
+	links_block='#links'
+}
+$(document).ready(function() {
+	var index = "0";
+       	$('#dff015').get(0).selectedIndex = index;
+	$('#dff015').find('option[value="ko"]').remove();
+	$("#p1010,#p1020,#p1100,#p1200,#p1300,p1500").hide();
+	$("#dhSSID").html(HTMLEnCode(ssid));
+	var encrypt = 2
+	if (encrypt == 0){
+		str24genc=""
+		str24gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str24genc="64bit WEP"
+			str24gpwd=wepValueAll[0]
+		}
+		else{
+			str24genc="128bit WEP"
+			str24gpwd=wepValueAll[4]
+		}
+	}
+	else {
+		str24genc="WPA/WPA2-Personal (PSK)"
+		str24gpwd="66caye9w"
+	}
+	encrypt = 2
+	if (encrypt == 0){
+		str5gpwd=""
+	}
+	else if(encrypt == 1){
+		var wepValueAll = new Array("0000000000","0000000000","0000000000","0000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000","00000000000000000000000000")
+		if (0 == 1){
+			str5gpwd=wepValueAll[0]
+		}
+		else{
+			str5gpwd=wepValueAll[4]
+		}
+	}
+	else {
+		str5gpwd="66caye9w"
+	}
+	/*
+	if (3 == 2)
+		strguestpwd=""
+	else
+	*/
+		strguestpwd="eew3fc7y"
+	ChkinitConnectType();
+	$.get("getLoginStatus.asp", { NoCache: ts }, function (data) {
+		if(data == 0){
+			$("#dhPasswordObscured24").html(HTMLEnCode(TexttoEncry(str24gpwd)));
+			strguestpwd=TexttoEncry(strguestpwd)
+			$("#wan_ip").html("");
+			$("#wan_gw").html("0.0.0.0");
+			$("#wan_mac").html("00:E0:4C:81:96:C9");
+			$(lan_mac).html("00:e0:4c:81:96:c1".toUpperCase());
+			$("#fwinfo").html('1.04.34, '+FW_F_date)
+		}
+		else{
+			var checkFWversion=0;
+			$("#dhPasswordObscured24").html(HTMLEnCode(str24gpwd));
+			if (ap_router_mode == 2) {
+				var FW_Server_Alive=0
+				if(PICBlock() == 0){
+				if(FW_Server_Alive == 1){
+					$.post("/goform/formAutoFWupdate", { NoCache: Math.floor(Math.random() * 10000), action:"check_new_FW" },function(data){
+						if(data=="new_fw_ok"){
+							$("#p1100").show();
+							checkFWversion=1
+							$("#fwinfo").html('1.04.34, '+FW_F_date+' (<a href="2300-FWUpdate.asp" tid="gtFWUpdate">'+translate('gtUpdate')+'</a>)');
+						}
+						else{
+							FW_Server_Alive=0
+							specialMSG()
+							$("#fwinfo").html('1.04.34, '+FW_F_date)
+						}
+					},"text")
+					.fail(function() {
+						FW_Server_Alive=0
+						specialMSG()
+						$("#fwinfo").html('1.04.34, '+FW_F_date)
+					});
+				}
+				if(FW_Server_Alive == 0){
+					specialMSG()
+					$("#fwinfo").html('1.04.34, '+FW_F_date)
+				}
+				}
+			}
+			$("#wan_ip").html("");
+			$("#wan_gw").html("0.0.0.0");
+			$("#wan_mac").html("00:E0:4C:81:96:C9");
+			$(lan_mac).html("00:e0:4c:81:96:c1".toUpperCase());
+		}
+		$("#sgstpwd").html(strguestpwd);
+	})
+	if ((0 == 1 || 0 != 0 ) && ap_router_mode != 3) {
+		$("#pStats").show()
+		if(0 == 1)
+			$("#pStatsQoS").show()
+		else
+			$("#pStatsQoS").hide()
+		if(0 != 0)
+			$("#pStatsFilter").show()
+		else
+			$("#pStatsFilter").hide()
+	}
+	else {
+		$("#pStats").hide()
+	}
+	if (ap_router_mode == 3){
+		$("#ql600").hide();
+		$("#router_info").hide();
+		$("#ap_info").show();
+		$("#links").hide();
+		$("#linksA").show();
+		$("#links2").hide();
+		$("#linksB").hide();
+		s5gpwd='#s5gpwd_ap';
+		s24gpwd='#s24gpwd_ap';
+		lan_mac='#lan_mac_ap';
+	}
+	else{
+		$("#router_info").show();
+		$("#ap_info").hide();
+		$("#links").show();
+		$("#linksA").hide();
+		$("#linksA2").hide();
+		s5gpwd='#s5gpwd_router';
+		s24gpwd='#s24gpwd_router';
+		lan_mac='#lan_mac';
+	}
+	if (!$(links_block).is(":hidden")) {
+		$( "#expandoArrow" ).rotate(90);
+		$(links_block).slideDown();
+	}
+	var url = window.location.toString();
+	if(last_url != null){
+		setTimeout(function(){
+			showMsgMask("passwordChallenge");
+			$("#p1210Password").focus();
+		}, 200);
+	}
+	else if(url.indexOf("?") != -1){
+		var str = url.split("?")[1];
+		if(str == "remind-later")
+			$('#p1316').show();
+		else if(str == "updated")
+			$('#p1333').show();
+		else if(str != "silence")
+			$('#p1302').show();
+	}
+	else{
+		self.setInterval("ChkinitConnectType()", 5000);
+	}
+	var scanEnable = 0
+	if (scanEnable == 3) $("#pStatsFilterHigh").show()
+	else if (scanEnable == 2) $("#pStatsFilterMedium").show()
+	else if (scanEnable == 1) $("#pStatsFilterLow").show()
+	else $("#pStatsFilterNoFilter").show()
+});
+function PICBlock(){
+	var AllBlock='0'
+	var newmac='2ef0fded77f4'
+	var wDay = '3'
+	var wHour = '6'
+	var Block=0
+	if (0 == 1){
+		for (i=0;i<parNum ;i++){
+			if(newmac.toUpperCase() == ParTbl[i][1].toUpperCase() ){
+				if(ParTbl[i][5] == 1)
+					Block=1
+				else if(ParTbl[i][6] == 1){
+					if(wDay <=4){
+						if(!(wHour >= ParTbl[i][7] && (wHour < ParTbl[i][8] || ParTbl[i][8] == 0))){
+							Block=1
+						}
+					}
+					else{
+						if(!(wHour >= ParTbl[i][9] && (wHour < ParTbl[i][10] || ParTbl[i][10] == 0))){
+							Block=1
+						}
+					}
+				}
+			}
+		}
+		if(Block==1 || AllBlock==1){
+			$("#PIC_blocked").show()
+			BlockMSG=1
+		}
+		else{
+			$("#PIC_blocked").hide()
+			BlockMSG=0
+		}
+	}
+	else{
+		$("#pNoTime").show()
+		BlockMSG=1
+	}
+	return BlockMSG
+}
+/*
+Date.prototype.stdTimezoneOffset = function() {
+    var jan = new Date(this.getFullYear(), 0, 1);
+    var jul = new Date(this.getFullYear(), 6, 1);
+    return Math.max(jan.getTimezoneOffset(), jul.getTimezoneOffset());
+}
+Date.prototype.dst = function() {
+    return this.getTimezoneOffset() < this.stdTimezoneOffset();
+}
+*/
+function specialMSG(){
+	if(ap_router_mode != 3 ){
+		var sp_msg=2
+		var skip_msg=0
+		if((TZ+1) != TZ_id && skip_msg < 2){
+			$("#p1500").show();
+			$("#p1500t002").html(translate('p1500t002'));
+			$('span[tid="gtCurrTimezone"]').html(translate(TZ_id+2299))
+		}
+		else if(sp_msg <= 2 && skip_msg < 3){
+			$("#p1300").show();
+		}
+		else if(sp_msg <= 3 && skip_msg < 4){
+			$("#p1200").show();
+		}
+	}
+}
+function getUrlParam(name)
+{
+	var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+	var r = window.location.search.substr(1).match(reg);
+	if (r!=null) return unescape(r[2]); return null;
+}
+var last_url = getUrlParam("LockUrl")
+function funChgLang(targ,selObj,restore) {
+   var choice = selObj.options[selObj.selectedIndex].value;
+   document.dashboard_ChLang.langtype.value = choice;
+   document.dashboard_ChLang.submit();
+}
+</script>
+<!-- Header; INCLUDE ONLY THE RELEVANT ONE FOR THE PRODUCT AND SITUATION -->
+<!-- #include virtual="dashincludes/head_singleBandGreen.htm" -->
+<!-- #include virtual="dashincludes/head_singleBandAmber.htm" -->
+<!-- #include virtual="dashincludes/head_singleBandBlinkAmber.htm" -->
+<!-- #include virtual="dashincludes/head_dualBandGreen.htm" -->
+<div id="p601" tid="p601t001" class="ancillary" style="display:none"><strong><script>dwt('p601t001');</script></strong></div>
+<!-- #include virtual="dashincludes/head_dualBandAmber.htm" -->
+<!-- Lock/Unlock Admin Control for Mobile -->
+<!-- / .lock -->
+<div class="header gui container">
+	<div class="row">
+		<div class="nine columns">
+			<div class="title">
+				<div class="band-chooser">
+					<span class="title-options">
+						<a class="first tiny radius grey button headerButton textButton selected" id="dhToggle24" tid="dhToggle24"><script>dwt('dhToggle24')</script></a><a class="tiny grey radius button headerButton textButton" id="dhToggle5" tid="dhToggle5"><script>dwt('dhToggle5')</script></a>
+						<a class="headerButton changeSSID" href="2500-Wireless.asp" id="dhChangeSSID"><img src="../images/icon-Change_pencil.png"><span style="display:none" tid="dhChangeSSID"><script>dwt('dhChangeSSID')</script></span></a>
+						<a class="headerButton print" href="javascript:printContent('serviceCard')" id="dhPrint"><img src="../images/icon-Print_neg.png"><span style="display:none" tid="gtPrint"><script>dwt('gtPrint')</script></span></a>
+					</span>
+					<div class="right tspace7 show-on-phones">
+						<a href="#" class="admin unlocked" id="dhLockToggle"></a>
+					</div>
+				</div>
+				<div class="ssid spacer7">
+					<div class="right show-on-phones">
+						<span id="gtonffline2" class="status online"></span>
+					</div>
+					<a href="2500-Wireless.asp" id="dhSSID" tid="dhSSID24"></a>
+					<span id="gtonffline" class="status online hide-on-phones inline-block">
+						<small id="WanStatusline" class="hide-on-phones inline-block" tid="gtOnline"></small>
+					</span>
+				</div>
+				<div class="pass">
+					<span tid="dhPassLabel"><script>dwt('dhPassLabel')</script> </span><span id="dhPasswordObscured24" tid="dhPasswordObscured24"></span>
+				</div>
+			</div>
+		</div>
+		<div class="logo three columns hide-on-phones">
+			<h1 class="right"><a href="http://www.belkin.com" id="dhBelkin" tid="gtBelkin" target="_blank"><script>dwt('gtBelkin')</script></a></h1>
+			<a href="#" class="settings unlocked" id="dhLockToggle2"><span tid="gtUnlocked"><script>dwt('gtUnlocked')</script></span></a>
+		</div>
+	</div>
+</div>
+
+<div class="container troubleshoot" id="p1010" style="display:none">
+	<div class="row">
+		<div class="eight columns">
+			<div class="ancillary error" tid="p1010t001"><script>dwt('p1010t001');</script></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="content eight columns">
+			<h1 tid="p1010t002"><script>dwt('p1010t002');</script></h1>
+			<p class="lead" tid="p1010t003"><script>dwt('p1010t003');</script></p>
+			<p tid="p1010t004"><script>dwt('p1010t004');</script></p>
+			<ol>
+				<li tid="p1010t005"><script>dwt('p1010t005');</script></li>
+				<li tid="p1010t006"><script>dwt('p1010t006');</script></li>
+				<li tid="p1010t007"><script>dwt('p1010t007');</script></li>
+			</ol>
+			<br>
+			<p tid="p1010t008"><script>dwt('p1010t008');</script></p>
+			<img style="margin-bottom: 20px;background:white;padding:10px;border:1px solid #ccc;" src="images/troubleshooting/checkWires.png">
+			<div class="panel loader">
+				<h4><img class="loader" src="images/loading.gif"><strong tid="p1010t009"><script>dwt('p1010t009');</script></strong></h4><br>
+			</div>
+		</div>
+		<div class="sidebar four columns">
+			<div>
+				<h6 tid="gtWiring"><script>dwt('gtWiring');</script></h6>
+				<p tid="p1010t010"><script>dwt('p1010t010');</script><span class="nub"></span></p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container troubleshoot" id="p1020" style="display:none">
+	<div class="row">
+		<div class="eight columns">
+			<div class="ancillary warning" tid="p1020t001"><script>dwt('p1020t001');</script></div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="content eight columns">
+			<h1 tid="p1020t002"><script>dwt('p1020t002');</script></h1>
+			<p class="lead" tid="p1020t003"><script>dwt('p1020t003');</script></p>
+			<ol>
+				<li tid="p1020t004"><script>dwt('p1020t004');</script></li>
+				<li tid="p1020t005"><script>dwt('p1020t005');</script></li>
+				<li tid="p1020t006"><script>dwt('p1020t006');</script></li>
+			</ol>
+			<p tid="p1020t007"><script>dwt('p1020t007');</script></p>
+			<p><strong tid="p1020t008"><script>dwt('p1020t008');</script></strong></p>
+			<div class="panel loader">
+				<h4><img class="loader" src="images/loading.gif"><strong tid="p1020t009"><script>dwt('p1020t009');</script></strong></h4><br><br>
+			</div>
+		</div>
+		<div class="sidebar four columns">
+			<div>
+				<h6 tid="p1020t010"><script>dwt('p1020t010');</script></h6>
+				<p tid="p1020t011"><script>dwt('p1020t011');</script><span class="nub"></span></p>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container offer" id="pNoTime" style="display:none">
+	<div class="row">
+		<div class="nine columns">
+			<h2 tid="pNoTime_title"><script>dwt('pNoTime_title')</script></h2>
+			<p class="lead" tid="pNoTime_content"><script>dwt('pNoTime_content')</script>
+			</p>
+		</div>
+	</div>
+</div>
+<div class="container offer" id="PIC_blocked" style="display:none">
+	<div class="row">
+		<div class="nine columns">
+			<h2 tid="PIC_blocked_title"><script>dwt('PIC_blocked_title')</script></h2>
+			<p class="lead" tid="PIC_blocked_content"><script>dwt('PIC_blocked_content')</script></p>
+			<a href="PIC-S1.asp" class="large green button nice radius" id="PIC_blocked_link" tid="gtPIC"><script>dwt('gtPIC')</script></a>
+		</div>
+	</div>
+</div>
+<div class="container offer" id="p1100" style="display:none">
+	<div class="row">
+		<div class="nine columns">
+			<h2 tid="p1100t001"><script>dwt('p1100t001');</script></h2>
+			<p class="lead" tid="p1100t002"><script>dwt('p1100t002');</script></p>
+			<a href="#" class="large green button nice radius" id="p1100a003" tid="p1100t003"><script>dwt('p1100t003');</script></a>
+		</div>
+	</div>
+</div>
+<div class="container offer" id="p1200" style="display:none">
+	<div class="row">
+		<div class="nine columns">
+			<h2 tid="p1200t001"><script>dwt('p1200t001')</script></h2>
+			<p class="lead" tid="p1200t002"><script>dwt('p1200t002')</script></p>
+			<a href="#" class="large green button nice radius" id="p1200a003" tid="gtSetPassword"><script>dwt('gtSetPassword')</script></a>
+			<a href="#" class="large white button nice radius" id="p1200a004" tid="gtMaybeLater"><script>dwt('gtMaybeLater')</script></a>
+		</div>
+	</div>
+</div>
+<div class="container troubleshoot" id="p1300" style="display:none">
+	<div class="row">
+		<div class="nine columns">
+			<h2 tid="p1300t001"><script>dwt('p1300t001')</script></h2>
+			<p class="lead" tid="p1300t002"><script>dwt('p1300t002')</script></p>
+			<a href="#" class="large green button nice radius" id="p1300a003" tid="p1300t003"><script>dwt('p1300t003')</script></a>
+			<a href="#" class="large white button nice radius" id="p1300a004" tid="p1300t004"><script>dwt('p1300t004')</script></a>
+		</div>
+	</div>
+</div>
+<div class="container offer" id="p1500" style="display:none">
+	<div class="row">
+		<div class="nine columns">
+			<h2 tid="p1500t001"><script>dwt('p1500t001')</script></h2>
+			<p class="lead" id="p1500t002" tid="p1500t002"><script>dwt('p1500t002')</script></p>
+			<a href="#" class="large green button nice radius" id="p1500a003" tid="p1500t003"><script>dwt('p1500t003')</script></a>
+			<a href="#" class="large white button nice radius" id="p1500a004" tid="p1500t004"><script>dwt('p1500t004')</script></a>
+		</div>
+	</div>
+</div>
+<div class="container top-pane statsbar" id="pStats" style="display:none">
+	<div class="row">
+		<div class="five columns stats" id="pStatsQoS" style="display:none">
+			<h5 tid="gtConnectionDet"><script>dwt('gtConnectionDet')</script></h5>
+			<div class="row">
+				<div class="five columns phone-two">
+					<label tid="gtDownloadSpeed"><script>dwt('gtDownloadSpeed')</script></label>
+				</div>
+				<div class="six columns phone-two">
+					<label tid="gtUploadSpeed"><script>dwt('gtUploadSpeed')</script></label>
+				</div>
+			</div>
+			<div class="row stats">
+				<div class="five columns phone-two">
+					<h2><script>dw(Math.round(0/10)/10)</script><span tid="gtMbitPerSec"> Mbps</span></h2>
+				</div>
+				<div class="six columns phone-two">
+					<h2><script>dw(Math.round(0/10)/10)</script><span tid="gtMbitPerSec"> Mbps</span></h2>
+				</div>
+			</div>
+			<div class="row">
+				<div class="phone-two twelve columns">
+					<a class="retest nice radius button white tiny" href="qos_bw.asp" id="dhRetest" tid="gtRetest"><script>dwt('gtRetest')</script></a>
+					<span class="last-check hide-on-phones inline" tid="gtSpeedTestResults"><script>dwt('p1310t003')</script>: </span> 
+				</div>
+			</div>
+		</div>
+		<br class="show-on-phones">
+		<div class="four columns" id="pStatsConnDev">
+			<h5>
+				<span tid="gtConnDevices"><script>dwt('gtConnDevices')</script> </span>
+				<a class="see-all right-on-phone" href="a200-ConnDev.asp"><img src="../images/arrow-fat.png"></a>
+			</h5>
+			<ul class="devices-connecting">
+				<script>
+				TblPreSort()
+				function TblPreSort() {
+					for (i=0; i<parNum; i++)
+						ParTbl[i][12] = 0
+					var ConDevMAC = new Array("ffffffffffff");
+					for (i=parNum-1 ; i>=0; i--) {
+						for (j=0; j<ConDevMAC.length; j++) {
+							if (ParTbl[i][1].toUpperCase() == ConDevMAC[j].toUpperCase()){
+								ParTbl[i][12] = 1
+							}
+						}
+					}
+				}
+				x=0
+				for(i=parNum ; i>=0 ; i-- ){
+					if(ParTbl[i][12] == 1 && x<3){
+						document.write('<li class=\"device laptop\">'+ParTbl[i][2].replace(/_/g,"&nbsp;")+'</li>')
+						x++
+					}
+				}
+				</script>
+			</ul>
+		</div>
+		<div class="three columns webfilter" id="pStatsFilter" style="display:none">
+			<h5><span tid="gtNortonConnectSafe"><script>dwt('gtNortonConnectSafe')</script></span> <span tid="gtWebsiteFilter" style="font-weight:normal;display:-moz-inline-stack;display:inline-block;zoom:1;*display:inline;"><script>dwt('gtWebsiteFilter')</script></span><a href="fw_parent.asp" class="see-all right-on-phone"><img src="../images/arrow-fat.png"></a> </h5>
+			<div class="high" id="pStatsFilterHigh" style="display:none"><span tid="gtHighFiltering"><script>dwt('gtHighFilter')</script></span><div class="filter-images high"></div></div>
+			<div class="medium" id="pStatsFilterMedium" style="display:none"><span tid="gtMediumFiltering"><script>dwt('gtMediumFilter')</script></span><div class="filter-images medium"></div></div>
+			<div class="low" id="pStatsFilterLow" style="display:none"><span tid="gtLowFiltering"><script>dwt('gtLowFilter')</script></span><div class="filter-images low"></div></div>
+			<div class="nofilter" id="pStatsFilterNoFilter" style="display:none"><span tid="gtNoFilter"><script>dwt('gtNoFilter')</script></span><div class="filter-images none"></div></div>
+		</div>
+	</div>
+</div>
+<div class="container success" id="p331a001" tid="p331t001" style="display:none">
+	<div class="row">
+		<div class="eight columns">
+			<div class="ancillary">
+				<strong tid="gtFWUpToDate"><script>dwt('p331t001');</script></strong>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container success" id="p332a001" tid="p332t001" style="display:none">
+	<div class="row">
+		<div class="eight columns">
+			<div class="ancillary">
+				<strong tid="gtFWUpToDate"><script>dwt('p332t001');</script></strong>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="container success" id="dhSuccessFW">
+	<div class="row">
+		<div class="eight columns" id="p1333" style="display:none">
+			<div class="ancillary fwupdated"><span tid="p1333t001"><script>dwt('p1333t001');</script></span></div>
+		</div>
+		<div class="eight columns" id="p1316" style="display:none">
+			<div class="ancillary plustop"><span tid="p1316t001"><script>dwt('p1316t001');</script></span></div>
+		</div>
+		<div class="eight columns" id="p1302" style="display:none">
+			<div class="ancillary fwupdated"><span tid="p1333t001"><script>dwt('p1333t001');</script></span></div>
+		</div>
+	</div>
+</div>
+<div class="container success" id="dhWifiSetting" style="display:none">
+	<div class="row">
+		<div class="eight columns">
+			<div class="ancillary">
+				<strong tid="gtWifiSetting"><script>dwt('gtWifiSettings');</script></strong>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="p1000" class="container gui main">
+<div class="row" id="ql600">
+	<div class="twelve columns">
+		<ul class="block-grid two-up quick-actions">
+			<li class="parental"><a class="nice large radius option button" href="fw_parent.asp" id="qlContentFiltering"><span tid="gtNortonConnectSafe"><script>dwt('gtNortonConnectSafe')</script></span></a></li>
+			<li class="access"><a class="nice large radius option button" href="PIC-S1.asp" id="qlAccessControl"><span tid="gtAccessControl"><script>dwt('gtAccessControl')</script></span></a></li>
+		</ul>
+		<ul class="block-grid three-up quick-actions">
+			<li class="clients"><a class="nice large radius option button" href="a200-ConnDev.asp" id="qlClientList"><span tid="gtClientList"><script>dwt('gtClientList')</script></span></a></li>
+			<li class="guest"><a class="nice large radius option button" href="wifi_guest.asp" id="qlGuestAccess"><span tid="gtGuestAccess"><script>dwt('gtGuestAccess')</script></span></a></li>
+			<li class="software"><a class="nice large radius option button" href="opt_sw.asp" id="qlOptionalSW"><span tid="gtOptionalSW" ><script>dwt('gtOptionalSW')</script></span></a></li>
+		</ul>
+	</div>
+</div>
+<div class="row">
+	<div class="twelve columns">
+	<div id="linksB"><br><hr><br></div>
+	<a class="hide-on-phones" href="javascript:void(0);" id="links_toggle"><img class="expando" id="expandoArrow" src="images/expando.png" alt="Expand" style="-webkit-transform: rotate(90deg);"><span class="router-link-header expando" tid="gtAdvSettings"><script>dwt('gtAdvSettings')</script></span></a>
+	<div id="links">
+		<div class="hide-on-phones">
+			<br>
+			<ul class="block-grid four-up router-settings">
+				<li>
+					<a href="lan_main.asp"><h6 class="padded" tid="gtLANSettings"><script>dwt('8');</script></h6></a>
+					<a href="lan_main.asp" tid="gtLocalSettings"><script>dwt('9');</script></a><br>
+					<a href="a200-ConnDev.asp" tid="gtDHCPList"><script>dwt('10');</script></a><br>
+				</li>
+				<li>
+					<a href="2700-ISP.asp"><h6 class="padded" tid="gtWAN"><script>dwt('gtWAN');</script></h6></a>
+					<a href="2700-ISP.asp" tid="gtISP"><script>dwt('gtISP');</script></a><br>
+					<a href="dns.asp" tid="gtDNS"><script>dwt('3442');</script></a><br>
+					<a href="wan_mac.asp" tid="gtMACAddress"><script>dwt('357');</script></a>
+				</li>
+				<li>
+					<a href="ipv6_con.asp"><h6 class="padded" tid="gtIPv6"><script>dwt('42');</script></h6></a>
+					<a href="ipv6_con.asp" tid="gtIPV6Connection"><script>dwt('43');</script></a>
+				</li>
+				<li>
+					<a href="2500-Wireless.asp"><h6 class="padded" tid="gtWiFi"><script>dwt('16');</script></h6></a>
+					<a href="2500-Wireless.asp" tid="gtWirelessSettings"><script>dwt('gtWirelessSettings');</script></a><br>
+					<a href="wifi_wps.asp" tid="gtWPS"><script>dwt('1319');</script></a><br>
+					<a href="wifi_guest.asp" tid="gtGuestAccess"><script>dwt('gtGuestAccess');</script></a><br>
+					<a href="wifi_apt.asp" tid="gtAccessPoint"><script>dwt('gtAccessPoint');</script></a>
+				</li>
+			</ul>
+			<ul class="block-grid four-up router-settings">
+				<li>
+					<a href="fw_parent.asp"><h6 class="padded" tid="gtParentalControls"><script>dwt('1850');</script></h6></a>
+					<a href="fw_parent.asp" tid="gtWebsiteFilter"><script>dw(translate('gtNortonConnectSafe').replace("&trade;",""))</script></a><br>
+					<a href="PIC-S1.asp" tid="gtPIC"><script>dwt('gtPIC')</script></a>
+				</li>
+				<li>
+					<a href="qos_bw.asp"><h6 class="padded" tid="gtMedia"><script>dwt('20');</script></h6></a>
+					<a href="qos_bw.asp" tid="gtIntellistream"><script>dwt('3310');</script></a><br>
+					<a href="qos_stats.asp" tid="gtTraffStats"><script>dwt('gtTraffStats');</script></a>
+				</li>
+				<li>
+					<a href="fw_main.asp"><h6 class="padded" tid="gtFirewall"><script>dwt('23');</script></h6></a>
+					<a href="fw_main.asp" tid="gtFirewall"><script>dwt('23');</script></a><br>
+					<a href="fw_port.asp" tid="gtPortForwarding"><script>dwt('24');</script></a><br>
+					<a href="fw_mac.asp" tid="gtMACAddressFiltering"><script>dwt('26');</script></a><br>
+					<a href="fw_dmz.asp" tid="gtDMZ"><script>dwt('27');</script></a><br>
+					<a href="ddns.asp" tid="gtDDNS"><script>dwt('41');</script></a><br>
+					<a href="fw_ping.asp" tid="gtWANPingBlocking"><script>dwt('28');</script></a><br>
+					<a href="log.asp" tid="gtSecLog"><script>dwt('29');</script></a>
+				</li>
+				<li>
+					<a href="tl_sys_r.asp"><h6 class="padded" tid="gtUtils"><script>dwt('30');</script></h6></a>
+					<a href="tl_sys_r.asp" tid="gtRestartRouter"><script>dwt('32');</script></a><br>
+					<a href="tl_save_restore.asp" tid="gtSaveRestore"><script>dwt('gtSaveRestore');</script></a><br>
+					<a href="2300-FWUpdate.asp" tid="gtFWUpdate" id="linkFWUpdate2"><script>dwt('37');</script></a><br>
+					<a href="tl_sys.asp" tid="gtSystemSettings"><script>dwt('38');</script></a><br>
+					<a href="tl_health.asp" tid="gtSelfHeal"><script>dwt('gtSelfHeal');</script></a><br>
+					<a href="h500-Reg.asp" id="linkReg2" tid="gtRegistration"><script>dwt('gtRegistration')</script></a><br>
+					<a href="opt_sw.asp" tid="gtOptSW"><script>dwt('gtOptSW');</script></a>
+				</li>
+				<li></li>
+			</ul>
+		</div>
+	</div>
+	<div id="links2">
+		<div class="show-on-phones">
+			<h6 class="router-link-header spacer11" tid="gtAdvSettings"><script>dwt('gtAdvSettings');</script></h6>
+			<ul class="router-settings">
+				<li>
+					<a id="toggle-LAN" href="lan_main.asp" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-LAN"><span class="padded" tid="gtLANSettings"><script>dwt('8');</script></span></a>
+					<div id="settings-LAN">
+						<a href="lan_main.asp" class="router-link lpad55 router-link-caret" id="linkLocal" tid="gtLocalSettings"><script>dwt('9');</script></a>
+						<a href="a200-ConnDev.asp" class="router-link lpad55 router-link-caret" id="linkConnDevices" tid="gtDHCPList"><script>dwt('10');</script></a>
+					</div>
+				</li>
+				<li>
+					<a id="toggle-WAN" href="2700-ISP.asp" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-WAN" /><span class="padded" tid="gtWAN"><script>dwt('gtWAN');</script></span></a>
+					<div id="settings-WAN">
+						<a href="2700-ISP.asp" class="router-link lpad55 router-link-caret" id="linkISP"  tid="gtISP"><script>dwt('gtISP');</script></a>
+						<a href="dns.asp" class="router-link lpad55 router-link-caret" id="linkDNS" tid="gtDNS"><script>dwt('3442');</script></a>
+						<a href="wan_mac.asp" class="router-link lpad55 router-link-caret" id="linkMAC" tid="gtMACAddress"><script>dwt('357');</script></a>
+					</div>
+				</li>
+				<li>
+					<a id="toggle-IPv6" href="ipv6_con.asp" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-IPv6" /><span class="padded" tid="gtIPv6"><script>dwt('42');</script></span></a>
+					<div id="settings-IPv6">
+						<a href="ipv6_con.asp" class="router-link lpad55 router-link-caret" id="linkIPv6" tid="gtIPV6Connection"><script>dwt('43');</script></a>
+					</div>
+				</li>
+				<li>
+					<a id="toggle-Wifi" href="2500-Wireless.asp" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-Wifi" /><span class="padded" tid="gtWiFi"><script>dwt('16');</script></span></a>
+					<div id="settings-Wifi">
+						<a href="2500-Wireless.asp" class="router-link lpad55 router-link-caret" id="linkNetName" tid="gtWirelessSettings"><script>dwt('gtWirelessSettings');</script></a>
+						<a href="wifi_wps.asp" class="router-link lpad55 router-link-caret" id="linkWPS" tid="gtWPS"><script>dwt('1319');</script></a>
+						<a href="wifi_guest.asp" class="router-link lpad55 router-link-caret" id="linkGuest" tid="gtGuestAccess"><script>dwt('gtGuestAccess');</script></a>
+						<a href="wifi_apt.asp" class="router-link lpad55 router-link-caret" id="linkAP" tid="gtAccessPoint"><script>dwt('gtAccessPoint');</script></a>
+					</div>
+				</li>
+				<li>
+					<a id="toggle-PIC" href="fw_parent.asp" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-PIC" /><span class="padded" tid="gtParentalControls"><script>dwt('1850');</script></span></a>
+					<div id="settings-PIC">
+						<a href="fw_parent.asp" class="router-link lpad55 router-link-caret" id="linkWebsiteFilter" tid="gtWebsiteFilter"><script>dw(translate('gtNortonConnectSafe').replace("&trade;",""))</script></a>
+						<a href="PIC-S1.asp" class="router-link lpad55 router-link-caret" id="linkPIC" tid="gtPIC"><script>dwt('gtPIC')</script></a>
+					</div>
+				</li>
+				<li>
+					<a id="toggle-Media" href="#" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-Media" /><span class="padded" tid="gtMedia"></span><script>dwt('20');</script></a>
+					<div id="settings-Media">
+						<a href="qos_bw.asp" class="router-link lpad55 router-link-caret" id="linkQoS" tid="gtIntellistream"><script>dwt('gtIntellistream');</script></a>
+						<a href="qos_stats.asp" class="router-link lpad55 router-link-caret" id="linkTraffStats" tid="gtTraffStats"><script>dwt('gtTraffStats');</script></a>
+					</div>
+				</li>
+				<li>
+					<a id="toggle-Firewall" href="fw_main.asp" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-Firewall" /><span class="padded" tid="gtFirewall"><script>dwt('23');</script></span></a>
+					<div id="settings-Firewall">
+						<a href="fw_main.asp" class="router-link lpad55 router-link-caret" id="linkFirewall" tid="gtFirewall"><script>dwt('23');</script></a>
+						<a href="fw_port.asp" class="router-link lpad55 router-link-caret" id="linkPortForwarding" tid="gtPortForwarding"><script>dwt('24');</script></a>
+						<a href="fw_mac.asp" class="router-link lpad55 router-link-caret" id="linkMACForward" tid="gtMACAddressFiltering"><script>dwt('26');</script></a>
+						<a href="fw_dmz.asp" class="router-link lpad55 router-link-caret" id="linkDMZ" tid="gtDMZ"><script>dwt('27');</script></a>
+						<a href="ddns.asp" class="router-link lpad55 router-link-caret" id="linkDDNS" tid="gtDDNS"><script>dwt('41');</script></a>
+						<a href="fw_ping.asp" class="router-link lpad55 router-link-caret" id="linkWANPingBlock" tid="gtWANPingBlocking"><script>dwt('28');</script></a>
+						<a href="log.asp" class="router-link lpad55 router-link-caret" id="linkSecLog" tid="gtSecLog"><script>dwt('29');</script></a>
+					</div>
+				</li>
+				<li>
+					<a id="toggle-Utils" href="tl_sys_r.asp" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-Utils" /><span class="padded" tid="gtUtils"><script>dwt('30');</script></span></a>
+					<div id="settings-Utils">
+						<a href="tl_sys_r.asp" class="router-link lpad55 router-link-caret" id="linkRestartRouter" tid="gtRestartRouter"><script>dwt('32');</script></a>
+						<a href="tl_save_restore.asp" class="router-link lpad55 router-link-caret" id="linkSaveRestoreSettings" tid="gtSaveRestoreSettings"><script>dwt('gtSaveRestore');</script></a>
+						<a href="2300-FWUpdate.asp" class="router-link lpad55 router-link-caret" id="linkFWUpdate2" tid="gtFWUpdate"><script>dwt('37');</script></a>
+						<a href="tl_sys.asp" class="router-link lpad55 router-link-caret" id="linkSysSettings" tid="gtSystemSettings"><script>dwt('38');</script></a>
+						<a href="tl_health.asp" class="router-link lpad55 router-link-caret" id="linkSelfHeal" tid="gtSelfHeal"><script>dwt('gtSelfHeal');</script></a>
+						<a href="h500-Reg.asp" class="router-link lpad55 router-link-caret" id="linkReg2" tid="gtRegistration"><script>dwt('gtRegistration');</script></a>
+						<a href="opt_sw.asp" class="router-link lpad55 router-link-caret" id="linkOptSW" tid="gtOptSW"><script>dwt('gtOptSW');</script></a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div id="linksA">
+		<div class="hide-on-phones">
+			<br>
+			<ul class="block-grid four-up router-settings">
+				<li>
+					<a href="2500-Wireless.asp"><h6 class="padded" tid="gtWiFi"><script>dwt('gtWiFi');</script></h6></a>
+					<a href="2500-Wireless.asp" tid="gtWirelessSettings"><script>dwt('gtWirelessSettings');</script></a><br>
+					<a href="wifi_wps.asp" tid="gtWPS"><script>dwt('gtWPS');</script></a><br>
+					<a href="wifi_apt.asp" tid="gtAccessPoint"><script>dwt('gtAccessPoint');</script></a>
+				</li>
+				<li>
+					<a href="tl_sys_r.asp"><h6 class="padded" tid="gtUtils"><script>dwt('gtUtils');</script></h6></a>
+					<a href="tl_sys_r.asp" tid="gtRestartRouter"><script>dwt('gtRestartRouter');</script></a><br>
+					<a href="tl_save_restore.asp" tid="gtSaveRestore"><script>dwt('gtSaveRestore');</script></a><br>
+					<a href="2300-FWUpdate.asp" tid="gtFWUpdate" id="linkFWUpdate2"><script>dwt('gtFWUpdate');</script></a><br>
+					<a href="tl_sys.asp" tid="gtSystemSettings"><script>dwt('gtSystemSettings');</script></a><br>
+					<a href="tl_health.asp" tid="gtSelfHeal"><script>dwt('gtSelfHeal');</script></a><br>
+					<a href="opt_sw.asp" tid="gtOptSW"><script>dwt('gtOptSW');</script></a>
+				</li>
+			</ul>
+		</div>
+	</div>
+	<div id="linksA2">
+		<div class="show-on-phones">
+			<ul class="router-settings">
+				<li>
+					<a id="toggle-Wifi2" href="2500-Wireless.asp" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-Wifi2" /><span class="padded" tid="gtWiFi"><script>dwt('16');</script></span></a>
+					<div id="settings-Wifi2">
+						<a href="2500-Wireless.asp" class="router-link lpad55 router-link-caret" id="linkNetName" tid="gtWirelessSettings"><script>dwt('gtWirelessSettings');</script></a>
+						<a href="wifi_wps.asp" class="router-link lpad55 router-link-caret" id="linkWPS" tid="gtWPS"><script>dwt('1319');</script></a>
+						<a href="wifi_apt.asp" class="router-link lpad55 router-link-caret" id="linkAP" tid="gtAccessPoint"><script>dwt('gtAccessPoint');</script></a>
+					</div>
+				</li>
+				<li>
+					<a id="toggle-Utils2" href="tl_sys_r.asp" class="router-link"><img src="../images/btn-justCaret-green-up.png" alt="Caret" class="DBCaret" id="caret-Utils2" /><span class="padded" tid="gtUtils"><script>dwt('30');</script></span></a>
+					<div id="settings-Utils2">
+						<a href="tl_sys_r.asp" class="router-link lpad55 router-link-caret" id="linkRestartRouter" tid="gtRestartRouter"><script>dwt('gtRestartRouter');</script></a>
+						<a href="tl_save_restore.asp" class="router-link lpad55 router-link-caret" id="linkSaveRestoreSettings" tid="gtSaveRestore"><script>dwt('gtSaveRestore');</script></a>
+						<a href="2300-FWUpdate.asp" class="router-link lpad55 router-link-caret" id="linkFWUpdate2" tid="gtFWUpdate"><script>dwt('gtFWUpdate');</script></a>
+						<a href="tl_sys.asp" class="router-link lpad55 router-link-caret" id="linkSysSettings" tid="gtSystemSettings"><script>dwt('gtSystemSettings');</script></a>
+						<a href="tl_health.asp" class="router-link lpad55 router-link-caret" id="linkSelfHeal" tid="gtSelfHeal"><script>dwt('gtSelfHeal');</script></a>
+						<a href="opt_sw.asp" class="router-link lpad55 router-link-caret" id="linkOptSW" tid="gtOptSW"><script>dwt('gtOptSW');</script></a>
+					</div>
+				</li>
+			</ul>
+		</div>
+	</div>
+	</div>
+</div>
+<script>
+	var slideDur = 600;
+	$( "#expandoArrow" ).rotate(90);
+	$('[id|="caret"]').rotate(180);
+	$('[id|="settings"]').hide();
+	$('[id|="toggle"]').click(function(e) {
+		e.preventDefault();
+		var id = $(this).attr('id');
+		id = id.replace(/toggle-/g, "");
+		if ($("#settings-" + id).is(":hidden")) {
+			$("#caret-" + id).rotate({animateTo:0, duration:slideDur});
+			$("#settings-" + id).slideDown(slideDur);
+		} else {
+			$("#caret-" + id).rotate({animateTo:180, duration:slideDur});
+			$("#settings-" + id).slideUp(slideDur);
+		}
+	});
+	$('#links_toggle').click(function() {
+		if ($(links_block).is(":hidden")) {
+			$( "#expandoArrow" ).rotate({animateTo:90, duration:600});
+			$(links_block).slideDown();
+			if(ap_router_mode == 3){
+				$("#ap_info").slideDown();
+			}
+			else{
+				$("#router_info").slideDown();
+			}
+		} else {
+			$( "#expandoArrow" ).rotate({animateTo:0, duration:600});
+			$(links_block).slideUp();
+		}
+	});
+</script>
+<div class="row" id="router_info">
+	<div class="twelve columns">
+		<br><hr><br>
+		<h4 class="padded" tid="gtRouterDetails"><script>dwt('gtRouterDetails');</script></h4>
+		<div class="row">
+			<div class="six columns">
+				<table class="minimal dashboard">
+					<thead>
+						<th colspan="2" tid="gtRouterInfo"><script>dwt('gtRouterInfo');</script></th>
+					</thead>
+					<tbody>
+					<tr>
+						<td><strong tid="gtName"><script>dwt('gtName');</script></strong></td>
+						<td>N600 DB Wireless Dual-Band N+ Router</td>
+					</tr>
+					<tr>
+						<td><strong tid="gtModel"><script>dwt('gtModel');</script></strong></td>
+						<td>F9K1121 v1000</td>
+					</tr>
+					<tr>
+						<td><strong><a href="2300-FWUpdate.asp" tid="gtFirmware" id="linkFWUpdate2"><script>dwt('gtFirmware');</script></a></strong></td>
+						<td id="fwinfo">1.04.34, <script>dw(FW_F_date)</script> (<a href="2300-FWUpdate.asp" tid="gtFWUpdate"><script>dwt('gtUpdate');</script></a>)</td>
+					</tr>
+					<tr>
+						<td><strong tid="gtSerial"><script>dwt('gtSerial');</script></strong></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><strong tid="gtBootLoader"><script>dwt('gtBootLoader');</script></strong></td>
+						<td>1.0</td>
+					</tr>
+					<tr>
+						<td><strong><a href="qos_bw.asp" tid="gtIntellistream"><script>dwt('gtIntellistream');</script></a></strong></td>
+						<td><script>
+						var qosEnable=0
+						var str_qos=translate(375)
+						if (qosEnable == 1 )
+							str_qos=translate(374)
+						document.write(str_qos);
+						</script></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="six columns">
+				<table class="minimal dashboard">
+					<thead>
+						<th colspan="2" tid="gtWireless"><script>dwt('gtWireless');</script></th>
+					</thead>
+					<tbody>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gt24GName"><script>dwt('gt24GName');</script></a></strong></td>
+						<td><script>document.write(HTMLEnCode(ssid))</script></td>
+					</tr>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gt24GKey"><script>dwt('gt24GKey');</script></a></strong></td>
+						<td id="s24gpwd_router">{{Show password}}</td>
+					</tr>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gt5GName"><script>dwt('gt5GName');</script></a></strong></td>
+						<td><script>document.write(HTMLEnCode(ssid5g))</script></td>
+					</tr>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gt5GKey"><script>dwt('gt5GKey');</script></a></strong></td>
+						<td id="s5gpwd_router">{{Show password}}</td>
+					</tr>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gtSecurity"><script>dwt('gtSecurity');</script></a></strong></td>
+						<td id="sencrypt">WPA2</td>
+					</tr>
+					<tr>
+						<td><strong><a href="wifi_guest.asp" tid="gtGuestName"><script>dwt('gtGuestName');</script></a></strong></td>
+						<td id="sgstssid">belkin.6d1.guests</td>
+					</tr>
+					<tr>
+						<td><strong><a href="wifi_guest.asp" tid="gtGuestKey"><script>dwt('gtGuestKey');</script></a></strong></td>
+						<td id="sgstpwd"></td>
+					</tr>
+					<tr>
+						<td><strong><a href="wifi_wps.asp" tid="gtWPSShort"><script>dwt('gtWPSShort');</script></a></strong></td>
+						<td>
+						<script>
+						var wpsEnable=1
+						var iNICwpsEnable=0
+						var str_wps=translate(375)
+						if (wpsEnable == 1 || iNICwpsEnable== 1)
+							str_wps=translate(374)
+						document.write(str_wps);
+						</script>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row" >
+			<div class="six columns">
+				<table class="minimal dashboard">
+					<thead>
+						<th colspan="2" tid="gtInternetSettings"><script>dwt('333');</script></th>
+					</thead>
+					<tbody>
+					<tr>
+						<td><strong><a href="2700-ISP.asp" tid="gtConnType"><script>dwt('3431');</script></a></strong></td>
+						<td><script>dwt(690);</script></td>
+					</tr>
+					<tr>
+						<td><strong><a href="2700-ISP.asp" tid="gtWANIP"><script>dwt('gtWANIP');</script></a></strong></td>
+						<td id="wan_ip"></td>
+					</tr>
+					<tr>
+						<td><strong><a href="2700-ISP.asp" tid="gtWANSubnet"><script>dwt('gtWANSubnet');</script></a></strong></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><strong><a href="2700-ISP.asp" tid="gtWANGateway"><script>dwt('gtWANGateway');</script></a></strong></td>
+						<td id="wan_gw">
+						<script>
+						</script></td>
+					</tr>
+					<tr>
+						<td><strong><a href="dns.asp" tid="gtWANDNS"><script>dwt('339');</script></a></strong></td>
+						<td><br></td>
+					</tr>
+					<tr>
+						<td><strong><a href="wan_mac.asp" tid="gtWANMAC"><script>dwt('334');</script></a></strong></td>
+						<td id="wan_mac"></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="six columns">
+				<table class="minimal dashboard">
+					<thead>
+						<th colspan="2" tid="gtLocalNetwork"><script>dwt('326');</script></th>
+					</thead>
+					<tbody>
+					<tr>
+						<td><strong><a href="lan_main.asp" tid="gtLANIP"><script>dwt('gtLANIP');</script></a></strong></td>
+						<td>192.168.2.1</td>
+					</tr>
+					<tr>
+						<td><strong><a href="lan_main.asp" tid="gtLANSubnet"><script>dwt('gtLANSubnet');</script></a></strong></td>
+						<td>255.255.255.0</td>
+					</tr>
+					<tr>
+						<td><strong><a href="lan_main.asp" tid="gtDHCPServer"><script>dwt('332');</script></a></strong></td>
+						<td><script>dwt(374);</script>
+							<span id="DB_clientlist"><script>
+							if ('2' == '2'){
+								dhcp_lease='7';
+								var lease_trans=new Array(
+								'382','383','384','385','386','387','388','389','390');
+								document.write(", "+translate(lease_trans[dhcp_lease])+", "+0+" "/*+Clients*/);
+							}
+							</script></span></td>
+					</tr>
+					<tr>
+						<td><strong tid="gtLANMAC"><script>dwt('327');</script></strong></td>
+						<td id="lan_mac"></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row" style="display:none">
+			<div class="six columns">
+				<table class="minimal">
+					<thead>
+						<th colspan="3" tid="gtADSL"><script>dwt('gtADSL');</script>ADSL</th>
+					</thead>
+					<tr>
+						<td><strong tid="gtConnType"><script>dwt('3431');</script></strong></td>
+						<td colspan="2" tid="gtInterleavePath"><script>dwt('gtInterleavePath');</script>Interleave Path</td>
+					</tr>
+					<tr>
+						<td><strong tid="gtStatus"><script>dwt('i2');</script></strong></td>
+						<td colspan="2" tid="gtShowtime"><script>dwt('gtShowtime');</script>Showtime</td>
+					</tr>
+					<tr>
+						<td></td>
+						<td><strong tid="gtDown"><script>dwt('p1010t004');</script>Down</strong></td>
+						<td><strong tid="gtUp"><script>dwt('p1010t004');</script>Up</strong></td>
+					</tr>
+					<tr>
+						<td><strong tid="gtDataRate"><script>dwt('gtDataRate');</script>Data Rate</strong></td>
+						<td>27,639 kbps</td>
+						<td>1,269 kbps</td>
+					</tr>
+					<tr>
+						<td><strong tid="gtNoiseMargin"><script>dwt('2033');</script></strong></td>
+						<td>6 dB</td>
+						<td>6 dB</td>
+					</tr>
+					<tr>
+						<td><strong tid="gtOutputPower"><script>dwt('2037');</script></strong></td>
+						<td>7 dBm</td>
+						<td>7 dBm</td>
+					</tr>
+					<tr>
+						<td><strong tid="gtAttenuation"><script>dwt('2036');</script></strong></td>
+						<td>0 dB</td>
+						<td>0 dB</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div class="row" id="ap_info">
+	<div class="twelve columns">
+		<br><hr><br>
+		<h4 class="padded" tid="gtRouterDetails"><script>dwt('gtRouterDetails');</script></h4>
+		<div class="row">
+			<div class="six columns">
+				<table class="minimal dashboard">
+					<thead>
+						<th colspan="2" tid="gtRouterInfo"><script>dwt('gtRouterInfo');</script></th>
+					</thead>
+					<tbody>
+					<tr>
+						<td><strong tid="gtName"><script>dwt('gtName');</script></strong></td>
+						<td>N600 DB Wireless Dual-Band N+ Router</td>
+					</tr>
+					<tr>
+						<td><strong tid="gtModel"><script>dwt('gtModel');</script></strong></td>
+						<td>F9K1121 v1000</td>
+					</tr>
+					<tr>
+						<td><strong><a href="2300-FWUpdate.asp" tid="gtFirmware" id="linkFWUpdate2"><script>dwt('gtFirmware');</script></a></strong></td>
+						<td id="fwinfo">1.04.34, <script>dw(FW_F_date)</script></td>
+					</tr>
+					<tr>
+						<td><strong tid="gtSerial"><script>dwt('gtSerial');</script></strong></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><strong tid="gtBootLoader"><script>dwt('gtBootLoader');</script></strong></td>
+						<td>1.0</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+			<div class="six columns">
+				<table class="minimal dashboard">
+					<thead>
+						<th colspan="2" tid="gtWireless"><script>dwt('gtWireless');</script></th>
+					</thead>
+					<tbody>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gt24GName"><script>dwt('gt24GName');</script></a></strong></td>
+						<td><script>document.write(HTMLEnCode(ssid))</script></td>
+					</tr>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gt24GKey"><script>dwt('gt24GKey');</script></a></strong></td>
+						<td id="s24gpwd_ap">{{Show password}}</td>
+					</tr>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gt5GName"><script>dwt('gt5GName');</script></a></strong></td>
+						<td><script>document.write(HTMLEnCode(ssid5g))</script></td>
+					</tr>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gt5GKey"><script>dwt('gt5GKey');</script></a></strong></td>
+						<td id="s5gpwd_ap">{{Show password}}</td>
+					</tr>
+					<tr>
+						<td><strong><a href="2500-Wireless.asp" tid="gtSecurity"><script>dwt('gtSecurity');</script></a></strong></td>
+						<td id="sencrypt">WPA2</td>
+					</tr>
+					<tr>
+						<td><strong><a href="wifi_wps.asp" tid="gtWPS"><script>dwt('gtWPS');</script></a></strong></td>
+						<td>
+						<script>
+						var wpsEnable=1
+						var iNICwpsEnable=0
+						var str_wps=translate(375)
+						if (wpsEnable == 1 || iNICwpsEnable== 1)
+							str_wps=translate(374)
+						document.write(str_wps);
+						</script>
+						</td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="row" >
+			<div class="six columns">
+				<table class="minimal dashboard">
+					<thead>
+						<th colspan="2" tid="gtLocalNetwork"><script>dwt('326');</script></th>
+					</thead>
+					<tbody>
+					<tr>
+						<td><strong tid="gtLANIP"><script>dwt('3437');</script>&nbsp;<script>dwt('gtLANIP');</script></strong></td>
+						<td>192.168.2.254</td>
+					</tr>
+					<tr>
+						<td><strong tid="gtLANSubnet"><script>dwt('3437');</script>&nbsp;<script>dwt('gtLANSubnet');</script></strong></td>
+						<td>255.255.255.0</td>
+					</tr>
+					<tr>
+						<td><strong tid="gtLANMAC"><script>dwt('327');</script></strong></td>
+						<td id="lan_mac_ap"></td>
+					</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+<div id="serviceCard" style="display:none">
+	<script src='javascripts/app.js'></script>
+	<div class="servCardPanel rel center top5" >
+		<img src="../images/Scissors-lrg.png" alt="Cut" class="abs" style="display:block; top:-3mm;left:165mm; height:6mm;">
+		<div class="abs" style="top:16mm; left:5mm;width:35mm">
+			<h1 tid="gtConfigureRouter"><script>dwt('gtConfigureRouter');</script></h1>
+		</div>
+		<div class="abs" style="top:14mm; left:44mm;">
+			<img src="../images/Browser-lrg.png" alt="Browser" height="68" width="168">
+		</div>
+		<div class="abs" style="top:10mm; left:130mm;width:19mm;" >
+		</div>
+		<div class="abs" style="top:0;left:92.5mm;height:43mm; width:92.5mm;border-left: 1px solid #ddd;">
+			<img src="../images/Pipman-lrg.png" alt="Belkin" width="56" height="63" style="display:block; margin:auto; margin-top:50px;">
+		</div>
+	</div>
+	<div class="servCardPanel rel center top5" style="margin-top:-1px;">
+		<div class="abs" style="top:15mm; left:5mm;width:30mm; ">
+			<h1 tid="gtHomeNetwork"><script>dwt('gtHomeNetwork');</script></h1>
+		</div>
+		<div class="abs servCardInfo" style="top:2mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt24ghz">2.4Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gt24SSID">belkin.6d1</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt24PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt24Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:22mm; left: 38mm;">
+			<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+				<b><span tid="gt50ghz">5 Ghz</span></b>
+			</div>
+			<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+				<span tid="gti5SSID">belkin.6d1.media</span>
+			</div>
+			<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+			<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+				<span tid="gt5PSK">66caye9w</span>
+			</div>
+			<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+			<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+				<span tid="gt5Sec">WPA2</span>
+			</div>
+		</div>
+		<div class="abs servCardInfo" style="top:0;left:92.5mm;height:43mm; width:0;border-left: 1px solid #ddd;">
+			<div class="abs" style="top:15mm; left:5mm;width:30mm">
+				<h1 tid="gtGuestNetwork"><script>dwt('gtGuestNetwork');</script></h1>
+			</div>
+			<div class="abs" style="top:12mm; left: 38mm;">
+				<div class="abs rot270 tcenter netInfo pad2 roundTop2" style="top:28px; left:-30px; width:68px;">
+					<b><span tid="gt24ghz">2.4Ghz</span></b>
+				</div>
+				<div class="abs netInfo pad-w-img roundUR" style="top:2px; left:15px; width:148px;">
+					<span tid="gt24SSID">belkin.6d1.guests</span>
+				</div>
+				<img class="abs" src="../images/icon-NetworkName_WiFi-lrg.png" alt="Wifi" style="display:block; top:3px; left: 16px;">
+				<div class="abs netInfo pad-w-img" style="top:26px; left:15px; width:148px;">
+					<span tid="gt24PSK">eew3fc7y</span>
+				</div>
+				<img class="abs" src="../images/Icon-Password_Key-lrg.png" alt="Password" style="display:block; top:27px; left: 16px;">
+				<div class="abs netInfo pad-w-img roundBR" style="top:50px; left:15px; width:148px;">
+					<span tid="gt24Sec"><script>dwt('1828');</script></span>
+				</div>
+			</div>	
+		</div>
+	</div>
+	<div class="buttons rel center top5">
+		<a class="small green button nice radius" href="javascript:window.print();" tid="gtPrint"><script>dwt('gtPrint');</script></a>
+		<a class="small white button nice radius hide-on-Windows hide-on-OSX" href="javascript:window.close();" tid="gtClose"><script>document.write(translate('gtClose'))</script></a>  
+	</div>
+</div>
+	
+</div>
+<div class="footer-main container">	
+	<div class="row">
+		<div class="twelve columns">
+			<div class="twelve columns show-on-phones">
+			<img src="../images/logo.png" class="logo" alt="Belkin">
+			<br>
+			</div>
+		</div>
+	</div>
+	<div class="row">
+		<div class="eight columns" >
+			<span id="footer_disconnect" style="display:none">
+				<h5 tid="dft001"><script>dwt('dft001');</script></h5>
+				<p tid="dft002"><script>dwt('dft002');</script></p>
+			</span>
+			<span id="footer_connect" style="display:none">
+				<h5 tid="dft003"><script>dwt('dft003');</script></h5>
+				<p tid="dft004"><script>dwt('dft004');</script></p>
+			</span>
+		</div>
+		<div class="four columns">
+			<span tid="gtSelectLang"><script>dwt('gtSelectLang');</script></span>
+				<form class="inline nice" id="dff014">
+					<select class="inline" id="dff015" onchange="funChgLang('parent',this,0)" name="changeLenguage">
+						<option id="dffEn" value="en">English</option>
+						<option id="dffFr" value="fr">FranÃ§ais (France)</option>
+						<option id="dffFrCa" value="ca">FranÃ§ais (Canada)</option>
+						<option id="dffDe" value="de">Deutsch</option>
+						<option id="dffEs" value="es">EspaÃ±ol</option>
+						<option id="dffEsMx" value="mx">EspaÃ±ol (MÃ©xico)</option>
+						<option id="dffPt" value="pt">PortuguÃªs</option>
+						<option id="dffPtBr" value="br">PortuguÃªs (Brasil)</option>
+						<option id="dffIt" value="it">Italiano</option>
+						<option id="dffNl" value="nl">Nederlands</option>
+						<option id="dffEl" value="el">ÎµÎ»Î»Î·Î½Î¹ÎºÎ¬</option>
+						<option id="dffTr" value="tr">TÃ¼rk</option>
+						<option id="dffSv" value="sv">Svenska</option>
+						<option id="dffNo" value="no">Norske</option>
+						<option id="dffDa" value="da">Dansk</option>
+						<option id="dffFi" value="fi">Suomi</option>
+						<option id="dffRu" value="ru">ÑÑÑÑÐºÐ¸Ð¹</option>
+						<option id="dffKo" value="ko">&#xD55C;&#xAD6D;&#xC758;</option>
+						<option id="dffZhHant" value="tw">ä¸­å½ä¼ ç»</option>
+						<option id="dffZhHans" value="cn">ä¸­æï¼ç®ä½ï¼</option>
+					</select>
+				</form>
+				<br />
+			<span tid="gtCopyright"><script>dwt('gtCopyright');</script></span>
+			<span class="show-on-phones"><br />&nbsp;</span>
+	
+		</div>
+	</div>
+</div>
+<form name="dashboard_ChLang" action=/goform/formSetLanguage method=post>
+<input type="hidden" name="langtype" />
+<input type="hidden" name="webpage" id="webpage"/>
+</form>
+
+</body>
+</html>
+<div id="passwordChallenge" class="large reveal-modal">
+	<h1 tid="p1210t001"><script>dwt('p1210t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1210t002"><script>dwt('p1210t002');</script></p>
+		<form class="nice" id="puserpswd" method="post">
+			<input type="password" class="input-text" id="p1210Password" name="pws">
+			<small class="error" id="p1210t003" tid="p1210t003" style="display:none"><script>dwt('errorpwdEmpty');</script></small>
+			<small class="error" id="p1210t004" tid="p1210t004" style="display:none"><script>dwt('errorpwdError');</script></small>
+			<br>
+			<a href="#" class="nice radius button green large" tid="p1210t005" id="p1210a005"><script>dwt('p1210t005');</script></a>
+			<a href="#" class="nice radius button white large" tid="gtCancel" id="p1210a006"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<div id="p1201" class="large reveal-modal">
+	<h1 tid="p1201t001"><script>dwt('p1200t001');</script></h1>
+	<div>
+		<p class="lead" tid="p1201t002"><script>dwt('p1200t002');</script></p>
+		<form class="nice" id="UserPasswordSetup">
+			<input type="text" class="input-text" id="p1201Password" name="newpass">
+			<input type="hidden" id="p1201Password2" name="newpass2">
+			<small class="error" tid="p1201t003" id="p1201t003" style="display:none"><script>dwt('p1200t003');</script></small>
+			<br>
+			<a href="#" class="nice radius button green large" tid="p1201t004" id="p1201a004"><script>dwt('gtSetPassword'/*p1200t004*/);</script></a>
+			<a href="#" class="nice radius button white large" tid="p1201t005" id="p1201a005"><script>dwt('gtCancel');</script></a>
+		</form>
+	</div>
+</div>
+<div id="bg"></div>
+<script src="javascripts/app.js"></script>
+<script>
+$("#p1210a005").click(function(){
+	ChkPWD();
+})
+function ChkPWD(){
+	$("#p1210t003").hide();
+	$("#p1210t004").hide();
+	$.post("/goform/formCheckUserPassword", {
+		NoCache: Math.floor(Math.random() * 10000),
+		userpwd: base64encode($("#p1210Password").val())
+        } ,function(data){
+		if(data == 1)
+			$("#p1210t003").show();
+		else if(data == 2)
+			$("#p1210t004").show();
+		else if(data == 3)
+			document.location.replace("duplicat.asp");
+		else{
+			$.post("/goform/formLogin", {
+				pws : base64encode($("#p1210Password").val())
+			}, function(data){
+				closeMsgMask("passwordChallenge");
+				$("#dhLockToggle2").removeClass("locked").addClass("unlocked");
+				$("#dhLockToggle2").html("unlocked")
+				$("#dhLockToggle").removeClass("locked").addClass("unlocked");
+				$("#DB_clientlist").hide();
+				if(last_url == "loginlock"){
+					document.location.replace("000-dashboard.asp");
+				}
+				else if(last_url != null ){
+					if(window.location.port == null)
+						window.top.location.assign("http://"+location.hostname+last_url)
+					else
+						window.top.location.assign("http://"+location.hostname+":"+window.location.port+last_url)
+				}
+				else{
+					location.reload();
+				}
+			});
+		}
+	},"html");
+}
+$("#p1210a006").click(function(){
+	closeMsgMask("passwordChallenge")
+})
+$("#p1100a003").click(function(){
+	document.location.replace("2310-UpdateAvailable.asp?DB_SP_MSG");
+})
+$("#p1200a003").click(function(){
+	showMsgMask("p1201")
+	$("#p1200").hide();
+	$("#p1201Password").focus();
+})
+$("#p1200a004").click(function(){
+	$("#p1200").hide();
+	$.post("/goform/formSetSkipMsg", { NoCache:ts, skip:4 },function(data){});
+})
+$("#p1300a003").click(function(){
+	document.location.replace("qos_bw.asp");
+})
+$("#p1300a004").click(function(){
+	$("#p1300").hide();
+	$.post("/goform/formSetSkipMsg", { NoCache:ts, skip:3 },function(data){});
+})
+$("#p1500a003").click(function(){
+	$.post("/goform/formSetTimeZoneSel", {NoCache:ts, ntp_timezone_sel: TZ_id-1},function(data){});
+	$("#p1500").hide();
+})
+$("#p1500a004").click(function(){
+	$.post("/goform/formSetSkipMsg", { NoCache:ts, skip:2 },function(data){});
+	document.location.replace("tl_sys.asp");
+})
+function FormEnterKey(e)
+{
+	var key;
+	if(window.event)
+		key = window.event.keyCode;
+	else
+		key = e.which;
+	return (key != 13);
+}
+$("#p1210Password").keypress(function(event) {
+	if (event.which == 13) {
+		event.preventDefault();
+		ChkPWD();
+	}
+});
+</script>
